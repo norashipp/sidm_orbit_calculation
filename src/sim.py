@@ -25,9 +25,10 @@ print 'M = ', host.M
 
 # FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
 
-initial_position = [host.R_200,0.] # remember to make sure 0<phi<2pi
+initial_position = [host.R_200,0.]
 # initial_momentum = [-1.0*host.v_200,0.75*host.v_200]
-initial_momentum = [-1.5*host.v_200,0.9*host.v_200]
+initial_momentum = [0.8*host.v_200,0.9*host.v_200] # positive or negative - where should the minus sign be? (!!)
+# initial_momentum = [0.,0.]
 
 subhalo = Subhalo(mass_ratio=0.001,initial_position=initial_position,initial_momentum=initial_momentum)
 # subhalo class might be unnecessary - combine with position/momentum classes? (!!)
@@ -39,11 +40,12 @@ print 'initial momentum = ', initial_momentum[0], initial_momentum[1]
 position = ParticlePosition(subhalo.position)
 momentum = ParticleMomentum(subhalo.momentum)
 
-
 time = 0.
 times = [time]
 dt = 1.e14
-while time < 1.e18 and position.current_position[0] > 0:
+while time < 1.e18:
+	print time
+	# print position.current_position
 	force = gravity._calculate_gravitational_force(position=position.current_position)
 	position._update_step(momentum=momentum.current_momentum,dt=dt)
 	momentum._update_step(position=position.current_position,force=force,dt=dt)
@@ -56,6 +58,8 @@ positions = np.array(position.position_array)
 momenta = np.array(momentum.momentum_array)
 print 'r min = ', positions[:,0].min()/host.R_200
 print 'r max = ', positions[:,0].max()/host.R_200
+print 'final time = ', time
+
 
 forces = np.array(gravity.force_array)
 
@@ -63,6 +67,7 @@ plotting = 1
 if plotting:
 	plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=host)
 	plot.orbit()
+	plot.orbit_color()
 	plot.radial_position()
 	plot.angular_position()
 	plot.gravitational_force()

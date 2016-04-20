@@ -13,7 +13,11 @@ class ParticlePosition :
     def _update_step(self,momentum=None,dt=1.e14) :
         self.current_position[1]+=momentum[1]*dt/self.current_position[0]
         self.current_position[1] = self.current_position[1]%(2.*np.pi)
-        self.current_position[0]+=momentum[0]*dt
+        if self.current_position[0] > 0:
+            self.current_position[0]-=momentum[0]*dt
+        else:
+            self.current_position[0]+=momentum[0]*dt
+        # is there a better way to deal with this? (!!)
         self.position_array.append((self.current_position[0],self.current_position[1]))
         return None
 
