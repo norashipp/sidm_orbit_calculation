@@ -13,15 +13,13 @@ class GetGravitationalForce :
         self.force_array = []
         
     def _calculate_gravitational_force(self, position=None) :
-        dx = position[0]/1.e10
+        dxdiv = np.sqrt(2**53)
+        dx = position[0]/42 # gives smallest final r
+        # force_r = derivative(self.potential_function,position[0],dx)
         force_r = partial_derivative(self.potential_function,0,[position[0]], dx=dx) # generalize (!!)
-        # print 'r = ', position[0]
-        # print 'force = ', force_r
-        # print 'potential = ', self.potential_function(position[0])
-        # force_phi = partial_derivative(self.potential,1,[position,host])
         force_phi = 0. # for now just spherical potentials (!!)
         self.force_array.append(force_r)
-        return force_r,force_phi
+        return force_r,force_phi,dxdiv
 
 #################################################################    
 

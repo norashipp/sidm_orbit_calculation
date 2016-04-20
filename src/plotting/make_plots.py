@@ -9,36 +9,45 @@ class Plotting:
 	def __init__(self,times=None,positions=None,momenta=None,forces=None,host=None):
 		self.host = host
 		self.times = times
-		self.positions = positions
+		self.r = positions[:,0]
+		self.phi = positions[:,1]%(2*np.pi)
 		self.momenta = momenta
 		self.forces = forces
 
 	def orbit_color(self):
-		x = self.positions[:,0]*np.cos(self.positions[:,1])*m_to_kpc
-		y = self.positions[:,0]*np.sin(self.positions[:,1])*m_to_kpc
+		x = self.r*np.cos(self.phi)*m_to_kpc
+		y = self.r*np.sin(self.phi)*m_to_kpc
+		print 'initial x,y (m) = ', x[0]/m_to_kpc, y[0]/m_to_kpc
+		print 'initial r,phi (m,rad) = ', self.r[0], self.phi[0] 
+		print 'max x (m) = ', x.max()/m_to_kpc
+		print 'X: '
+		print x
+		print 'Y: '
+		print y
 		dt = self.times[1]-self.times[0]
 		color = [tt/self.times.max() for tt in self.times]
 		clr = pylab.cm.jet(color)
 		pylab.figure()
 		pylab.scatter(x,y,c=clr)
+		pylab.plot(x[0],y[0],'k*',markersize=10)
 		pylab.xlabel('x (kpc)')
 		pylab.ylabel('y (kpc)')
 		# pylab.colorbar()
 		pylab.show()
 
 	def orbit(self):
-		x = self.positions[:,0]*np.cos(self.positions[:,1])
-		y = self.positions[:,0]*np.sin(self.positions[:,1])
+		x = self.r*np.cos(self.phi)
+		y = self.r*np.sin(self.phi)
 		pylab.figure()
-		# pylab.plot(self.positions[:,1],self.positions[:,0]/self.host.R_200,'g',markersize=10,linewidth=2)
-		pylab.plot(x,y,'g',markersize=10,linewidth=2)
+		pylab.plot(x,y,'g--',markersize=10,linewidth=2)
+		pylab.plot(x[0],y[0],'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
 		pylab.show()
 
 	def radial_position(self):
 		pylab.figure()
-		pylab.plot(self.times,self.positions[:,0]/self.host.R_200,'r-',markersize=10,linewidth=2)
+		pylab.plot(self.times,self.r/self.host.R_200,'r-',markersize=10,linewidth=2)
 		pylab.xlabel('time')
 		pylab.ylabel('raidus/R200')
 		pylab.show()
@@ -46,21 +55,21 @@ class Plotting:
 	def radial_position_color(self):
 		# not working
 		pylab.figure()
-		pylab.scatter(self.times,self.positions[:,0]/self.host.R_200,c = pylab.cm.jet(np.log(self.times)/np.log(max(self.times))))
+		pylab.scatter(self.times,self.r/self.host.R_200,c = pylab.cm.jet(np.log(self.times)/np.log(max(self.times))))
 		pylab.xlabel('time')
 		pylab.ylabel('raidus/R200')
 		pylab.show()
 
 	def angular_position(self):
 		pylab.figure()
-		pylab.plot(self.times,self.positions[:,1],'b',markersize=10,linewidth=2)
+		pylab.plot(self.times,self.phi,'b',markersize=10,linewidth=2)
 		pylab.xlabel('time')
 		pylab.ylabel('phi')
 		pylab.show()
 
 	def gravitational_force(self):
 		pylab.figure()
-		pylab.plot(self.positions[:-1,0]/self.host.R_200,self.forces,'k.',markersize=10,linewidth=2)
+		pylab.plot(self.r[:-1]/self.host.R_200,self.forces,'k.',markersize=10,linewidth=2)
 		pylab.xlabel('radius/R200')
 		pylab.ylabel('gravitational force')
 		pylab.show()

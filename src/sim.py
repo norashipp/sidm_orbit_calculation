@@ -27,7 +27,8 @@ print 'M = ', host.M
 
 initial_position = [host.R_200,0.]
 # initial_momentum = [-1.0*host.v_200,0.75*host.v_200]
-initial_momentum = [0.8*host.v_200,0.9*host.v_200] # positive or negative - where should the minus sign be? (!!)
+initial_momentum = [-0.*host.v_200,0.8*host.v_200]
+# initial_momentum = [-0.*host.v_200,5.165e-7*host.v_200]
 # initial_momentum = [0.,0.]
 
 subhalo = Subhalo(mass_ratio=0.001,initial_position=initial_position,initial_momentum=initial_momentum)
@@ -42,13 +43,23 @@ momentum = ParticleMomentum(subhalo.momentum)
 
 time = 0.
 times = [time]
-dt = 1.e14
-while time < 1.e18:
-	print time
+dt = 1.e12
+# while time < 1.e19:
+n_orbits = 20
+while position.current_position[1] < n_orbits*(2*np.pi):
+	print position.current_position[1]/(2*np.pi)
+	# print time
 	# print position.current_position
-	force = gravity._calculate_gravitational_force(position=position.current_position)
-	position._update_step(momentum=momentum.current_momentum,dt=dt)
-	momentum._update_step(position=position.current_position,force=force,dt=dt)
+	force_r,force_phi,dxdiv = gravity._calculate_gravitational_force(position=position.current_position)
+	force = (force_r,force_phi)
+	# print 'radius = ', position.current_position[0]
+	# print 'phi/pi = ', position.current_position[1]/np.pi
+	# print 'force = ', force
+	# print 'radial velocity = ', momentum.current_momentum[0]
+	position.update_step(momentum=momentum.current_momentum,dt=dt)
+	momentum.update_step(position=position.current_position,force=force,dt=dt)
+	# print 'updated radius = ', position.current_position
+	# print 'updated radial velocity = ', momentum.current_momentum[0]
 	time+=dt
 	times.append(time)
 	# print time, position.position
@@ -58,20 +69,33 @@ positions = np.array(position.position_array)
 momenta = np.array(momentum.momentum_array)
 print 'r min = ', positions[:,0].min()/host.R_200
 print 'r max = ', positions[:,0].max()/host.R_200
+print 'r initial = ', positions[:,0][0]/host.R_200
+print 'r final = ', positions[:,0][-1]/host.R_200
 print 'final time = ', time
 
-
 forces = np.array(gravity.force_array)
+
+dt_test = 0
+if dt_test:
+	f = open('dt_test.txt','a')
+	f.write(str(dt)+','+str(positions[:,0][-1]/host.R_200)+'\n')
+	f.close()
+
+dx_test = 0
+if dx_test:
+	f = open('dx_test.txt','a')
+	f.write(str(dxdiv)+','+str(positions[:,0][-1]/host.R_200)+'\n')
+	f.close()
 
 plotting = 1
 if plotting:
 	plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=host)
 	plot.orbit()
-	plot.orbit_color()
+	# plot.orbit_color()
 	plot.radial_position()
 	plot.angular_position()
-	plot.gravitational_force()
-	plot.radial_velocity()
+	# plot.gravitational_force()
+	# plot.radial_velocity()
 
 
 
