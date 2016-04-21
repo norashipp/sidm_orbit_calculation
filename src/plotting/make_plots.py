@@ -17,13 +17,6 @@ class Plotting:
 	def orbit_color(self):
 		x = self.r*np.cos(self.phi)*m_to_kpc
 		y = self.r*np.sin(self.phi)*m_to_kpc
-		print 'initial x,y (m) = ', x[0]/m_to_kpc, y[0]/m_to_kpc
-		print 'initial r,phi (m,rad) = ', self.r[0], self.phi[0] 
-		print 'max x (m) = ', x.max()/m_to_kpc
-		print 'X: '
-		print x
-		print 'Y: '
-		print y
 		dt = self.times[1]-self.times[0]
 		color = [tt/self.times.max() for tt in self.times]
 		clr = pylab.cm.jet(color)
@@ -39,7 +32,7 @@ class Plotting:
 		x = self.r*np.cos(self.phi)
 		y = self.r*np.sin(self.phi)
 		pylab.figure()
-		pylab.plot(x,y,'g--',markersize=10,linewidth=2)
+		pylab.plot(x,y,'g-',markersize=10,linewidth=2)
 		pylab.plot(x[0],y[0],'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
