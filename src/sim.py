@@ -1,5 +1,6 @@
 from __future__ import division
 import numpy as np
+import cPickle
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
@@ -61,11 +62,18 @@ def sim(n_orbits=20,dt=1.e14):
 
 	return times, positions, momenta, forces
 
+def write_output(data):
+	f = open('data/pickle.dat','wb')
+	cPickle.dump(data,f)
+	f.close()
+	return None
+
 # FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
 position, momentum = initiate_particle(position=initial_position,momentum=initial_momentum)
 
 n_orbits = 20
 times, positions, momenta, forces = sim(n_orbits=n_orbits,dt=dt)
+write_output([times,positions,momenta,forces,host])
 
 printing = 0.
 if printing:
