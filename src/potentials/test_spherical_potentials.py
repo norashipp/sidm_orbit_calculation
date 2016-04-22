@@ -11,7 +11,8 @@ def spherical_harmonic_oscilator(r=None, A=1, B=1) :
     return -(A + B*r**2)
 
 def point_mass_potential(r=None, host=None) :
-	return G*host.M/r
+	ep = 1e-2*host.R_200
+	return G*host.M/(r+ep)
 
 def isochrone_potential(r=None, b=1, host=None) :
    return G*host.M/(b+np.sqrt(b**2+r**2))
