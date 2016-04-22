@@ -17,7 +17,7 @@ class Plotting:
 	def orbit_color(self):
 		x = self.r*np.cos(self.phi)*m_to_kpc
 		y = self.r*np.sin(self.phi)*m_to_kpc
-		dt = self.times[1]-self.times[0]
+		__dt = self.times[1]-self.times[0]
 		color = [tt/self.times.max() for tt in self.times]
 		clr = pylab.cm.jet(color)
 		pylab.figure()
@@ -36,6 +36,7 @@ class Plotting:
 		pylab.plot(x[0],y[0],'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
+		pylab.xlim([-1e22,1e22])
 		pylab.show()
 
 	def radial_position(self):
