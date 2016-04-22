@@ -36,7 +36,7 @@ class Plotting:
 		pylab.plot(x[0],y[0],'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
-		pylab.xlim([-1e22,1e22])
+		# pylab.xlim([-1e22,1e22])
 		pylab.show()
 
 	def radial_position(self):
@@ -63,7 +63,7 @@ class Plotting:
 
 	def gravitational_force(self):
 		pylab.figure()
-		pylab.plot(self.r[:-1]/self.host.R_200,self.forces,'k.',markersize=10,linewidth=2)
+		pylab.plot(self.r/self.host.R_200,self.forces,'k.',markersize=10,linewidth=2)
 		pylab.xlabel('radius/R200')
 		pylab.ylabel('gravitational force')
 		pylab.show()

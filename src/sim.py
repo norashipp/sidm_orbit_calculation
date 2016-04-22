@@ -11,18 +11,18 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 
 host = HostHalo(M=1.e13*M_sol,potential='point_mass') # changed mass to 1.e13 to match jiang paper! (!!)
 gravity = GetGravitationalForce(host)
-dt = 5.e14
+dt = 1.e12
 
 print 'host halo:'
 print 'R200 = ', host.R_200
 print 'v200 = ', host.v_200
 print 'M = ', host.M
 
-initial_position = [host.R_200,0.]
-initial_momentum = [-0.*host.v_200,1.e7]
-
-# subhalo = Subhalo(mass_ratio=0.001,initial_position=initial_position,initial_momentum=initial_momentum)
-# subhalo class might be unnecessary - combine with position/momentum classes? (!!)
+r0 = host.R_200
+phi0 = 0.
+initial_position = [r0*np.cos(phi0),r0*np.sin(phi0)]
+initial_position = [r0,phi0]
+initial_momentum = [0.,1.e6]
 
 def initiate_particle(position=initial_position,momentum=initial_momentum):
 	position = ParticlePosition(initial_position=position,dt=dt)
@@ -30,9 +30,9 @@ def initiate_particle(position=initial_position,momentum=initial_momentum):
 	# momentum = ParticleMomentum(initial_momentum=momentum,initial_force=gravity.calculate_gravitational_force(position=position.current_position),initial_partial_force=gravity.partial_force(position=position.current_position),dt=dt)
 	return position,momentum
 
-def step(force=None,dt=None):
+def step(dt=None):
 	position.update_step(momentum=momentum.current_momentum)
-	momentum.update_step(position=position.current_position,force=force)
+	momentum.update_step(position=position.current_position,force=gravity.calculate_gravitational_force(position=position.current_position))
 	return None
 
 def sim(n_orbits=20,dt=1.e14):
@@ -41,15 +41,11 @@ def sim(n_orbits=20,dt=1.e14):
 
 	orbit_time = time
 
-	while position.current_position[1] < n_orbits*(2*np.pi):
-		# if np.abs(position.current_position[1]%(2*np.pi) - 0.) < 1.e-5:
-		# 	print 'orbit time = ', (time-orbit_time)
-		# 	print position.current_position[1]%(2*np.pi)
-		# 	orbit_time = time
-		force = gravity.calculate_gravitational_force(position=position.current_position)
-		step(force,dt)
+	while position.current_position[1] < n_orbits*(2*np.pi) and time < dt*1.e6:
+		step(dt)
 		time+=dt
 		times.append(time)
+		
 		# print 'phi = ', position.current_position[1]
 		# print 'phi fraction = ', position.current_position[1]/(2*np.pi)
 		# print 'radius = ', position.current_position[0]
@@ -57,14 +53,12 @@ def sim(n_orbits=20,dt=1.e14):
 		# print 'y = ', position.current_position[0]*np.sin(position.current_position[1])
 		# assert 0
 
-		printing = 0.
+		printing = 1.
 		if printing:
 			print 'time = ', time
-			print 'current position = ', position.current_position
-			print 'radius = ', position.current_position[0]
-			print 'phi/pi = ', position.current_position[1]/np.pi
-			print 'force = ', force
-			print 'radial velocity = ', momentum.current_momentum[0]
+			print 'position =  %10.5g %10.5g' % (position.current_position[0],position.current_position[1])
+			print 'force = %10.5g' % gravity.calculate_gravitational_force(position=position.current_position)[0]
+			# assert 0
 	
 	times = np.array(times)
 	positions = np.array(position.position_array)
@@ -112,9 +106,9 @@ if plotting:
 	plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=host)
 	plot.orbit()
 	# plot.orbit_color()
-	# plot.radial_position()
-	# plot.angular_position()
-	# plot.gravitational_force()
+	plot.radial_position()
+	plot.angular_position()
+	plot.gravitational_force()
 	# plot.radial_velocity()
 
 
