@@ -9,102 +9,88 @@ from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 
-host = HostHalo(M=1.e14*M_sol,potential='point_mass') # changed mass to 1.e13 to match jiang paper! (!!)
-gravity = GetGravitationalForce(host)
-dt = 1.e11
+class Sim:
+	def __init__(self,dt=1.e12,tmax=1.e14):
+		self.host = HostHalo(M=1.e13*M_sol,potential='point_mass')
+		
+		self.dt = dt
+		self.tmax = tmax
+		self.time = 0.
 
-print 'host halo:'
-print 'R200 = ', host.R_200
-print 'v200 = ', host.v_200
-print 'M = ', host.M
+		initial_position, initial_momentum = self.initial_parameters()
+		self.initiate_particle(initial_position,initial_momentum)
+		
+	def initial_parameters(self):
+		# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
+		r0 = self.host.R_200
+		phi0 = 0.
+		initial_position = [r0*np.cos(phi0),r0*np.sin(phi0)] # cartesian coordinates
+		initial_momentum = [0.,2.e5]
+		return initial_position, initial_momentum
 
-initial_position = [host.R_200,0.]
-initial_momentum = [-0.*host.v_200,0.8*host.v_200]
+	def initiate_particle(self,position=None,momentum=None):
+		self.position = ParticlePosition(initial_position=position,dt=dt)
+		self.momentum = ParticleMomentum(initial_momentum=momentum,gravity=GetGravitationalForce(self.host),dt=dt,position=position)
+		return None
 
-# subhalo = Subhalo(mass_ratio=0.001,initial_position=initial_position,initial_momentum=initial_momentum)
-# subhalo class might be unnecessary - combine with position/momentum classes? (!!)
+	def step(self):
+		self.position.update_step(momentum=self.momentum.current_momentum)
+		self.momentum.update_step(position=self.position.current_position)
+		return None
 
-def initiate_particle(position=initial_position,momentum=initial_momentum):
-	position = ParticlePosition(initial_position=position,dt=dt)
-	momentum = ParticleMomentum(initial_momentum=momentum,initial_force=gravity.calculate_gravitational_force(position=position.current_position),initial_partial_force=gravity.partial_force(position=position.current_position),dt=dt)
-	return position,momentum
+	def sim(self,printing=0,writing=0,plotting=0):
+		times = [self.time]
+		phi = 0.
+		while self.time < self.tmax:
+			self.step()
+			self.time+=self.dt
+			times.append(self.time)
+			phi = np.arctan(self.position.current_position[1]/self.position.current_position[0])
+			if printing == 2:
+				print 'time = ', self.time
+				print 'position = %10.5g %10.5g' % (self.position.current_position[0],self.position.current_position[1])
+				phi = np.arctan(self.position.current_position[1]/self.position.current_position[0])
+				print 'force = %10.5g %10.5g' % self.momentum.gravity.vector(phi)
+				# assert 0
+		times = np.array(times)
+		positions = np.array(self.position.position_array)
+		momenta = np.array(self.momentum.momentum_array)
+		forces = np.array(self.momentum.gravity.force_array)
+		self.output = [times,positions,momenta,forces]
 
-def step(force=None,dt=None):
-	position.update_step(momentum=momentum.current_momentum)
-	momentum.update_step(position=position.current_position,force=force)
-	return None
+		if writing:
+			self.write_output()
 
-def sim(n_orbits=20,dt=1.e14):
-	time = 0.
-	times = [time]
+		if plotting:
+			self.plot_output()
 
-	while position.current_position[1] < n_orbits*(2*np.pi):
-		force = gravity.calculate_gravitational_force(position=position.current_position)
-		step(force,dt)
-		time+=dt
-		times.append(time)
-		print 'phi = ', position.current_position[1]/(2*np.pi)
-		print 'radius = ', position.current_position[0]
-
-		printing = 0.
 		if printing:
-			print 'time = ', time
-			print 'current position = ', position.current_position
-			print 'radius = ', position.current_position[0]
-			print 'phi/pi = ', position.current_position[1]/np.pi
-			print 'force = ', force
-			print 'radial velocity = ', momentum.current_momentum[0]
-	
-	times = np.array(times)
-	positions = np.array(position.position_array)
-	momenta = np.array(momentum.momentum_array)
-	forces = np.array(gravity.force_array)
+			print 'r min = ', positions[:,0].min()/self.host.R_200
+			print 'r max = ', positions[:,0].max()/self.host.R_200
+			print 'r initial = ', positions[:,0][0]/self.host.R_200
+			print 'r final = ', positions[:,0][-1]/self.host.R_200
+			print 'final time = ', times.max()
+			print 'final force = %10.5g %10.5g' % self.momentum.gravity.vector(phi)
 
-	return times, positions, momenta, forces
+		return None
 
-def write_output(data):
-	f = open('data/pickle.dat','wb')
-	cPickle.dump(data,f)
-	f.close()
-	return None
+	def write_output(self):
+		f = open('data/pickle.dat','wb')
+		cPickle.dump(self.output,f)
+		f.close()
+		return None
 
-# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
-position, momentum = initiate_particle(position=initial_position,momentum=initial_momentum)
+	def plot_output(self):
+		times,positions,momenta,forces = self.output
+		plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=self.host)
+		plot.orbit()
+		# plot.orbit_color()
+		# plot.radial_position()
+		# plot.angular_position()
+		# plot.gravitational_force()
+		# plot.radial_velocity()
 
-n_orbits = 20
-times, positions, momenta, forces = sim(n_orbits=n_orbits,dt=dt)
-write_output([times,positions,momenta,forces,host])
-
-printing = 0.
-if printing:
-	print 'r min = ', positions[:,0].min()/host.R_200
-	print 'r max = ', positions[:,0].max()/host.R_200
-	print 'r initial = ', positions[:,0][0]/host.R_200
-	print 'r final = ', positions[:,0][-1]/host.R_200
-	print 'final time = ', time
-
-
-dt_test = 0
-if dt_test:
-	f = open('dt_test.txt','a')
-	f.write(str(dt)+','+str(positions[:,0][-1]/host.R_200)+'\n')
-	f.close()
-
-dx_test = 0
-if dx_test:
-	f = open('dx_test.txt','a')
-	f.write(str(dxdiv)+','+str(positions[:,0][-1]/host.R_200)+'\n')
-	f.close()
-
-plotting = 1
-if plotting:
-	plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=host)
-	plot.orbit()
-	# plot.orbit_color()
-	plot.radial_position()
-	# plot.angular_position()
-	# plot.gravitational_force()
-	# plot.radial_velocity()
-
-
+dt = 1.e4/seconds_to_years
+simulation = Sim(dt=dt,tmax=1.e7*dt)
+simulation.sim(printing=1,writing=0,plotting=1) # for max printing = 2
 

@@ -16,7 +16,7 @@ class HostHalo:
         return c_vir
 
     def virial_radius(self):
-        radius = 1.e22 # meters, ~1 Mpc
+        radius = 1.e22 # meters, ~10 Mpc
         return radius
 
     def scale_radius(self):
@@ -28,4 +28,4 @@ class HostHalo:
 
     def scale_density(self):
         return self.M/(4*np.pi*self.R_s**3*(np.log(1+self.c_vir)-self.c_vir/(1+self.c_vir)))
-
+        
