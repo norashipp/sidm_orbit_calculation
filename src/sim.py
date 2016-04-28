@@ -10,34 +10,42 @@ from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 
 class Sim:
-	def __init__(self,dt=1.e12,tmax=1.e14):
-		self.host = HostHalo(M=1.e13*M_sol,potential='point_mass')
-		
+	def __init__(self,dt=1.e12,tmax=1.e14,integration_method='leapfrog'):
+		self.host = HostHalo(M=1.e13*M_sol,potential='spherical_NFW')
+		self.gravity = GetGravitationalForce(self.host)
 		self.dt = dt
 		self.tmax = tmax
 		self.time = 0.
+		self.loop_count = 0
+
+		self.integration_method = integration_method
 
 		initial_position, initial_momentum = self.initial_parameters()
-		self.initiate_particle(initial_position,initial_momentum)
+		self.initiate_particle(position=initial_position,momentum=initial_momentum,integration_method=self.integration_method)
 		
 	def initial_parameters(self):
 		# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
 		r0 = self.host.R_200
 		phi0 = 0.
 		initial_position = [r0*np.cos(phi0),r0*np.sin(phi0)] # cartesian coordinates
-		initial_momentum = [0.,2.e5]
+		# initial_momentum = [0.,2.2e5]
+		initial_momentum = [0.,0.]
 		return initial_position, initial_momentum
 
-	def initiate_particle(self,position=None,momentum=None):
+	def initiate_particle(self,position=None,momentum=None,integration_method='leapfrog'):
 		self.position = ParticlePosition(initial_position=position,dt=dt)
-		self.momentum = ParticleMomentum(initial_momentum=momentum,gravity=GetGravitationalForce(self.host),dt=dt,position=position)
-		return None
-
+		self.momentum = ParticleMomentum(integration_method=integration_method,initial_momentum=momentum,gravity=GetGravitationalForce(self.host),dt=dt,position=position)
+		
 	def step(self):
-		self.position.update_step(momentum=self.momentum.current_momentum)
-		self.momentum.update_step(position=self.position.current_position)
-		return None
-
+		# probably get rid of this if statement at some point... (!!)
+		if self.integration_method in ['euler', 'leapfrog']:
+			if self.integration_method == 'euler':
+				current_position = self.position.current_position[:]
+			self.position.update_step(momentum=self.momentum.current_momentum)
+			if self.integration_method == 'leapfrog':
+				current_position = self.position.current_position[:]
+			self.momentum.update_step(position=current_position)
+		
 	def sim(self,printing=0,writing=0,plotting=0):
 		times = [self.time]
 		phi = 0.
@@ -72,13 +80,10 @@ class Sim:
 			print 'final time = ', times.max()
 			print 'final force = %10.5g %10.5g' % self.momentum.gravity.vector(phi)
 
-		return None
-
 	def write_output(self):
 		f = open('data/pickle.dat','wb')
 		cPickle.dump(self.output,f)
 		f.close()
-		return None
 
 	def plot_output(self):
 		times,positions,momenta,forces = self.output
@@ -90,7 +95,8 @@ class Sim:
 		# plot.gravitational_force()
 		# plot.radial_velocity()
 
-dt = 1.e4/seconds_to_years
-simulation = Sim(dt=dt,tmax=1.e7*dt)
-simulation.sim(printing=1,writing=0,plotting=1) # for max printing = 2
+dt = 4e7/seconds_to_years
+#simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
+simulation = Sim(dt=dt,tmax=10 * 5e9/seconds_to_years,integration_method='leapfrog')
+simulation.sim(printing=1,writing=1,plotting=1) # for max printing = 2
 
