@@ -10,8 +10,8 @@ from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 
 class Sim:
-	def __init__(self,dt=1.e12,tmax=1.e14,integration_method='leapfrog'):
-		self.host = HostHalo(M=1.e13*M_sol,potential='spherical_NFW')
+	def __init__(self,dt=1.e12,tmax=1.e14,integration_method='leapfrog',potential='point_mass'):
+		self.host = HostHalo(M=1.e13*M_sol,potential=potential)
 		self.gravity = GetGravitationalForce(self.host)
 		self.dt = dt
 		self.tmax = tmax
@@ -27,9 +27,9 @@ class Sim:
 		# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
 		r0 = self.host.R_200
 		phi0 = 0.
-		initial_position = [r0*np.cos(phi0),r0*np.sin(phi0)] # cartesian coordinates
-		# initial_momentum = [0.,2.2e5]
-		initial_momentum = [0.,0.]
+		initial_position = np.array([r0*np.cos(phi0),r0*np.sin(phi0)]) # cartesian coordinates
+		initial_momentum = np.array([0.,2.2e5])
+		# initial_momentum = np.array([0.,0.])
 		return initial_position, initial_momentum
 
 	def initiate_particle(self,position=None,momentum=None,integration_method='leapfrog'):
@@ -97,6 +97,6 @@ class Sim:
 
 dt = 4e7/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=10 * 5e9/seconds_to_years,integration_method='leapfrog')
+simulation = Sim(dt=dt,tmax=10 * 5e9/seconds_to_years,integration_method='leapfrog',potential='spherical_NFW')
 simulation.sim(printing=1,writing=1,plotting=1) # for max printing = 2
 

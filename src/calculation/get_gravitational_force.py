@@ -23,10 +23,10 @@ class GetGravitationalForce :
     def calculate_partial_force(self,position=None):
         dx = 1.e20
         partial_force = derivative(self.potential_function,position[0],dx,n=2) # works as long as potential is spherically symmetric
-        return partial_force
+        return np.array([partial_force,0]) # generalize (!!)
 
     def vector(self,phi=None):
-        return -1.*self.force*np.cos(phi), -1.*self.force*np.sin(phi)
+        return np.array([-1.*self.force*np.cos(phi), -1.*self.force*np.sin(phi)])
 
 def partial_derivative(func, var=0, point=[], dx=1.e10):
         args =  point[:]

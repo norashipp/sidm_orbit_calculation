@@ -19,9 +19,8 @@ class ParticlePosition:
         self.position_array.append((self.current_position[0],self.current_position[1]))
 
     def _compute_next_position(self,momentum):
-        self.current_position[1]+=momentum[1]*self.dt
-        self.current_position[0]+=momentum[0]*self.dt
-
+        self.current_position+=momentum*self.dt
+        
 class ParticleMomentum:
     '''Use this to compute new particle momentum'''
     def __init__(self,integration_method='leapfrog',initial_momentum=None,gravity=None,dt=1.e14,position=None):
@@ -42,8 +41,7 @@ class ParticleMomentum:
         self.momentum_array.append((self.current_momentum[0],self.current_momentum[1]))
         
     def _compute_next_momentum(self,force=None):
-        self.current_momentum[1]+=force[1]*self.dt
-        self.current_momentum[0]+=force[0]*self.dt
+        self.current_momentum+=force*self.dt
         
     def _update_force(self,position=None):
         self.gravity.calculate_gravitational_force(position=position)
@@ -54,24 +52,10 @@ class ParticleMomentum:
     def _first_momentum_step(self,position=None):
         partial = self._partial_force(position=position)
         force = self._update_force(position=position)
-        self.current_momentum[0] += self.dt/2*force[0]+(self.dt/2)**2*partial
-        self.current_momentum[1] += 0.
+        self.current_momentum+=self.dt/2*force+(self.dt/2)**2*partial
         
     def _partial_force(self,position=None):
         return self.gravity.calculate_partial_force(position=position)
 
 def calculate_angle(position=None):
     return np.arctan2(position[1],position[0])
-
-'''
-def polar_to_cartesian(polar=None,position=None):
-    x = polar[0]*np.cos(position[1]) # only while force is completely radial (!!)
-    y = polar[0]*np.sin(position[1])
-    return [x, y]
-
-def cartesian_to_polar(cartesian=None):
-    r = np.sqrt(cartesian[0]**2+cartesian[1]**2)
-    phi = np.arctan(cartesian[1]/cartesian[0])
-    # if cartesian[1] < 0: phi+=np.pi # this is only ok as long as this function is only used on position (!!)
-    return [r, phi]
-'''
