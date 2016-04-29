@@ -1,5 +1,7 @@
 import numpy as np
 
+from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
+
 class HostHalo:
 
     def __init__(self,M,potential):
@@ -11,8 +13,17 @@ class HostHalo:
         self.v_200 = self.virial_velocity()
         self.rho_s = self.scale_density()
 
+        self.density_array = []
+
+    def density(self,position=None):
+        # for now just NFW
+        x = position[0]/self.R_s
+        rho = self.rho_s/(x*(1+x)**2)
+        self.density_array.append(rho)
+        return rho
+
     def concentration(self):
-        c_vir = 4.5 # typical fro M~1e14, from Benedikt's paper, fig 5
+        c_vir = 4.5 # typical for M~1e14, from Benedikt's paper, fig 5
         return c_vir
 
     def virial_radius(self):

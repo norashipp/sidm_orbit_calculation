@@ -18,7 +18,7 @@ class GetGravitationalForce :
         # dx = position[0]/42 # gives smallest final r
         self.force = derivative(self.potential_function,r,dx)
         # force = partial_derivative(self.potential_function,0,r, dx=dx) # generalize (!!)
-        self.force_array.append(self.force)
+        # self.force_array.append(self.force) # moved to integrator
  
     def calculate_partial_force(self,position=None):
         dx = 1.e20
