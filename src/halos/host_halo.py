@@ -13,17 +13,17 @@ class HostHalo:
         self.v_200 = self.virial_velocity()
         self.rho_s = self.scale_density()
 
-        self.density_array = []
+        self.update_density([self.R_200,0])
+        self.density_array = [self.rho]
 
-    def density(self,position=None):
+    def update_density(self,position):
         # for now just NFW
-        x = position[0]/self.R_s
-        rho = self.rho_s/(x*(1+x)**2)
-        self.density_array.append(rho)
-        return rho
-
+        r = np.sqrt(position[0]**2 + position[1]**2)
+        x = r/self.R_s
+        self.rho = self.rho_s/(x*(1+x)**2)
+        
     def concentration(self):
-        c_vir = 4.5 # typical for M~1e14, from Benedikt's paper, fig 5
+        c_vir = 6.0 # typical for M~1e14, from Benedikt's paper, fig 2?
         return c_vir
 
     def virial_radius(self):

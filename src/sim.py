@@ -28,12 +28,13 @@ class Sim:
 		r0 = self.host.R_200
 		phi0 = 0.
 		initial_position = np.array([r0*np.cos(phi0),r0*np.sin(phi0)]) # cartesian coordinates
-		initial_momentum = np.array([0.,2.2e5])
+		# initial_momentum = np.array([0.,1.e5])
+		# initial_momentum = np.array([0.,2.2e5])
 		initial_momentum = np.array([0.,3.e5])
 		# initial_momentum = np.array([0.,0.])
 		return initial_position, initial_momentum
 
-	def initiate_subhalo(self,position=None,momentum=None,integration_method=None):
+	def initiate_subhalo(self,position,momentum):
 		self.subhalo = Subhalo(host=self.host,mass_ratio=0.5,initial_position=position,initial_momentum=momentum)
 		
 	def sim(self,printing=0,writing=0,plotting=0):
@@ -55,8 +56,10 @@ class Sim:
 		times = np.array(times)
 		positions = np.asarray(self.subhalo.position_array)
 		momenta = np.asarray(self.subhalo.momentum_array)
-		forces = np.asarray(self.subhalo.gravity.force_array)
-		self.output = [times,positions,momenta,forces]
+		gravity = np.asarray(self.subhalo.gravity.force_array)
+		drag = np.asarray(self.subhalo.drag.force_array)
+		density = np.asarray(self.host.density_array)
+		self.output = [times,positions,momenta,gravity,drag,density]
 
 		if writing:
 			self.write_output()
@@ -70,7 +73,8 @@ class Sim:
 			print 'r initial = ', positions[:,0][0]/self.host.R_200
 			print 'r final = ', positions[:,0][-1]/self.host.R_200
 			print 'final time = ', times.max()
-			print 'final force = %10.5g %10.5g' % (self.subhalo.gravity.vector(phi)[0],self.subhalo.gravity.vector(phi)[1])
+			print 'final gravitational force = %10.5g %10.5g' % (self.subhalo.gravity.vector(phi)[0],self.subhalo.gravity.vector(phi)[1])
+			print 'final drag force = %10.5g %10.5g' % (self.subhalo.drag.force[0],self.subhalo.drag.force[1])
 
 	def write_output(self):
 		f = open('data/pickle.dat','wb')
@@ -78,9 +82,11 @@ class Sim:
 		f.close()
 
 	def plot_output(self):
-		times,positions,momenta,forces = self.output
-		plot = Plotting(times=times,positions=positions,momenta=momenta,forces=forces,host=self.host)
+		times,positions,momenta,gravity,drag,density = self.output
+		plot = Plotting(times=times,positions=positions,momenta=momenta,gravity=gravity,drag=drag,density=density,host=self.host)
 		plot.orbit()
+		plot.drag_force()
+		plot.density()
 		# plot.orbit_color()
 		# plot.radial_position()
 		# plot.angular_position()
@@ -90,5 +96,5 @@ class Sim:
 dt = 1e4/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
 simulation = Sim(dt=dt,tmax=5e9/seconds_to_years,integration_method='dissipative',potential='point_mass')
-simulation.sim(printing=1,writing=1,plotting=1) # for max printing = 2
+simulation.sim(printing=0,writing=0,plotting=1) # for max printing = 2
 

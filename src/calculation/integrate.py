@@ -1,7 +1,7 @@
 from __future__ import division
 import numpy as np
 
-def euler(subhalo=None,dt=None):
+def euler(subhalo,dt):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
 	f0 = update_force(gravity=subhalo.gravity,position=x0)
@@ -13,10 +13,12 @@ def euler(subhalo=None,dt=None):
 
 	subhalo.position = x1
 	subhalo.momentum = p1
+
+	subhalo.drag.force = 0.
 	
 	update_arrays(subhalo=subhalo)
         
-def leapfrog(subhalo=None,dt=None):
+def leapfrog(subhalo,dt):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
 	f0 = update_force(gravity=subhalo.gravity,position=x0)
@@ -30,9 +32,12 @@ def leapfrog(subhalo=None,dt=None):
 	subhalo.position = x1
 	subhalo.momentum = p1
 
+	subhalo.drag.force = [0.,0.]
+	subhalo.host.update_density(position=subhalo.position)
+
 	update_arrays(subhalo=subhalo)
 
-def dissipative(subhalo=None,dt=None):
+def dissipative(subhalo,dt):
 	lmbda = 0.5
 
 	x0 = subhalo.position[:]
@@ -62,18 +67,19 @@ integrator_dict = {'euler':euler,'leapfrog':leapfrog,'dissipative':dissipative}
 
 #################################
 
-def update_arrays(subhalo=None):
+def update_arrays(subhalo):
 	subhalo.position_array.append((subhalo.position[0],subhalo.position[1]))
 	subhalo.momentum_array.append((subhalo.momentum[0],subhalo.momentum[1]))
 	subhalo.gravity.force_array.append(subhalo.gravity.force)
 	subhalo.drag.force_array.append(subhalo.drag.force)
+	subhalo.host.density_array.append(subhalo.host.rho)
 
-def update_force(gravity=None,position=None):
+def update_force(gravity,position):
     gravity.calculate_gravitational_force(position=position)
     phi = calculate_angle(position=position)
     force = gravity.vector(phi=phi)
     return force
 
-def calculate_angle(position=None):
+def calculate_angle(position):
     return np.arctan2(position[1],position[0])
 
