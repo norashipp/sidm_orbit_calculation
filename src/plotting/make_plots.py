@@ -7,17 +7,31 @@ from sidm_orbit_calculation.src.utils.constants import *
 class Plotting:
 
 	def __init__(self,times=None,positions=None,momenta=None,gravity=None,drag=None,density=None,host=None):
+		# self.plot_pretty()
+
 		self.host = host
 		self.times = times
 		self.x = positions[:,0]*m_to_kpc
 		self.y = positions[:,1]*m_to_kpc
-		self.r = np.sqrt(self.x**2+self.y**2)
-		self.phi = np.arctan(self.y/self.x)
+		self.r = np.sqrt(self.x**2+self.y**2)*m_to_kpc
+		self.phi = np.arctan2(self.y,self.x)
 		self.momenta = momenta
 		self.gravity = gravity
 		self.drag = drag
 		self.rho = density/(M_sol*m_to_kpc**3)
+		self.r200 = self.host.R_200*m_to_kpc
+		self.vel = np.sqrt(momenta[:,0]**2+momenta[:,1]**2)
 
+	def plot_pretty(dpi=175,fontsize=9):
+		# WHY ISNT THIS WORKING?
+	    pylab.rc('savefig', dpi=dpi)
+	    pylab.rc('text', usetex=True)
+	    pylab.rc('font', size=fontsize)
+	    pylab.rc('xtick.major', pad=5)
+	    pylab.rc('xtick.minor', pad=5)
+	    pylab.rc('ytick.major', pad=5)
+	    pylab.rc('ytick.minor', pad=5)
+	    
 	def orbit_color(self):
 		dt = self.times[1]-self.times[0]
 		color = [tt/self.times.max() for tt in self.times]
@@ -32,12 +46,12 @@ class Plotting:
 
 	def orbit(self):
 		pylab.figure()
-		pylab.plot(self.x,self.y,'g-',markersize=10,linewidth=2)
-		pylab.plot(self.x[0],self.y[0],'k*',markersize=10)
+		pylab.plot(self.x/self.r200,self.y/self.r200,'g-',markersize=10,linewidth=2)
+		pylab.plot(self.x[0]/self.r200,self.y[0]/self.r200,'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
-		pylab.xlim([-1e22*m_to_kpc,1e22*m_to_kpc])
-		pylab.ylim([-1e22*m_to_kpc,1e22*m_to_kpc])
+		# pylab.xlim([-1e22*m_to_kpc,1e22*m_to_kpc])
+		# pylab.ylim([-1e22*m_to_kpc,1e22*m_to_kpc])
 		pylab.show()
 
 	def radial_position(self):
@@ -71,18 +85,44 @@ class Plotting:
 
 	def drag_force(self):
 		pylab.figure()
-		pylab.plot(self.r[:-1]/self.host.R_200,np.sqrt(self.drag[:,0]**2+self.drag[:,1]**2),'c',linewidth=2)
+		pylab.plot(self.r[:-1]/self.r200,np.sqrt(self.drag[:,0]**2+self.drag[:,1]**2),'c',linewidth=2)
 		pylab.xlabel('radius/r200')
 		pylab.ylabel('drag force')
+		pylab.xscale('log')
+		pylab.yscale('log')
+		pylab.show()
+
+	def drag_velocity(self):
+		pylab.figure()
+		pylab.plot(self.vel[:-1],np.sqrt(self.drag[:,0]**2+self.drag[:,1]**2),'c',linewidth=2)
+		pylab.xlabel('velocity (m/s)')
+		pylab.ylabel('drag force (m/s^2)')
+		pylab.xscale('log')
+		pylab.yscale('log')
 		pylab.show()
 
 	def density(self):
 		pylab.figure()
-		pylab.plot(self.r,self.rho,'m',linewidth=2)
+		pylab.plot(self.r/self.r200,self.rho,'m',linewidth=2)
 		# pylab.plot(1,0.1*1e9,'k^',markersize=10) # check line passes reasonable value
-		pylab.xlabel('r200 (kpc)')
-		pylab.ylabel('density (Msol/kpc)')
-		pylab.xscale('log')
+		pylab.xlabel('r/r200')
+		pylab.ylabel('density (Msol/m3)')
+		# pylab.xscale('log')
+		pylab.yscale('log')
+		pylab.show()
+
+	def test_density(self):
+		pylab.figure()
+		pos = self.x/self.r200
+		cut = pos>1e-3*self.r200
+		pos = pos[cut]
+		density = self.rho[cut]
+		pylab.plot(pos,density,'m--',linewidth=2)
+		pylab.plot(self.x/self.r200,self.rho,'c.',linewidth=2)
+		pylab.plot(self.r/self.r200,self.rho,'b.',linewidth=2)
+		pylab.xlabel('x (r200)')
+		pylab.ylabel('density (kg/m^3)')
+		# pylab.xscale('log')
 		pylab.yscale('log')
 		pylab.show()
 

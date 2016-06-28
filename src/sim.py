@@ -59,7 +59,7 @@ class Sim:
 		gravity = np.asarray(self.subhalo.gravity.force_array)
 		drag = np.asarray(self.subhalo.drag.force_array)
 		density = np.asarray(self.host.density_array)
-		self.output = [times,positions,momenta,gravity,drag,density]
+		self.output = [times,positions,momenta,gravity,drag,density,self.host]
 
 		if writing:
 			self.write_output()
@@ -87,6 +87,7 @@ class Sim:
 		plot.orbit()
 		plot.drag_force()
 		plot.density()
+		# plot.test_density()
 		# plot.orbit_color()
 		# plot.radial_position()
 		# plot.angular_position()
@@ -95,6 +96,6 @@ class Sim:
 
 dt = 1e4/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=5e9/seconds_to_years,integration_method='dissipative',potential='point_mass')
-simulation.sim(printing=0,writing=0,plotting=1) # for max printing = 2
+simulation = Sim(dt=dt,tmax=2*5e9/seconds_to_years,integration_method='dissipative',potential='point_mass')
+simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
 

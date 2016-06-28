@@ -1,6 +1,7 @@
 import numpy as np
 
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
+from sidm_orbit_calculation.src.utils.constants import *
 
 class HostHalo:
 
@@ -21,6 +22,11 @@ class HostHalo:
         r = np.sqrt(position[0]**2 + position[1]**2)
         x = r/self.R_s
         self.rho = self.rho_s/(x*(1+x)**2)
+
+        # print 'position = %.3g, %.3g' %(position[0], position[1])
+        # print 'radius = %.3g' % (r/self.R_200)
+        # print 'density = %.3g' %self.rho
+        # print 
         
     def concentration(self):
         c_vir = 6.0 # typical for M~1e14, from Benedikt's paper, fig 2?
@@ -38,5 +44,6 @@ class HostHalo:
         return velocity
 
     def scale_density(self):
+        # kg/m3
         return self.M/(4*np.pi*self.R_s**3*(np.log(1+self.c_vir)-self.c_vir/(1+self.c_vir)))
         
