@@ -7,8 +7,6 @@ from sidm_orbit_calculation.src.utils.constants import *
 class Plotting:
 
 	def __init__(self,times=None,positions=None,momenta=None,gravity=None,drag=None,density=None,host=None):
-		# self.plot_pretty()
-
 		self.host = host
 		self.times = times
 		self.x = positions[:,0]*m_to_kpc
@@ -22,15 +20,15 @@ class Plotting:
 		self.r200 = self.host.R_200*m_to_kpc
 		self.vel = np.sqrt(momenta[:,0]**2+momenta[:,1]**2)
 
-	def plot_pretty(dpi=175,fontsize=9):
-		# WHY ISNT THIS WORKING?
-	    pylab.rc('savefig', dpi=dpi)
-	    pylab.rc('text', usetex=True)
-	    pylab.rc('font', size=fontsize)
-	    pylab.rc('xtick.major', pad=5)
-	    pylab.rc('xtick.minor', pad=5)
-	    pylab.rc('ytick.major', pad=5)
-	    pylab.rc('ytick.minor', pad=5)
+		dpi = 175
+		fontsize = 9
+		pylab.rc('savefig', dpi=dpi)
+		pylab.rc('text', usetex=True)
+		pylab.rc('font', size=fontsize)
+		pylab.rc('xtick.major', pad=5)
+		pylab.rc('xtick.minor', pad=5)
+		pylab.rc('ytick.major', pad=5)
+		pylab.rc('ytick.minor', pad=5)
 	    
 	def orbit_color(self):
 		dt = self.times[1]-self.times[0]
