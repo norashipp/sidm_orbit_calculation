@@ -4,7 +4,7 @@ import cPickle
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
-from sidm_orbit_calculation.src.timestep.particle_evolution import *
+# from sidm_orbit_calculation.src.timestep.particle_evolution import *
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
@@ -96,6 +96,6 @@ class Sim:
 
 dt = 1e4/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=2*5e9/seconds_to_years,integration_method='dissipative',potential='point_mass')
+simulation = Sim(dt=dt,tmax=2*5e9/seconds_to_years,integration_method='leapfrog',potential='point_mass')
 simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
 

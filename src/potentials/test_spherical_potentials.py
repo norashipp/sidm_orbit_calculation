@@ -14,7 +14,7 @@ def point_mass_potential(r, host) :
 	ep = 0.
 	return -G*host.M/(r+ep)
 
-def isochrone_potential(r, b=1, host) :
+def isochrone_potential(r, host, b=1) :
    return -G*host.M/(b+np.sqrt(b**2+r**2))
 
 def spherical_NFW_potential(r, host):
