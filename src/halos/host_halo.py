@@ -22,7 +22,7 @@ class HostHalo:
         r = np.sqrt(position[0]**2 + position[1]**2)
         x = r/self.R_s
         self.rho = self.rho_s/(x*(1+x)**2)
-        self.rho = 1e-40 # average
+        # self.rho = 1e-40 # average - for analytical comparison
         
     def concentration(self):
         c_vir = 6.0 # typical for M~1e14, from Benedikt's paper, fig 2?
