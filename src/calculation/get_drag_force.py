@@ -5,7 +5,7 @@ class GetDragForce :
     def __init__(self, host) :
         self.host = host
 
-        self.force = [0., 0.]
+        self.force = [0., 0., 0.]
         self.force_array = []
 
     def calculate_drag_force(self, position, momentum) :

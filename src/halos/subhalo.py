@@ -13,8 +13,8 @@ class Subhalo:
         self.position = initial_position
         self.momentum = initial_momentum
         
-        self.position_array = [(self.position[0],self.position[1])]
-        self.momentum_array = [(self.momentum[0],self.momentum[1])]
+        self.position_array = [(self.position[0],self.position[1],self.position[2])]
+        self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]
 
         self.gravity = GetGravitationalForce(self.host)
         self.drag = GetDragForce(self.host)

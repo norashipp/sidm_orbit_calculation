@@ -1,4 +1,4 @@
-import numpy as 
+import numpy as np
 from scipy.special import ellipkinc
 from scipy.integrate import quad
 from scipy.optimize import brentq

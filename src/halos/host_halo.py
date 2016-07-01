@@ -18,7 +18,7 @@ class HostHalo:
         self.density_array = [self.rho]
 
     def update_density(self,position):
-        # for now just NFW
+        # for now just NFW - should have a dictionary like for potentials
         r = np.sqrt(position[0]**2 + position[1]**2)
         x = r/self.R_s
         self.rho = self.rho_s/(x*(1+x)**2)
