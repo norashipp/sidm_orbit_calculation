@@ -26,7 +26,7 @@ class Sim:
 	def initial_parameters(self):
 		# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
 		initial_position = np.array([self.host.R_200,0,0])
-		initial_momentum = np.array([0.,0.,0.])
+		initial_momentum = np.array([0.,3e5,0.])
 		return initial_position, initial_momentum
 
 	def initiate_subhalo(self,position,momentum):
@@ -90,6 +90,6 @@ class Sim:
 
 dt = 1e4/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=5e7/seconds_to_years,integration_method='leapfrog',potential='point_mass') # dynamical time 5e9 years
+simulation = Sim(dt=dt,tmax=1e10/seconds_to_years,integration_method='leapfrog',potential='point_mass') # dynamical time 5e9 years
 simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
 
