@@ -5,8 +5,10 @@ from sidm_orbit_calculation.src.utils.constants import *
 
 class HostHalo:
 
-    def __init__(self,M,potential):
+    def __init__(self,M,potential,s=0.39,q=0.58):
         self.M = M
+        self.s = s
+        self.q = q
         self.potential = potential
         self.c_vir = self.concentration()
         self.R_200 = self.virial_radius()
