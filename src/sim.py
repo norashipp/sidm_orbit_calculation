@@ -30,7 +30,8 @@ class Sim:
 		return initial_position, initial_momentum
 
 	def initiate_subhalo(self,position,momentum):
-		self.subhalo = Subhalo(host=self.host,mass_ratio=0.5,initial_position=position,initial_momentum=momentum)
+		mass = 1e12
+		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=position, initial_momentum=momentum)
 		
 	def sim(self,printing=0,writing=0,plotting=0):
 		times = [self.time]

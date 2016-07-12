@@ -5,10 +5,10 @@ from sidm_orbit_calculation.src.calculation.get_drag_force import *
 
 class Subhalo:
 
-    def __init__(self,host,mass_ratio,initial_position,initial_momentum):
+    def __init__(self, host, M, initial_position, initial_momentum):
         self.host = host
 
-        self.mass_ratio = mass_ratio
+        self.M = M
 
         self.position = initial_position
         self.momentum = initial_momentum
