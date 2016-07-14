@@ -114,14 +114,14 @@ def cartesian_velocities(total_ratio, radial_ratio):
 	return np.array([vx, vy, vz])
 
 def rotate_orbit(velocity):
-	u = np.random.uniform(0,1)
-	v = np.random.uniform(0,1)
+	u = uniform(0,1)
+	v = uniform(0,1)
 
 	phi = 2*np.pi*u
 	theta = np.arccos(2*v - 1)
 	
-	# cos_theta = np.random.uniform(-1,1)
-	# phi = np.random.uniform(0,2*np.pi)
+	# cos_theta = uniform(-1,1)
+	# phi = uniform(0,2*np.pi)
 
 	# sin_theta = np.sqrt(1-cos_theta**2)
 	north_south = choice([-1,1])
