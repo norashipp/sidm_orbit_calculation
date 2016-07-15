@@ -20,14 +20,14 @@ class Sim:
 
 		self.integrate = integrator_dict[integration_method]
 
-		initial_position, initial_momentum = self.initial_parameters()
-		self.initiate_subhalo(position=initial_position,momentum=initial_momentum)
+		# initial_position, initial_momentum = self.initial_parameters()
+		self.initiate_subhalo(position=None,momentum=None)
 		
-	def initial_parameters(self):
-		# FOR NOW MANUALLY DEFINE INITIAL PARAMETERS
-		initial_position = np.array([self.host.R_200,0,0])
-		initial_momentum = np.array([0.,3e5,0.])
-		return initial_position, initial_momentum
+	# def initial_parameters(self):
+	# 	initial_position, initial_momentum = initial_conditions(self.subhalo)
+	# 	initial_position = np.array([self.host.R_200,0,0])
+	# 	initial_momentum = np.array([0.,3e5,0.])
+	# 	return initial_position, initial_momentum
 
 	def initiate_subhalo(self,position,momentum):
 		mass = 1e12
@@ -72,7 +72,12 @@ class Sim:
 			print 'final drag force = %10.5g %10.5g' % (self.subhalo.drag.force[0],self.subhalo.drag.force[1])
 
 	def write_output(self):
-		f = open('data/pickle.dat','wb')
+		fn = '/Users/nora/sidm_orbit_calculation/src/data/' + str(self.host.M) + '_' + str(self.subhalo.M) + '_'
+		i = 0
+		while os.path.isfile(fn+str(i)+'.dat'):
+			i+=0
+		fname = fn + str(i) + '.dat'
+		f = open(fname,'wb')
 		cPickle.dump(self.output,f)
 		f.close()
 
@@ -91,6 +96,6 @@ class Sim:
 
 dt = 1e4/seconds_to_years
 #simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=1e10/seconds_to_years,integration_method='leapfrog',potential='point_mass') # dynamical time 5e9 years
+simulation = Sim(dt=dt,tmax=2e10/seconds_to_years,integration_method='leapfrog',potential='spherical_NFW') # dynamical time 5e9 years
 simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
 
