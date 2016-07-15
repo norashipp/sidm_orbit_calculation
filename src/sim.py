@@ -1,6 +1,9 @@
+#!/usr/bin/env python
+
 from __future__ import division
 import numpy as np
 import cPickle
+import sys
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
@@ -11,8 +14,8 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 
 class Sim:
-	def __init__(self,dt=1.e12,tmax=1.e14,integration_method='leapfrog',potential='point_mass'):
-		self.host = HostHalo(M=1.e13*M_sol,potential=potential)
+	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential):
+		self.host = HostHalo(M=host_halo_mass*M_sol, potential=potential)
 		self.dt = dt
 		self.tmax = tmax
 		self.time = 0.
@@ -21,7 +24,7 @@ class Sim:
 		self.integrate = integrator_dict[integration_method]
 
 		# initial_position, initial_momentum = self.initial_parameters()
-		self.initiate_subhalo(position=None,momentum=None)
+		self.initiate_subhalo(mass=subhalo_mass,position=None,momentum=None)
 		
 	# def initial_parameters(self):
 	# 	initial_position, initial_momentum = initial_conditions(self.subhalo)
@@ -29,11 +32,10 @@ class Sim:
 	# 	initial_momentum = np.array([0.,3e5,0.])
 	# 	return initial_position, initial_momentum
 
-	def initiate_subhalo(self,position,momentum):
-		mass = 1e12
+	def initiate_subhalo(self, mass, position, momentum):
 		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=position, initial_momentum=momentum)
 		
-	def sim(self,printing=0,writing=0,plotting=0):
+	def sim(self, printing=0, writing=0, plotting=0, outfile='pickle.dat'):
 		times = [self.time]
 		
 		while self.time < self.tmax:
@@ -57,7 +59,7 @@ class Sim:
 		self.output = [times,positions,momenta,gravity,drag,density,self.host]
 
 		if writing:
-			self.write_output()
+			self.write_output(outfile)
 
 		if plotting:
 			self.plot_output()
@@ -71,13 +73,14 @@ class Sim:
 			print 'final gravitational force = %10.5g %10.5g' % (self.subhalo.gravity.vector(phi)[0],self.subhalo.gravity.vector(phi)[1])
 			print 'final drag force = %10.5g %10.5g' % (self.subhalo.drag.force[0],self.subhalo.drag.force[1])
 
-	def write_output(self):
-		fn = '/Users/nora/sidm_orbit_calculation/src/data/' + str(self.host.M) + '_' + str(self.subhalo.M) + '_'
-		i = 0
-		while os.path.isfile(fn+str(i)+'.dat'):
-			i+=0
-		fname = fn + str(i) + '.dat'
-		f = open(fname,'wb')
+	def write_output(self,output_file):
+		# fn = '/Users/nora/sidm_orbit_calculation/src/data/' + str(self.host.M) + '_' + str(self.subhalo.M) + '_'
+		# i = 0
+		# while os.path.isfile(fn+str(i)+'.dat'):
+		# 	i+=0
+		# fname = fn + str(i) + '.dat'
+		
+                f = open(output_file,'wb')
 		cPickle.dump(self.output,f)
 		f.close()
 
@@ -94,8 +97,27 @@ class Sim:
 		plot.gravitational_force()
 		# plot.radial_velocity()
 
-dt = 1e4/seconds_to_years
-#simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-simulation = Sim(dt=dt,tmax=2e10/seconds_to_years,integration_method='leapfrog',potential='spherical_NFW') # dynamical time 5e9 years
-simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
+###########################################
 
+# dt = 1e4/seconds_to_years
+#simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
+# simulation = Sim(dt=dt,tmax=2e10/seconds_to_years,integration_method='leapfrog',potential='spherical_NFW') # dynamical time 5e9 years
+# simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
+
+###########################################
+
+host_halo_mass = float(sys.argv[1])
+subhalo_mass = float(sys.argv[2])
+dt = float(sys.argv[3])/seconds_to_years
+tmax = float(sys.argv[4])/seconds_to_years
+integrator = sys.argv[5]
+potential = sys.argv[6]
+index = int(sys.argv[7])
+
+homedir = '/home/norashipp/sidm_orbit_calculation/'
+outfile = homedir + 'src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
+
+my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential)
+my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
+
+# maybe make it easier to not include all of these parameters and default to typical values?
