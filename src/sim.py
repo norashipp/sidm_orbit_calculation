@@ -121,3 +121,5 @@ my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential)
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
 
 # maybe make it easier to not include all of these parameters and default to typical values?
+
+# example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
