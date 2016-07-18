@@ -109,19 +109,20 @@ tmax = float(sys.argv[4])/seconds_to_years
 integrator = sys.argv[5]
 potential = sys.argv[6]
 index = int(sys.argv[7])
-try:
-    initial_position = np.array([float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10])])
-    initial_momentum = np.array([float(sys.argv[11]), float(sys.argv[12]), float(sys.argv[13])])
-except:
+if len(sys.argv) ==  8:
     iniital_position = np.array([0,0,0])
     initial_momentum = np.array([0,0,0])
+else:
+    try:
+        initial_position = np.array([float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10])])
+        initial_momentum = np.array([float(sys.argv[11]), float(sys.argv[12]), float(sys.argv[13])])
+    except:
+        print 'missing parameters'
 
 homedir = home_directory()
 outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
 my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
-
-# maybe make it easier to not include all of these parameters and default to typical values?
 
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
