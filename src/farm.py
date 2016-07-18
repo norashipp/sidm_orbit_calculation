@@ -11,17 +11,20 @@ from sidm_orbit_calculation.src.utils.constants import *
 homedir = 'home/norashipp/sidm_orbit_calculation/'
 
 username = 'norashipp'
+jobname = 'sidm'
 
 host_halo_mass = 1e13
 dt = 1e4
-tmax = 1e10 
-integrator = 'leapfrog'
-potential = 'spherical_NFW'
-
-n_particles = 1
+tmax = 5e10 
+n_particles = 2
 subhalo_mass_array = np.array([5e11,1e12,5e12,1e13])
+drag = 1
+if drag:
+    integrator = 'dissipative'
+else:
+    integrator = 'leapfrog'
 
-jobname = 'sidm'
+potential = 'spherical_NFW'
 
 for subhalo_mass in subhalo_mass_array:
     for index in range(0,n_particles):

@@ -15,7 +15,7 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 
 class Sim:
-	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential):
+	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
 		self.host = HostHalo(M=host_halo_mass*M_sol, potential=potential)
 		self.dt = dt
 		self.tmax = tmax
@@ -24,17 +24,10 @@ class Sim:
 
 		self.integrate = integrator_dict[integration_method]
 
-		# initial_position, initial_momentum = self.initial_parameters()
-		self.initiate_subhalo(mass=subhalo_mass,position=None,momentum=None)
+		self.initiate_subhalo(mass=subhalo_mass, initial_position=initial_position, initial_momentum=initial_momentum)
 		
-	# def initial_parameters(self):
-	# 	initial_position, initial_momentum = initial_conditions(self.subhalo)
-	# 	initial_position = np.array([self.host.R_200,0,0])
-	# 	initial_momentum = np.array([0.,3e5,0.])
-	# 	return initial_position, initial_momentum
-
-	def initiate_subhalo(self, mass, position, momentum):
-		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=position, initial_momentum=momentum)
+	def initiate_subhalo(self, mass, initial_position, initial_momentum):
+		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=initial_position, initial_momentum=initial_momentum)
 		
 	def sim(self, printing=0, writing=0, plotting=0, outfile='pickle.dat'):
 		times = [self.time]
@@ -114,11 +107,17 @@ tmax = float(sys.argv[4])/seconds_to_years
 integrator = sys.argv[5]
 potential = sys.argv[6]
 index = int(sys.argv[7])
+try:
+    initial_position = np.array([float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10])])
+    initial_momentum = np.array([float(sys.argv[11]), float(sys.argv[12]), float(sys.argv[13])])
+except:
+    iniital_position = np.array([0,0,0])
+    initial_momentum = np.array([0,0,0])
 
 homedir = '/home/norashipp/sidm_orbit_calculation/'
 outfile = homedir + 'src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
-my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential)
+my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
 
 # maybe make it easier to not include all of these parameters and default to typical values?
