@@ -13,6 +13,7 @@ from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
+from sidm_orbit_calculation.src.utils.setup import *
 
 class Sim:
 	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
@@ -35,7 +36,9 @@ class Sim:
 		while self.time < self.tmax:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
-			times.append(self.time)
+			if not self.subhalo.count % 500:
+				times.append(self.time)
+			self.subhalo.count += 1
 			# phi = np.arctan2(self.subhalo.position[1],self.subhalo.position[0])
 			# if printing == 2:
 			# 	print 'time = ', self.time
@@ -73,8 +76,7 @@ class Sim:
 		# while os.path.isfile(fn+str(i)+'.dat'):
 		# 	i+=0
 		# fname = fn + str(i) + '.dat'
-		
-                f = open(output_file,'wb')
+		f = open(output_file,'wb')
 		cPickle.dump(self.output,f)
 		f.close()
 
@@ -114,8 +116,8 @@ except:
     iniital_position = np.array([0,0,0])
     initial_momentum = np.array([0,0,0])
 
-homedir = '/home/norashipp/sidm_orbit_calculation/'
-outfile = homedir + 'src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
+homedir = home_directory()
+outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
 my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
