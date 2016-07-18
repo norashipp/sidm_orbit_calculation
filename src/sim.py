@@ -1,6 +1,7 @@
 from __future__ import division
 import numpy as np
 import cPickle
+import os
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
