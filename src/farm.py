@@ -29,7 +29,7 @@ potential = 'spherical_NFW'
 
 for subhalo_mass in subhalo_mass_array:
     for index in range(0,n_particles):
-        batch = 'sbatch --account=kicp --partition=amd --job-name=%s --output=log.out --error=log.err --mem-per-cpu=20000 ' %(jobname)
+        batch = 'sbatch --account=kicp --partition=amd --job-name=%s --output=log.out --error=log.err --mem-per-cpu=5000 ' %(jobname)
         command = 'sim.py %.2e %.2e %.2e %.2e %s %s %i' %(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, index)
         command_queue = batch + command
         print command_queue
