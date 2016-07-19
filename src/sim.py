@@ -124,13 +124,13 @@ homedir = home_directory()
 outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
 # guppy
-hp = hpy()
-print "Heap at the beginning of the function\n", hp.heap()
+# hp = hpy()
+# print "Heap at the beginning of the function\n", hp.heap()
 
 my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
 
-print "Heap at the end of the function\n", hp.heap()
+# print "Heap at the end of the function\n", hp.heap()
 
 # mem = memory()
 # print mem/1e6

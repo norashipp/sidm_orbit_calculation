@@ -74,9 +74,9 @@ def radial_velocity(x, A, B):
 ##########################################
 
 def normalize(B):
-	func = lambda x: np.exp(B*x)-1
-	res = quad(func,0,1)[0]
-	A = 1/res
+	func = lambda x: np.exp(B * x)-1
+	res = quad(func, 0, 1)[0]
+	A = 1 / res
 	return A
 
 def invert_radial(A,B):
@@ -94,14 +94,34 @@ def invert_total(sigma, gamma, mu):
 	for x in xx:
 		y = total_velocity(x, sigma, gamma, mu)
 		yy.append(y)
-	print 'total velocities:'
-	print xx
-	print 'probabilities:'
-	print yy
+	
+	'''
 	plt.figure()
 	plt.plot(xx,yy)
-	plt.show()
+	plt.title('total velocity distribution')
+	'''
+	
+	xx = np.asarray(xx)
+	yy = np.asarray(yy)
+	xx = xx[yy.argsort()]
+	yy.sort()
+	
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
+
+	'''
+	plt.figure()
+	plt.plot(yy,xx)
+	plt.title('inverted (and sorted) distribution')
+	plt.ylim([0,3])
+
+	plt.figure()
+	plt.plot(yy,sp(yy))
+	plt.title('splined distribution')
+	plt.ylim([0,3])
+
+	plt.show()
+	'''
+
 	return sp
 
 ##########################################
@@ -170,6 +190,7 @@ def initial_conditions(subhalo):
 
 	total_ratio = total_inverse_cdf(x_total)
 	radial_ratio = radial_inverse_cdf(x_radial)
+	print 'check 1', total_ratio, radial_ratio
 	
 	velocity = cartesian_velocities(total_ratio, radial_ratio)
 

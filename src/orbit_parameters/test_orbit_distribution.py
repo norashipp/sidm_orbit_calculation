@@ -8,7 +8,7 @@ from sidm_orbit_calculation.src.utils.constants import *
 host = HostHalo(1e14,'spherical_NFW')
 subhalo = Subhalo(host,1e12,np.zeros(3),np.zeros(3))
 
-total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M, subhalo.M)
+total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M/M_sol, subhalo.M/M_sol)
 
 vtot = []
 vr = []
@@ -29,17 +29,17 @@ while i < n:
     vth.append(theta_ratio)
 
     i+=1
-    
+   
 plt.figure()
-plt.hist(vr)
-plt.xlabel('radial velocity/v200')
+plt.hist(vr,normed=True,bins=20)
+plt.xlabel('v_r/v_200')
 
 plt.figure()
 plt.hist(vth)
-plt.xlabel('angular velocity/v200')
+plt.xlabel('v_theta/v200')
 
 plt.figure()
 plt.hist(vtot)
-plt.xlabel('total velocity/v200')
+plt.xlabel('v_tot/v200')
 
 plt.show()
