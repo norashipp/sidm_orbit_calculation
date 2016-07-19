@@ -83,8 +83,15 @@ def invert_radial(A,B):
 	xx = np.linspace(0, 1, 100)
 	yy = []
 	for x in xx:
-		y = radial_velocity(x, A,  B)
+		y = quad(radial_velocity, -np.inf, x, args=(A, B))[0]
 		yy.append(y)
+	xx = np.asarray(xx)
+	yy = np.asarray(yy)
+	xx = xx[yy.argsort()]
+	yy.sort()
+	print 'radial'
+	print xx
+	print yy
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
 	return sp
 
@@ -92,36 +99,16 @@ def invert_total(sigma, gamma, mu):
 	xx = np.linspace(0, 3.0, 100) # bounds taken from jiang fig 6
 	yy = []
 	for x in xx:
-		y = total_velocity(x, sigma, gamma, mu)
+		y = quad(total_velocity, -np.inf, x, args=(sigma, gamma, mu))[0]
 		yy.append(y)
-	
-	'''
-	plt.figure()
-	plt.plot(xx,yy)
-	plt.title('total velocity distribution')
-	'''
-	
 	xx = np.asarray(xx)
 	yy = np.asarray(yy)
 	xx = xx[yy.argsort()]
 	yy.sort()
-	
+	print 'total'
+	print xx
+	print yy
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
-
-	'''
-	plt.figure()
-	plt.plot(yy,xx)
-	plt.title('inverted (and sorted) distribution')
-	plt.ylim([0,3])
-
-	plt.figure()
-	plt.plot(yy,sp(yy))
-	plt.title('splined distribution')
-	plt.ylim([0,3])
-
-	plt.show()
-	'''
-
 	return sp
 
 ##########################################

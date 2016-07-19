@@ -30,6 +30,11 @@ while i < n:
 
     i+=1
    
+
+vr.sort()
+vth.sort()
+vtot.sort()
+
 plt.figure()
 plt.hist(vr,normed=True,bins=20)
 plt.xlabel('v_r/v_200')
