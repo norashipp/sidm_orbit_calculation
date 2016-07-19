@@ -17,7 +17,7 @@ from sidm_orbit_calculation.src.utils.setup import *
 
 class Sim:
 	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
-		self.host = HostHalo(M=host_halo_mass*M_sol, potential=potential)
+		self.host = HostHalo(M=host_halo_mass, potential=potential)
 		self.dt = dt
 		self.tmax = tmax
 		self.time = 0.

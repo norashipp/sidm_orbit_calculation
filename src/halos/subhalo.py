@@ -3,12 +3,13 @@ import numpy as np
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
 from sidm_orbit_calculation.src.calculation.get_drag_force import *
 from sidm_orbit_calculation.src.orbit_parameters.orbit_distributions import *
+from sidm_orbit_calculation.src.utils.constants import *
 
 class Subhalo:
 
 	def __init__(self, host, M, initial_position, initial_momentum):
 		self.host = host
-		self.M = M
+		self.M = M*M_sol
 		self.initial_parameters(initial_position,initial_momentum)
 		
 		# forces should not necessarily be classes

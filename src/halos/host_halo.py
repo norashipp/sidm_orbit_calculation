@@ -6,7 +6,7 @@ from sidm_orbit_calculation.src.utils.constants import *
 class HostHalo:
 
     def __init__(self,M,potential,s=0.39,q=0.58):
-        self.M = M
+        self.M = M*M_sol
         self.s = s
         self.q = q
         self.potential = potential

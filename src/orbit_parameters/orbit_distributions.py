@@ -4,7 +4,10 @@ from scipy.interpolate import UnivariateSpline
 from numpy.random import choice
 from numpy.random import uniform
 
+import matplotlib.pyplot as plt
+
 from sidm_orbit_calculation.src.utils.setup import *
+from sidm_orbit_calculation.src.utils.constants import *
 
 '''Set up a distribution of orbit parameters'''
 
@@ -33,10 +36,10 @@ def fitting_parameters(M_h, M_s):
 	masses = ['1e12', '1e13', '1e14']
 	mass_vals = np.array([1e12, 1e13, 1e14])
 	m = masses[np.argmin(np.abs(M_h - mass_vals))]
-        
-        homedir = home_directory()
+	
+	homedir = home_directory()
 	file_name = homedir + 'sidm_orbit_calculation/src/orbit_parameters/data_thief_' + m + '_'
-
+	
 	for p in params:
 		fname = file_name + p + '.txt'
 		sp = read_data(fname = fname)
@@ -55,11 +58,10 @@ def gaussian(x, sigma, mu):
 def integrand(y, x, sigma, gamma, mu):
 	# integrating over y
 	z = x - y
-	return gaussian(x, sigma, mu) * lorentz(x,gamma)
+	return gaussian(x, sigma, mu) * lorentz(z, gamma)
 
 def total_velocity(x, sigma, gamma, mu):
 	# x = V/V200
-	integrand(0, x, sigma, gamma, mu)
 	res = quad(integrand, -np.inf, np.inf, args = (x, sigma, gamma, mu))[0]
 	return res
 
@@ -92,6 +94,13 @@ def invert_total(sigma, gamma, mu):
 	for x in xx:
 		y = total_velocity(x, sigma, gamma, mu)
 		yy.append(y)
+	print 'total velocities:'
+	print xx
+	print 'probabilities:'
+	print yy
+	plt.figure()
+	plt.plot(xx,yy)
+	plt.show()
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
 	return sp
 
@@ -152,7 +161,10 @@ def rotate_orbit(velocity):
 def initial_conditions(subhalo):
 	# is there a way to reduce computation here? need to recalculate fitting parameters for each subhalo mass, though
 	
-	total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M, subhalo.M)
+	Mh = subhalo.host.M
+	Ms = subhalo.M
+	print 'masses = ', Mh, Ms
+	total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M/M_sol, subhalo.M/M_sol)
 	
 	x_total, x_radial = uniform(0,1,2)
 
