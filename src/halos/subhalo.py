@@ -15,14 +15,16 @@ class Subhalo:
 		self.gravity = GetGravitationalForce(self.host)
 		self.drag = GetDragForce(self.host)
 
+		self.count = 0
+
 	def initial_parameters(self,initial_position,initial_momentum):
 		if not initial_position.any():
 			self.position, self.momentum = initial_conditions(self)
-			print 'initial position = ', self.position
-			print 'initial momentum = ', self.momentum
 		else:
 			self.position = initial_position
 			self.momentum = initial_momentum
+		print 'initial position = %.2e, %.2e, %.2e' % (self.position[0], self.position[1], self.position[2])
+		print 'initial momentum = %.2e, %.2e, %.2e' % (self.momentum[0], self.momentum[1], self.momentum[2])
 
 		self.position_array = [(self.position[0],self.position[1],self.position[2])]
 		self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]

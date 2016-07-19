@@ -11,6 +11,7 @@ class Plotting:
 		self.times = times
 		self.x = positions[:,0]*m_to_kpc
 		self.y = positions[:,1]*m_to_kpc
+		self.z = positions[:,2]*m_to_kpc
 		self.r = np.sqrt(self.x**2+self.y**2)*m_to_kpc
 		self.phi = np.arctan2(self.y,self.x)
 		self.momenta = momenta
@@ -18,7 +19,7 @@ class Plotting:
 		self.drag = drag
 		self.rho = density/(M_sol*m_to_kpc**3)
 		self.r200 = self.host.R_200*m_to_kpc
-		self.vel = np.sqrt(momenta[:,0]**2+momenta[:,1]**2)
+		self.vel = np.sqrt(momenta[:,0]**2 + momenta[:,1]**2 + momenta[:,2]**2)
 
 		dpi = 175
 		fontsize = 9

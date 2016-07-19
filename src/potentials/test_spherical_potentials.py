@@ -1,3 +1,4 @@
+import time
 import numpy as np
 
 from sidm_orbit_calculation.src.utils.constants import *
