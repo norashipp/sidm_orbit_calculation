@@ -35,11 +35,11 @@ plt.hist(vr,normed=True,bins=20)
 plt.xlabel('v_r/v_200')
 
 plt.figure()
-plt.hist(vth)
+plt.hist(vth,normed=True,bins=20)
 plt.xlabel('v_theta/v200')
 
 plt.figure()
-plt.hist(vtot)
+plt.hist(vtot,normed=True,bins=20)
 plt.xlabel('v_tot/v200')
 
 plt.show()
