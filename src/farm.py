@@ -18,7 +18,7 @@ dt = 1e4
 tmax = 5e10 
 n_particles = 10
 subhalo_mass_array = np.array([5e11,1e12,5e12,1e13])
-drag = 1
+drag = 0
 if drag:
     integrator = 'dissipative'
 else:

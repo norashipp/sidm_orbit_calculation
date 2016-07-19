@@ -4,6 +4,8 @@ from scipy.interpolate import UnivariateSpline
 from numpy.random import choice
 from numpy.random import uniform
 
+from sidm_orbit_calculation.src.utils.setup import *
+
 '''Set up a distribution of orbit parameters'''
 
 # For now only allowing M_h = 1e12, 1e13, 1e14. later interpolate in that dimension as well.
@@ -31,9 +33,9 @@ def fitting_parameters(M_h, M_s):
 	masses = ['1e12', '1e13', '1e14']
 	mass_vals = np.array([1e12, 1e13, 1e14])
 	m = masses[np.argmin(np.abs(M_h - mass_vals))]
-
-        homedir = '/home/norashipp/sidm_orbit_calculation/'
-	file_name = homedir + 'src/orbit_parameters/data_thief_' + m + '_'
+        
+        homedir = home_directory()
+	file_name = homedir + 'sidm_orbit_calculation/src/orbit_parameters/data_thief_' + m + '_'
 
 	for p in params:
 		fname = file_name + p + '.txt'
