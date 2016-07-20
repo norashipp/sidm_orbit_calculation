@@ -6,7 +6,7 @@ import cPickle
 import os
 import sys
 
-from guppy import hpy
+# from guppy import hpy
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
@@ -112,7 +112,8 @@ tmax = float(sys.argv[4])/seconds_to_years
 integrator = sys.argv[5]
 potential = sys.argv[6]
 index = int(sys.argv[7])
-print len(sys.argv)
+# print len(sys.argv)
+
 try:
     initial_position = np.array([float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10])])
     initial_momentum = np.array([float(sys.argv[11]), float(sys.argv[12]), float(sys.argv[13])])

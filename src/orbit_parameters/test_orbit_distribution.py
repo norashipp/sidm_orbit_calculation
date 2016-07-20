@@ -6,7 +6,7 @@ from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.utils.constants import *
 
 host = HostHalo(1e14,'spherical_NFW')
-subhalo = Subhalo(host,1e12,np.zeros(3),np.zeros(3))
+subhalo = Subhalo(host,1e12,np.ones(3),np.ones(3))
 
 total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M/M_sol, subhalo.M/M_sol)
 
@@ -15,18 +15,20 @@ vr = []
 vth = []
 
 i = 0
-n = 10000
+n = 100
 while i < n:
     x_total, x_radial = uniform(0,1,2)
 
     total_ratio = float(total_inverse_cdf(x_total))
     radial_ratio = float(radial_inverse_cdf(x_radial))
 
-    theta_ratio = float(total_ratio * np.sqrt(1 - radial_ratio ** 2))
+    # theta_ratio = float(total_ratio * np.sqrt(1 - radial_ratio ** 2))
+
+    print total_ratio, radial_ratio*total_ratio
 
     vtot.append(total_ratio)
-    vr.append(radial_ratio*total_ratio)
-    vth.append(theta_ratio)
+    vr.append(radial_ratio)
+    # vth.append(theta_ratio)
 
     i+=1
    
@@ -39,9 +41,9 @@ plt.figure()
 plt.hist(vr,normed=True,bins=20)
 plt.xlabel('v_r/v_200')
 
-plt.figure()
-plt.hist(vth,normed=True,bins=20)
-plt.xlabel('v_theta/v200')
+# plt.figure()
+# plt.hist(vth,normed=True,bins=20)
+# plt.xlabel('v_theta/v200')
 
 plt.figure()
 plt.hist(vtot,normed=True,bins=20)

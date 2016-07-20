@@ -89,14 +89,20 @@ def invert_radial(A,B):
 	yy = np.asarray(yy)
 	xx = xx[yy.argsort()]
 	yy.sort()
-	print 'radial'
-	print xx
-	print yy
+	# print 'radial'
+	# print xx
+	# print yy
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
+	
+	plt.figure()
+	plt.plot(yy,sp(yy))
+	plt.title('radial spline')
+	plt.show()
+
 	return sp
 
 def invert_total(sigma, gamma, mu):
-	xx = np.linspace(0, 3.0, 100) # bounds taken from jiang fig 6
+	xx = np.linspace(0, 3.0, 100) # why 3.0 bound taken from jiang fig 6?
 	yy = []
 	for x in xx:
 		y = quad(total_velocity, -np.inf, x, args=(sigma, gamma, mu))[0]
@@ -105,9 +111,9 @@ def invert_total(sigma, gamma, mu):
 	yy = np.asarray(yy)
 	xx = xx[yy.argsort()]
 	yy.sort()
-	print 'total'
-	print xx
-	print yy
+	# print 'total'
+	# print xx
+	# print yy
 	sp = UnivariateSpline(yy, xx, s=0, k=1)
 	return sp
 
@@ -116,7 +122,8 @@ def invert_total(sigma, gamma, mu):
 def get_inverse_cdf(M_h, M_s):
 	# x1, x2 pair of random numbers [0,1]
 	B, sigma, gamma, mu = fitting_parameters(M_h, M_s)
-	A = normalize(B)
+	# A = normalize(B)
+	A = 1
 	total_inverse_cdf = invert_total(sigma, gamma, mu)
 	radial_inverse_cdf = invert_radial(A, B)
 	return total_inverse_cdf, radial_inverse_cdf
@@ -159,7 +166,7 @@ def rotate_orbit(velocity):
 	velocity_rotated = np.dot(Rx,velocity)
 	velocity_rotated = np.dot(Rz, velocity_rotated)
 
-	position = np.array([1,0,0])
+	position = np.array([1, 0, 0])
 	position_rotated = np.dot(Rx, position)
 	position_rotated = np.dot(Rz, position_rotated)
 
@@ -170,7 +177,7 @@ def initial_conditions(subhalo):
 	
 	Mh = subhalo.host.M
 	Ms = subhalo.M
-	print 'masses = ', Mh, Ms
+	# print 'masses = ', Mh, Ms
 	total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M/M_sol, subhalo.M/M_sol)
 	
 	x_total, x_radial = uniform(0,1,2)
