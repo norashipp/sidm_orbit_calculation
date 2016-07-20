@@ -2,13 +2,14 @@ from __future__ import division
 import pylab
 import numpy as np
 import cPickle
+import sys
 
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.utils.setup import *
 
 homedir = home_directory()
 
-fname = '1.0e+14_1.0e+12_1.0e+04_1.0e+10_leapfrog_spherical_NFW_1.dat'
+fname = sys.argv[1]
 f = open(homedir+'sidm_orbit_calculation/src/output/' + fname,'rb')
 data = cPickle.load(f)
 f.close()
