@@ -19,6 +19,8 @@ class GetGravitationalForce :
         dx = 1.e20
         # dx = position[0]/42 # gives smallest final r
         self.force = derivative(self.potential_function,r,dx)
+        # print 'gravity = ', r, self.force
+        # time.sleep(5)
         # print 'gravitational force = ', self.force
 
         # force = partial_derivative(self.potential_function,0,r, dx=dx) # generalize (!!)
