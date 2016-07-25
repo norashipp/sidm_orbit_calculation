@@ -9,7 +9,7 @@ class Subhalo:
 
 	def __init__(self, host, M, initial_position, initial_momentum):
 		self.host = host
-		self.M = M*M_sol
+		self.M = M*M_sol # work in solar masses
 		self.initial_parameters(initial_position,initial_momentum)
 		
 		# forces should not necessarily be classes
@@ -21,14 +21,15 @@ class Subhalo:
 	def initial_parameters(self,initial_position,initial_momentum):
 		if not initial_position.any():
 			self.position, self.momentum = initial_conditions(self)
+			# self.position *= self.host.R # initial position in units of host halo virial radius
 		else:
-			self.position = initial_position
-			self.momentum = -initial_momentum
+			self.position = initial_position*self.host.R
+			self.momentum = initial_momentum
 		print 'initial position = %.2e, %.2e, %.2e' % (self.position[0], self.position[1], self.position[2])
-		print 'initial momentum = %.2e, %.2e, %.2e' % (-self.momentum[0], -self.momentum[1], -self.momentum[2])
+		print 'initial momentum = %.2e, %.2e, %.2e' % (self.momentum[0], self.momentum[1], self.momentum[2])
 
 		self.position_array = [(self.position[0],self.position[1],self.position[2])]
-		self.momentum_array = [(-self.momentum[0],-self.momentum[1],-self.momentum[2])]
+		self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]
 
 
        

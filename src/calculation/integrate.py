@@ -31,9 +31,21 @@ def leapfrog(subhalo,dt):
 
 	p1 = p0 + 0.5 * (f0 + f1) * dt
 	
+	'''
+	print 'leapfrog'
+	print '%.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
+	print '%.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
+	print '%.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
+	print '%.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
+	print '%.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
+	print 
+	time.sleep(2)
+	'''
+
 	subhalo.position = x1
 	subhalo.momentum = p1
 
+	subhalo.gravity.force = f1
 	subhalo.drag.force = np.zeros_like(subhalo.position)
 	subhalo.host.update_density(position=subhalo.position)
 
@@ -54,15 +66,14 @@ def dissipative(subhalo,dt):
 
 	fg1 = update_gravity(gravity=subhalo.gravity,position=x1)
 	fd1 = subhalo.drag.calculate_drag_force(position=subhalo.position,momentum=subhalo.momentum) # should this be in update force function?
-	# print 'drag force = ', fd1
 	f1 = fg1 + fd1
 
 	p1 = p0 + 0.5 * dt * (f0 + f1)
 
 	subhalo.position = x1
 	subhalo.momentum = p1
-	# subhalo.gravity.force = fg1 # figure out this updating - updated in get grav
 	subhalo.drag.force = fd1
+	subhalo.gravity.force = fg1
 
 	update_arrays(subhalo=subhalo)
 
@@ -78,19 +89,15 @@ def update_arrays(subhalo):
 		subhalo.drag.force_array.append(subhalo.drag.force)
 		subhalo.host.density_array.append(subhalo.host.rho)
 
-# UPDATE TO 3D
 def update_gravity(gravity,position):
-    gravity.calculate_gravitational_force(position=position)
+    mag = gravity.calculate_gravitational_force(position=position)
     r, theta, phi = spherical_coordinates(position=position)
-    force = gravity.vector(phi=phi,theta=theta)
-    # print 'gravitational force = ', force
-    return force
+    vec = gravity.get_vector(mag=mag, phi=phi, theta=theta)
+    return vec
 
 def spherical_coordinates(position):
 	r = np.sqrt(position[0]**2+position[1]**2+position[2]**2)
 	theta = np.arccos(position[2]/r)
 	phi = np.arctan2(position[1],position[0])
-	# print 'x, y , z = ', position
-	# print 'r, theta, phi = ', r, theta, phi
 	return r, theta, phi
 

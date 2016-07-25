@@ -9,16 +9,16 @@ class Plotting:
 	def __init__(self,times=None,positions=None,momenta=None,gravity=None,drag=None,density=None,host=None):
 		self.host = host
 		self.times = times
-		self.x = positions[:,0]*m_to_kpc
-		self.y = positions[:,1]*m_to_kpc
-		self.z = positions[:,2]*m_to_kpc
-		self.r = np.sqrt(self.x**2+self.y**2)*m_to_kpc
+		self.x = positions[:,0]
+		self.y = positions[:,1]
+		self.z = positions[:,2]
+		self.r = np.sqrt(self.x**2+self.y**2)
 		self.phi = np.arctan2(self.y,self.x)
 		self.momenta = momenta
 		self.gravity = gravity
 		self.drag = drag
 		self.rho = density/(M_sol*m_to_kpc**3)
-		self.r200 = self.host.R_200*m_to_kpc
+		self.R = self.host.R
 		self.vel = np.sqrt(momenta[:,0]**2 + momenta[:,1]**2 + momenta[:,2]**2)
 
 		dpi = 175
@@ -44,13 +44,17 @@ class Plotting:
 		pylab.show()
 
 	def orbit(self):
+		print 'plotting orbit...'
+		print 'x0 = ', self.x[0]
+		print 'host radius = ', self.host.R
+		print 'ratio = ', self.x[0]/self.host.R
 		pylab.figure()
-		pylab.plot(self.x/self.r200,self.y/self.r200,'g-',markersize=10,linewidth=2)
-		pylab.plot(self.x[0]/self.r200,self.y[0]/self.r200,'k*',markersize=10)
+		pylab.plot(self.x/self.R,self.y/self.R,'g-',markersize=10,linewidth=2)
+		pylab.plot(self.x[0]/self.R,self.y[0]/self.R,'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
-		# pylab.xlim([-1e22*m_to_kpc,1e22*m_to_kpc])
-		# pylab.ylim([-1e22*m_to_kpc,1e22*m_to_kpc])
+		pylab.xlim([-1.0,1.0])
+		pylab.ylim([-1.0,1.0])
 		pylab.show()
 
 	def radial_position(self):
@@ -77,19 +81,41 @@ class Plotting:
 
 	def gravitational_force(self):
 		pylab.figure()
-		pylab.plot(self.r[:-1],self.gravity,'k',linewidth=2)
-		pylab.xlabel('radius (kpc)')
+		pylab.plot(self.x[:-1]/self.host.R,self.gravity[:,0],'k',linewidth=2)
+		pylab.xlabel('x')
 		pylab.ylabel('gravitational force')
+		
+		pylab.figure()
+		pylab.plot(self.y[:-1]/self.host.R,self.gravity[:,1],'b',linewidth=2)
+		pylab.xlabel('y')
+		pylab.ylabel('gravitational force')
+		
+		pylab.figure()
+		pylab.plot(self.z[:-1]/self.host.R,self.gravity[:,2],'g',linewidth=2)
+		pylab.xlabel('z')
+		pylab.ylabel('gravitational force')
+		
 		pylab.show()
 
 	def drag_force(self):
 		pylab.figure()
-		pylab.plot(self.r[:-1]/self.r200,np.sqrt(self.drag[:,0]**2+self.drag[:,1]**2),'c',linewidth=2)
+		pylab.plot(self.x[:-1]/self.host.R,self.drag[:,0],'k',linewidth=2)
+		pylab.plot(self.y[:-1]/self.host.R,self.drag[:,1],'b',linewidth=2)
+		pylab.plot(self.z[:-1]/self.host.R,self.drag[:,2],'g',linewidth=2)
+		pylab.xlabel('distance')
+		pylab.ylabel('gravitational force')
+		pylab.show()
+
+	'''
+	def drag_force(self):
+		pylab.figure()
+		pylab.plot(self.r[:-1]/self.R,np.sqrt(self.drag[:,0]**2+self.drag[:,1]**2),'c',linewidth=2)
 		pylab.xlabel('radius/r200')
 		pylab.ylabel('drag force')
 		pylab.xscale('log')
 		pylab.yscale('log')
 		pylab.show()
+	'''
 
 	def drag_velocity(self):
 		pylab.figure()
@@ -102,7 +128,7 @@ class Plotting:
 
 	def density(self):
 		pylab.figure()
-		pylab.plot(self.r/self.r200,self.rho,'m',linewidth=2)
+		pylab.plot(self.r/self.R,self.rho,'m',linewidth=2)
 		# pylab.plot(1,0.1*1e9,'k^',markersize=10) # check line passes reasonable value
 		pylab.xlabel('r/r200')
 		pylab.ylabel('density (Msol/m3)')
@@ -112,13 +138,13 @@ class Plotting:
 
 	def test_density(self):
 		pylab.figure()
-		pos = self.x/self.r200
-		cut = pos>1e-3*self.r200
+		pos = self.x/self.R
+		cut = pos>1e-3*self.R
 		pos = pos[cut]
 		density = self.rho[cut]
 		pylab.plot(pos,density,'m--',linewidth=2)
-		pylab.plot(self.x/self.r200,self.rho,'c.',linewidth=2)
-		pylab.plot(self.r/self.r200,self.rho,'b.',linewidth=2)
+		pylab.plot(self.x/self.R,self.rho,'c.',linewidth=2)
+		pylab.plot(self.r/self.R,self.rho,'b.',linewidth=2)
 		pylab.xlabel('x (r200)')
 		pylab.ylabel('density (kg/m^3)')
 		# pylab.xscale('log')
@@ -127,7 +153,7 @@ class Plotting:
 
 	def radial_velocity(self):
 		pylab.figure()
-		pylab.plot(self.times,self.momenta[:,0]/self.host.v_200,'r',markersize=10,linewidth=2)
+		pylab.plot(self.times,self.momenta[:,0]/self.host.v,'r',markersize=10,linewidth=2)
 		pylab.xlabel('time')
 		pylab.ylabel('velocity/v200')
 		pylab.show()

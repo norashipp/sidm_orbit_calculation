@@ -175,16 +175,17 @@ def rotate_orbit(velocity):
 def initial_conditions(subhalo):
 	# is there a way to reduce computation here? need to recalculate fitting parameters for each subhalo mass, though
 	
-	Mh = subhalo.host.M
+	Mh = subhalo.host.M # units of solar mass
 	Ms = subhalo.M
 	# print 'masses = ', Mh, Ms
-	total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M/M_sol, subhalo.M/M_sol)
+	
+	total_inverse_cdf, radial_inverse_cdf = get_inverse_cdf(subhalo.host.M, subhalo.M)
 	
 	x_total, x_radial = uniform(0,1,2)
 
 	total_ratio = total_inverse_cdf(x_total)
 	radial_ratio = radial_inverse_cdf(x_radial)
-	print 'check 1', total_ratio, radial_ratio
+	# print 'check 1', total_ratio, radial_ratio
 	
 	velocity = cartesian_velocities(total_ratio, radial_ratio)
 

@@ -65,10 +65,10 @@ class Sim:
 			self.plot_output()
 
 		if printing:
-			print 'r min = ', positions[:,0].min()/self.host.R_200
-			print 'r max = ', positions[:,0].max()/self.host.R_200
-			print 'r initial = ', positions[:,0][0]/self.host.R_200
-			print 'r final = ', positions[:,0][-1]/self.host.R_200
+			print 'r min = ', positions[:,0].min()/self.host.R
+			print 'r max = ', positions[:,0].max()/self.host.R
+			print 'r initial = ', positions[:,0][0]/self.host.R
+			print 'r final = ', positions[:,0][-1]/self.host.R
 			print 'final time = ', times.max()
 			print 'final gravitational force = %10.5g %10.5g' % (self.subhalo.gravity.vector(phi)[0],self.subhalo.gravity.vector(phi)[1])
 			print 'final drag force = %10.5g %10.5g' % (self.subhalo.drag.force[0],self.subhalo.drag.force[1])
@@ -129,6 +129,7 @@ outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s
 # print "Heap at the beginning of the function\n", hp.heap()
 
 my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
+# my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
 my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
 
 # print "Heap at the end of the function\n", hp.heap()
