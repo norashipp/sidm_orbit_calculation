@@ -26,13 +26,13 @@ class HostHalo:
         self.R = self.virial_radius()
         self.v = self.virial_velocity()
 
+        self.M *= M_sol # need to go through and edit all files to change units
+
         self.R_s = self.scale_radius()
         self.rho_s = self.scale_density()
 
         self.update_density([self.R,0])
         self.density_array = [self.rho]
-
-        self.M *= M_sol # need to go through and edit all files to change units
 
     def update_density(self,position):
         # for now just NFW - should have a dictionary like for potentials
