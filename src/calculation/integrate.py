@@ -23,11 +23,11 @@ def leapfrog(subhalo,dt):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
 	
-	f0 = update_gravity(gravity=subhalo.gravity,position=x0)
-
+	f0 = update_gravity(gravity=subhalo.gravity,position=np.copy(x0))
+	
 	x1 = x0 + p0 * dt + 0.5 * f0 * dt ** 2
 
-	f1 = update_gravity(gravity=subhalo.gravity,position=x1)
+	f1 = update_gravity(gravity=subhalo.gravity,position=np.copy(x1))
 
 	p1 = p0 + 0.5 * (f0 + f1) * dt
 	
@@ -38,6 +38,7 @@ def leapfrog(subhalo,dt):
 	print '%.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
 	print '%.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
 	print '%.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
+	print '%.3g, %.3g, %.3g' %(x1[0]-x0[0]-1e14,x1[1]-x0[1]-1e14,x1[2]-x0[2]-1e14)
 	print 
 	time.sleep(2)
 	'''
