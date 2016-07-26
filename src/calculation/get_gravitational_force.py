@@ -24,8 +24,8 @@ class GetGravitationalForce :
         fy = -1.*mag*np.sin(phi)*np.sin(theta)
         fz = -1.*mag*np.cos(theta)
         vec = np.array([fx, fy, fz])
-        print 'gravity'
-        print vec
-        print
-        time.sleep(2)
+        # print 'gravity'
+        # print vec
+        # print
+        # time.sleep(2)
         return vec

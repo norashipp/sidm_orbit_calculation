@@ -53,8 +53,8 @@ class Plotting:
 		pylab.plot(self.x[0]/self.R,self.y[0]/self.R,'k*',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
-		pylab.xlim([-1.0,1.0])
-		pylab.ylim([-1.0,1.0])
+		# pylab.xlim([-1.0,1.0])
+		# pylab.ylim([-1.0,1.0])
 		pylab.show()
 
 	def radial_position(self):
