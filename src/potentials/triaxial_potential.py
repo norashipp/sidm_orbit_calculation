@@ -36,8 +36,8 @@ def outer_potential(xi,A,alpha,host):
 def radius(x,y,z,host):
 	return np.sqrt(x**2+y**2/host.q**2+z**2/host.s**2)
 
-def triaxial_NFW_potential(position,host):
-	x, y, z = position
+def triaxial_NFW_potential(x, y, z, host): # not working within 1e18 m - that's 0.0001 times the virial radius, is this ok? smoothing?
+	# x, y, z = position
 	xi = radius(x,y,z,host)/host.R_s
 	A = 4*np.pi*G*host.s*host.q*host.rho_s*host.R_s**2/np.sqrt(1-host.s**2)
 
