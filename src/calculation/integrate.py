@@ -31,6 +31,10 @@ def leapfrog(subhalo,dt):
 
 	p1 = p0 + 0.5 * (f0 + f1) * dt
 	
+	# print x0
+	# print f0
+	# print
+
 	'''
 	print 'leapfrog'
 	print '%.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
@@ -91,9 +95,9 @@ def update_arrays(subhalo):
 		subhalo.host.density_array.append(subhalo.host.rho)
 
 def update_gravity(gravity,position):
-    mag = gravity.calculate_gravitational_force(position=position)
-    r, theta, phi = spherical_coordinates(position=position)
-    vec = gravity.get_vector(mag=mag, phi=phi, theta=theta)
+    mag, vec = gravity.calculate_gravitational_force(position=position)
+    # r, theta, phi = spherical_coordinates(position=position)
+    # vec = gravity.get_vector(mag=mag, phi=phi, theta=theta)
     return vec
 
 def spherical_coordinates(position):
