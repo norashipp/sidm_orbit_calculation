@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.misc import derivative
+from scipy.integrate import quad
 import time
 
 import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
@@ -16,9 +17,9 @@ class GetGravitationalForce:
         self.force_array = []
         # self.count = 0
         # self.t0 = time.time()
-    
+
     def calculate_density(self,position):
-        host.rho = self.density_function(position[0], position[1], position[2], host)
+        return self.density_function(position[0], position[1], position[2], host)
 
     def calculate_gravitational_force(self, position):
         mag, vec = self.calculate_partial_force(position)

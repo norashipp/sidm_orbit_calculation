@@ -9,11 +9,16 @@ from gala.units import UnitSystem
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.potentials.test_spherical_potentials import *
 from sidm_orbit_calculation.src.utils.constants import *
+from sidm_orbit_calculation.src.calculation.mass import *
 
 usys = UnitSystem(u.meter, u.second, u.kilogram, u.degree, u.meter/u.second)
 
 host = HostHalo(M=1e14,potential='triaxial_NFW')
-pot = gp.LeeSutoTriaxialNFWPotential(v_c = host.v*u.m/u.s, r_s = host.R_s*u.m, a = host.R*u.m, b = host.R*host.q*u.m, c = host.R*host.s*u.m, units=usys)
+
+M_tri = calculate_triaxial_mass(host)
+v_tri = np.sqrt(G*M_tri/host.R_s)
+
+pot = gp.LeeSutoTriaxialNFWPotential(v_c = np.sqrt(G*host.M/host.R_s)*u.m/u.s, r_s = host.R_s/0.7*u.m, a = host.R*u.m, b = host.R*host.q*u.m, c = host.R*host.s*u.m, units=usys)
 
 ics = gd.CartesianPhaseSpacePosition(pos=[1e22,0,0.]*u.m, vel=[0,3e5,0]*u.m/u.s)
 
