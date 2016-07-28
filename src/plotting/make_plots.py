@@ -17,7 +17,7 @@ class Plotting:
 		self.momenta = momenta
 		self.gravity = gravity
 		self.drag = drag
-		self.rho = density/(M_sol*m_to_kpc**3)
+		# self.rho = density/(M_sol*m_to_kpc**3)
 		self.R = self.host.R
 		self.vel = np.sqrt(momenta[:,0]**2 + momenta[:,1]**2 + momenta[:,2]**2)
 
@@ -55,6 +55,13 @@ class Plotting:
 		pylab.ylabel('y')
 		# pylab.xlim([-1.0,1.0])
 		# pylab.ylim([-1.0,1.0])
+		pylab.show()
+
+	def y_position(self):
+		pylab.figure()
+		pylab.plot(self.times*seconds_to_years,self.y/self.host.R,'c-',linewidth=2)
+		pylab.xlabel('time (years)')
+		pylab.ylabel('y')
 		pylab.show()
 
 	def radial_position(self):

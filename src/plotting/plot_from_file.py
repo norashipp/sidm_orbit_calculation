@@ -23,8 +23,9 @@ print 'initial velocity = %.3g, %.3g, %.3g' % (momenta[0][0],momenta[0][1],momen
 
 plot = Plotting(times=times, positions=positions, momenta=momenta, gravity=gravity, drag=drag, density=density ,host=host)
 plot.orbit()
+# plot.y_position()
 # plot.orbit_color()
 # plot.radial_position()
 # plot.angular_position()
-plot.gravitational_force()
+# plot.gravitational_force()
 # plot.radial_velocity()

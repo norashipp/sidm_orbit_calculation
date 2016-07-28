@@ -15,6 +15,8 @@ class HostHalo:
         self.cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
         self.potential = potential
+        self.density = potential
+        if self.potential != 'spherical_NFW' and self.potential != 'triaxial_NFW': self.density == 'constant'
         
         self.M = M # work in units of solar mass, virial mass
         
@@ -32,18 +34,15 @@ class HostHalo:
         self.R_s = self.scale_radius()
         self.rho_s = self.scale_density()
 
-        self.update_density([self.R,0])
-        self.density_array = [self.rho]
+        self.rho = 0
+
+        self.density_array = []
 
     def virial_mass(self):
         M, R, c = changeMassDefinition(M_200m, c_200m, z, '200m', 'vir')
 
-    def update_density(self,position):
-        # for now just NFW - should have a dictionary like for potentials
-        r = np.sqrt(position[0]**2 + position[1]**2)
-        x = r/self.R_s
-        self.rho = self.rho_s/(x*(1+x)**2)
-        # self.rho = 1e-40 # average - for analytical comparison
+    # def update_density(self,position):
+    #     self.rho = self.density_function(position)
         
     def concentration(self):
         c = concentration(self.M, 'vir', self.z, model='diemer15')

@@ -12,10 +12,14 @@ class GetGravitationalForce:
     def __init__(self, host):
         self.potential = potentials.potential_dict[host.potential]
         self.potential_function = lambda x,y,z: self.potential(x=x,y=y,z=z,host=host)
-        self.force_array = []
-        self.count = 0
-        self.t0 = time.time()
         
+        self.force_array = []
+        # self.count = 0
+        # self.t0 = time.time()
+    
+    def calculate_density(self,position):
+        host.rho = self.density_function(position[0], position[1], position[2], host)
+
     def calculate_gravitational_force(self, position):
         mag, vec = self.calculate_partial_force(position)
         return mag, vec
@@ -32,11 +36,11 @@ class GetGravitationalForce:
         
         mag = np.sqrt(fx**2 + fy**2 + fz**2)
 
-        self.count+=1
-        if self.count % 100 == 0:
-            t1 = time.time()
-            print self.count, t1 - self.t0
-            self.t0 = t1
+        # self.count+=1
+        # if self.count % 100 == 0:
+        #     t1 = time.time()
+        #     print self.count, t1 - self.t0
+        #     self.t0 = t1
         
         return mag, vec
 

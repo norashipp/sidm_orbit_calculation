@@ -40,9 +40,10 @@ class Sim:
 		while self.time < self.tmax:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
-			if not self.subhalo.count % 500:
-				times.append(self.time)
+			# if not self.subhalo.count % 500:
+			times.append(self.time)
 			self.subhalo.count += 1
+			
 			# phi = np.arctan2(self.subhalo.position[1],self.subhalo.position[0])
 			# if printing == 2:
 			# 	print 'time = ', self.time
@@ -57,6 +58,7 @@ class Sim:
 		gravity = np.asarray(self.subhalo.gravity.force_array)
 		drag = np.asarray(self.subhalo.drag.force_array)
 		density = np.asarray(self.host.density_array)
+		# density = None
 		self.output = [times,positions,momenta,gravity,drag,density,self.host]
 
 		if writing:
