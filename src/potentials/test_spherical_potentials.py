@@ -30,7 +30,8 @@ def spherical_NFW_potential(x, y, z, host):
 	# v0 = 670826.87820901955 (m/s)
 	# t = 8.804458832e9 (years)
 	r = np.sqrt(x**2 + y**2 + z**2)
-	ep = 0.05 # ok with max v0 = -5e6, dt = 1e2
+	# ep = 0.05 # ok with max v0 = -5e6, dt = 1e2
+	ep = 0
 	return -4*np.pi*G*host.rho_s*host.R_s**2*np.log(1+r/host.R_s)/(r/host.R_s+ep)
 
 potential_dict = {'spherical_harmonic':spherical_harmonic_oscilator,'point_mass':point_mass_potential,'isochrone':isochrone_potential,'spherical_NFW':spherical_NFW_potential,'triaxial_NFW':triaxial_NFW_potential}
