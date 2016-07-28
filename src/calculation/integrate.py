@@ -83,9 +83,9 @@ integrator_dict = {'euler':euler,'leapfrog':leapfrog,'dissipative':dissipative}
 #################################
 
 def update_arrays(subhalo):
-	if not subhalo.count % 500:
-		subhalo.position_array.append((subhalo.position[0],subhalo.position[1],subhalo.position[2]))
-		subhalo.momentum_array.append((subhalo.momentum[0],subhalo.momentum[1],subhalo.momentum[2]))
-		subhalo.gravity.force_array.append(subhalo.gravity.force)
-		subhalo.drag.force_array.append(subhalo.drag.force)
-		subhalo.host.density_array.append(subhalo.host.rho)
+	# if not subhalo.count % 500:
+	subhalo.position_array.append((subhalo.position[0],subhalo.position[1],subhalo.position[2]))
+	subhalo.momentum_array.append((subhalo.momentum[0],subhalo.momentum[1],subhalo.momentum[2]))
+	subhalo.gravity.force_array.append(subhalo.gravity.force)
+	subhalo.drag.force_array.append(subhalo.drag.force)
+	subhalo.host.density_array.append(subhalo.host.rho)

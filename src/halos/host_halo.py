@@ -3,6 +3,7 @@ import numpy as np
 from colossus.cosmology import cosmology
 from colossus.halo.mass_so import M_to_R
 from colossus.halo.concentration import concentration
+from colossus.halo.mass_defs import changeMassDefinition
 
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
 from sidm_orbit_calculation.src.utils.constants import *
@@ -33,6 +34,9 @@ class HostHalo:
 
         self.update_density([self.R,0])
         self.density_array = [self.rho]
+
+    def virial_mass(self):
+        M, R, c = changeMassDefinition(M_200m, c_200m, z, '200m', 'vir')
 
     def update_density(self,position):
         # for now just NFW - should have a dictionary like for potentials

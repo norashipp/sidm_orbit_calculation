@@ -13,11 +13,13 @@ class GetGravitationalForce:
         self.potential = potentials.potential_dict[host.potential]
         self.potential_function = lambda x,y,z: self.potential(x=x,y=y,z=z,host=host)
         self.force_array = []
+        self.count = 0
+        self.t0 = time.time()
         
     def calculate_gravitational_force(self, position):
         mag, vec = self.calculate_partial_force(position)
         return mag, vec
-        
+           
     def calculate_partial_force(self, position):
         dx = 1e18 # is this causing problems?
         fx = partial_derivative(self.potential_function,0,position,dx)
@@ -29,6 +31,12 @@ class GetGravitationalForce:
         vec[np.where(np.abs(vec) <= 1000*ep)] = 0
         
         mag = np.sqrt(fx**2 + fy**2 + fz**2)
+
+        self.count+=1
+        if self.count % 100 == 0:
+            t1 = time.time()
+            print self.count, t1 - self.t0
+            self.t0 = t1
         
         return mag, vec
 
