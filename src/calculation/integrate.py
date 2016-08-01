@@ -48,7 +48,7 @@ def leapfrog(subhalo,dt):
 
 	subhalo.gravity.force = f1
 	subhalo.drag.force = np.zeros_like(subhalo.position)
-	# subhalo.gravity.calculate_density(position=subhalo.position) # is this unnecessary? clean up
+	subhalo.gravity.calculate_density(position=subhalo.position) # clean up - only used with drag force, right?
 
 	update_arrays(subhalo=subhalo)
 
