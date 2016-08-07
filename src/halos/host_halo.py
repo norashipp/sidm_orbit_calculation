@@ -41,9 +41,6 @@ class HostHalo:
     def virial_mass(self):
         M, R, c = changeMassDefinition(M_200m, c_200m, z, '200m', 'vir')
 
-    # def update_density(self,position):
-    #     self.rho = self.density_function(position)
-        
     def concentration(self):
         c = concentration(self.M, 'vir', self.z, model='diemer15')
         return c

@@ -1,4 +1,0 @@
-#DataThief /Users/nora/Desktop/Screen Shot 2016-07-08 at 11.00.32 AM.png Friday 8-Jul-2016 12:48:30 PM
--3.1325, 1.2739
--1.7814, 3.3891
--0.777, 3.0113
