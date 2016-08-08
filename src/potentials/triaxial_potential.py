@@ -65,7 +65,7 @@ def triaxial_NFW_potential(x, y, z, host): # not working within 1e18 m - that's 
 	xi = radius(x,y,z,host)/host.R_s
 	A = 4*np.pi*G*host.s*host.q*host.rho_s*host.R_s**2/np.sqrt(1-host.s**2)
 
-	alpha = 1 # what are alpha and eta again? in this case eta = 3
+	alpha = 1 # eta = 3
 
 	inner = inner_potential(x,y,z,xi,A,alpha,host)
 	outer = outer_potential(xi,A,alpha,host)
