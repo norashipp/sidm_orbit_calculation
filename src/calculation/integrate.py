@@ -33,12 +33,12 @@ def leapfrog(subhalo,dt):
 	
 	'''
 	print 'leapfrog'
-	print '%.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
-	print '%.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
-	print '%.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
-	print '%.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
-	print '%.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
-	print '%.3g, %.3g, %.3g' %(x1[0]-x0[0]-1e14,x1[1]-x0[1]-1e14,x1[2]-x0[2]-1e14)
+	print 'x0: %.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
+	print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
+	print 'f0: %.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
+	print 'x1: %.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
+	print 'p1: %.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
+	# print '%.3g, %.3g, %.3g' %(x1[0]-x0[0]-1e14,x1[1]-x0[1]-1e14,x1[2]-x0[2]-1e14)
 	print 
 	time.sleep(2)
 	'''
@@ -48,7 +48,6 @@ def leapfrog(subhalo,dt):
 
 	subhalo.gravity.force = f1
 	subhalo.drag.force = np.zeros_like(subhalo.position)
-	subhalo.gravity.calculate_density(position=subhalo.position) # clean up - only used with drag force, right?
 
 	update_arrays(subhalo=subhalo)
 
@@ -57,19 +56,35 @@ def dissipative(subhalo,dt):
 
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
-	fg0 = update_gravity(gravity=subhalo.gravity,position=x0)
-	fd0 = subhalo.drag.calculate_drag_force(position=subhalo.position,momentum=subhalo.momentum)
+	
+	_, fg0 = subhalo.gravity.calculate_gravitational_force(position=np.copy(x0))
+	
+	fd0 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0))
+	
 	f0 = fg0 + fd0
 
 	x1 = x0 + dt * p0 + 0.5 * dt ** 2 * f0
 
 	p_half = p0 + lmbda * dt * f0
 
-	fg1 = update_gravity(gravity=subhalo.gravity,position=x1)
-	fd1 = subhalo.drag.calculate_drag_force(position=subhalo.position,momentum=subhalo.momentum) # should this be in update force function?
+	_, fg1 = subhalo.gravity.calculate_gravitational_force(position=np.copy(x1))
+	fd1 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0))
 	f1 = fg1 + fd1
 
 	p1 = p0 + 0.5 * dt * (f0 + f1)
+
+	'''
+	print 'dissipative'
+	# print 'x0: %.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
+	# print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
+	print 'f0: %.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
+	# print 'x1: %.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
+	# print 'p1: %.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
+	print x1-x0
+	print p1-p0
+	print 
+	time.sleep(2)
+	'''
 
 	subhalo.position = x1
 	subhalo.momentum = p1

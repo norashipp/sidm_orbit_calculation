@@ -18,12 +18,14 @@ class Subhalo:
 
 		self.count = 0
 
+		self.energy = 0
+
 	def initial_parameters(self,initial_position,initial_momentum):
 		if not initial_position.any():
 			self.position, self.momentum = initial_conditions(self)
-			# self.position *= self.host.R # initial position in units of host halo virial radius
+			self.position *= self.host.R # initial position in units of host halo virial radius
 		else:
-			self.position = initial_position # *self.host.R
+			self.position = initial_position*self.host.R
 			self.momentum = initial_momentum
 		print 'initial position = %.2e, %.2e, %.2e' % (self.position[0], self.position[1], self.position[2])
 		print 'initial momentum = %.2e, %.2e, %.2e' % (self.momentum[0], self.momentum[1], self.momentum[2])
@@ -31,5 +33,5 @@ class Subhalo:
 		self.position_array = [(self.position[0],self.position[1],self.position[2])]
 		self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]
 
-
-       
+# 	def calculate_energy():
+# 		return 0.5*self.M*self.momentum**2 + self.gravity.

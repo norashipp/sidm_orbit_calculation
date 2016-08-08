@@ -16,7 +16,10 @@ class HostHalo:
 
         self.potential = potential
         self.density = potential
-        if self.potential != 'spherical_NFW' and self.potential != 'triaxial_NFW': self.density == 'constant'
+
+        # if self.potential != 'spherical_NFW' and self.potential != 'triaxial_NFW':
+        #     self.density == 'constant'
+        #     print 'host density = ', self.density
         
         self.M = M # work in units of solar mass, virial mass
         
