@@ -19,6 +19,7 @@ class Subhalo:
 		self.count = 0
 
 		self.energy = 0
+		self.energy_array = []
 
 	def initial_parameters(self,initial_position,initial_momentum):
 		if not initial_position.any():
@@ -33,5 +34,7 @@ class Subhalo:
 		self.position_array = [(self.position[0],self.position[1],self.position[2])]
 		self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]
 
-# 	def calculate_energy():
-# 		return 0.5*self.M*self.momentum**2 + self.gravity.
+	def calculate_energy(self):
+		E = 0.5*self.M*np.sqrt(np.sum(self.momentum**2)) - self.gravity.potential_function(self.position[0], self.position[1], self.position[2])
+		# print E
+		return E

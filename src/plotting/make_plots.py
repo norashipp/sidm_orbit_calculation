@@ -6,17 +6,18 @@ from sidm_orbit_calculation.src.utils.constants import *
 
 class Plotting:
 
-	def __init__(self,times=None,positions=None,momenta=None,gravity=None,drag=None,density=None,host=None):
+	def __init__(self,times=None,positions=None,momenta=None,gravity=None,drag=None,density=None,energy=None,host=None):
 		self.host = host
 		self.times = times
 		self.x = positions[:,0]
 		self.y = positions[:,1]
 		self.z = positions[:,2]
-		self.r = np.sqrt(self.x**2+self.y**2)
+		self.r = np.sqrt(self.x**2+self.y**2+self.z**2)
 		self.phi = np.arctan2(self.y,self.x)
 		self.momenta = momenta
 		self.gravity = gravity
 		self.drag = drag
+		self.energy = energy
 		# self.rho = density/(M_sol*m_to_kpc**3)
 		self.R = self.host.R
 		self.vel = np.sqrt(momenta[:,0]**2 + momenta[:,1]**2 + momenta[:,2]**2)
@@ -64,11 +65,12 @@ class Plotting:
 		pylab.ylabel('y')
 		pylab.show()
 
-	def radial_position(self):
+	def radius(self):
 		pylab.figure()
-		pylab.plot(self.times,self.r,'r-',markersize=10,linewidth=2)
+		pylab.plot(self.times,self.r/self.host.R,'r-',markersize=10,linewidth=2)
+		pylab.plot([self.times.min(),self.times.max()],[1.0,1.0])
 		pylab.xlabel('time')
-		pylab.ylabel('raidus (kpc)')
+		pylab.ylabel('raidus')
 		pylab.show()
 
 	def radial_position_color(self):
@@ -163,4 +165,11 @@ class Plotting:
 		pylab.plot(self.times,self.momenta[:,0]/self.host.v,'r',markersize=10,linewidth=2)
 		pylab.xlabel('time')
 		pylab.ylabel('velocity/v200')
+		pylab.show()
+
+	def plot_energy(self):
+		pylab.figure()
+		pylab.plot(self.times[1:],self.energy,'c',linewidth=2)
+		pylab.xlabel('time')
+		pylab.ylabel('energy')
 		pylab.show()

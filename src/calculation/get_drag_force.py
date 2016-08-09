@@ -8,7 +8,7 @@ class GetDragForce :
     def __init__(self, host) :
         self.host = host
 
-        self.density_function = density.density_dict[host.density]
+        self.density_function = density.density_dict[host.potential]
 
         self.force = [0., 0., 0.]
         self.force_array = []

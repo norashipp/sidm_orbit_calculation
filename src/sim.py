@@ -40,6 +40,10 @@ class Sim:
 		while self.time < self.tmax:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
+
+			self.subhalo.energy += self.subhalo.calculate_energy()
+			self.subhalo.energy_array.append(self.subhalo.energy)
+
 			# if not self.subhalo.count % 500:
 			times.append(self.time)
 			self.subhalo.count += 1
@@ -58,8 +62,8 @@ class Sim:
 		gravity = np.asarray(self.subhalo.gravity.force_array)
 		drag = np.asarray(self.subhalo.drag.force_array)
 		density = np.asarray(self.host.density_array)
-		# density = None
-		self.output = [times,positions,momenta,gravity,drag,density,self.host]
+		energy = np.asarray(self.subhalo.energy_array)
+		self.output = [times,positions,momenta,gravity,drag,density,energy,self.host]
 
 		if writing:
 			self.write_output(outfile)
@@ -88,7 +92,7 @@ class Sim:
 
 	def plot_output(self):
 		times,positions,momenta,gravity,drag,density,host = self.output
-		plot = Plotting(times=times,positions=positions,momenta=momenta,gravity=gravity,drag=drag,density=density,host= host)
+		plot = Plotting(times=times,positions=positions,momenta=momenta,gravity=gravity,drag=drag,density=density,energy=energy,host= host)
 		plot.orbit()
 		# plot.drag_force()
 		# plot.density()
