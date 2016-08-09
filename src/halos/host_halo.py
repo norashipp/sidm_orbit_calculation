@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.integrate import quad
 
 from colossus.cosmology import cosmology
 from colossus.halo.mass_so import M_to_R
@@ -7,6 +8,8 @@ from colossus.halo.mass_defs import changeMassDefinition
 
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
 from sidm_orbit_calculation.src.utils.constants import *
+import sidm_orbit_calculation.src.potentials.density as density
+import sidm_orbit_calculation.src.calculation.mass as mass
 
 class HostHalo:
 
@@ -15,7 +18,9 @@ class HostHalo:
         self.cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
         self.potential = potential
-        self.density = potential
+
+        self.density_function = density.density_dict[self.potential]
+        self.mass_function = mass.mass_dict[self.potential]
 
         # if self.potential != 'spherical_NFW' and self.potential != 'triaxial_NFW':
         #     self.density == 'constant'
@@ -35,7 +40,11 @@ class HostHalo:
         self.M *= M_sol # need to go through and edit all files to change units
 
         self.R_s = self.scale_radius()
+        
+        self.rho_s = 1
+        old = self.scale_density_old()
         self.rho_s = self.scale_density()
+        print self.potential, self.rho_s, old
 
         self.rho = 0
 
@@ -60,6 +69,8 @@ class HostHalo:
         return velocity
 
     def scale_density(self):
-        # kg/m3
+        return self.M/self.mass_function(self,0,self.R)
+        
+    def scale_density_old(self):
         return self.M/(4*np.pi*self.R_s**3*(np.log(1+self.c)-self.c/(1+self.c)))
         

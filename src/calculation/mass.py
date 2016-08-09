@@ -6,11 +6,12 @@ from colossus.halo.mass_so import R_to_M
 from sidm_orbit_calculation.src.potentials.density import *
 from sidm_orbit_calculation.src.utils.constants import *
 
-def calculate_triaxial_mass(host):
-    func = lambda phi, theta, r: triaxial_NFW_density(r, theta, phi, host)*np.sin(theta)*r**2
-    a = 0
-    b = host.R_s
-    print R_to_M(host.R*m_to_kpc,0,'vir')
+def calculate_triaxial_mass(host,a,b):
+    print 'triaxial mass'
+    func = lambda phi, theta, r: triaxial_NFW_density(r * np.cos(phi) * np.sin(theta), r * np.sin(phi) * np.sin(theta), r * np.cos(theta), host)*np.sin(theta)*r**2
+    # a = 0
+    # if not b: b = host.R_s
+    # print R_to_M(host.R*m_to_kpc,0,'vir')
     gfun = lambda r: 0
     hfun = lambda r: np.pi
     qfun = lambda r, theta: 0
@@ -18,13 +19,14 @@ def calculate_triaxial_mass(host):
     res = tplquad(func,a,b,gfun,hfun,qfun,rfun)[0]
     return res
 
-def calculate_spherical_mass(host):
+def calculate_spherical_mass(host,a,b):
     # R = r/host.R_s
     func = lambda r: host.rho_s/(r/host.R_s*(1+r/host.R_s)**2)*r**2
-    res = quad(func,0,host.R_s)[0]
+    res = quad(func,a,b)[0]
     mass = res*4*np.pi
     return mass
 
+'''
 def triaxial_NFW_density(r,theta,phi,host):
     x = r * np.cos(phi) * np.sin(theta)
     y = r * np.sin(phi) * np.sin(theta)
@@ -38,3 +40,6 @@ def triaxial_NFW_density(r,theta,phi,host):
     alpha = 1
     eta = 3
     return host.rho_s/(r/host.R_s**alpha*(1+r/host.R_s)**(eta-alpha))
+'''
+
+mass_dict = {'point_mass':None,'spherical_NFW':calculate_spherical_mass,'triaxial_NFW':calculate_triaxial_mass}

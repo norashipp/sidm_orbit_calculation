@@ -22,10 +22,10 @@ host.q = float(sys.argv[2])
 
 usys = UnitSystem(u.meter, u.second, u.kilogram, u.degree, u.meter/u.second)
 
-M_tri = calculate_triaxial_mass(host)
+M_tri = calculate_triaxial_mass(host=host, a=0, b=host.R_s)
 print '1 ', M_tri
 print '2 ', host.M
-M_sph = calculate_spherical_mass(host_sph)
+M_sph = calculate_spherical_mass(host=host_sph, a=0, b=host_sph.R_s)
 # M_tri = 4.54e+11*M_sol
 
 v_tri = np.sqrt(G*M_tri/host.R_s)
