@@ -168,6 +168,7 @@ class Plotting:
 		pylab.show()
 
 	def plot_energy(self):
+		# energy = self.energy/M_sol*(seconds_to_years*1e-9/m_to_kpc)**2
 		pylab.figure()
 		pylab.plot(self.times[1:],self.energy,'c',linewidth=2)
 		pylab.xlabel('time')

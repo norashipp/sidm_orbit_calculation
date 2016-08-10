@@ -41,8 +41,10 @@ class Sim:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
 
-			self.subhalo.energy += self.subhalo.calculate_energy()
-			self.subhalo.energy_array.append(self.subhalo.energy)
+			self.subhalo.calculate_energy()
+
+			# self.subhalo.energy += self.subhalo.calculate_energy()
+			# self.subhalo.energy_array.append(self.subhalo.energy)
 
 			# if not self.subhalo.count % 500:
 			times.append(self.time)

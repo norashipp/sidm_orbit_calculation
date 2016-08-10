@@ -21,6 +21,13 @@ print 'initial velocity = %.3g, %.3g, %.3g' % (momenta[0][0],momenta[0][1],momen
 
 # print 'initial gravitational force = %.3g'  %gravity[0]
 
+radius = np.sqrt(np.sum(positions**2,axis=1))
+print radius.shape
+print times.shape
+print 'minimum radius = %.5e' %radius.min()
+print 'maximum radius = %.5e' %radius.max()
+print 'difference = %.5e' %(radius.max()-radius.min())
+
 plot = Plotting(times=times, positions=positions, momenta=momenta, gravity=gravity, drag=drag, density=density, energy=energy, host=host)
 plot.orbit()
 plot.plot_energy()
