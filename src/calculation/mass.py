@@ -26,6 +26,9 @@ def calculate_spherical_mass(host,a,b):
     mass = res*4*np.pi
     return mass
 
+def calculate_point_mass(host,a=0,b=0): # not ideal, clean up later
+    return host.M
+
 '''
 def triaxial_NFW_density(r,theta,phi,host):
     x = r * np.cos(phi) * np.sin(theta)
@@ -42,4 +45,4 @@ def triaxial_NFW_density(r,theta,phi,host):
     return host.rho_s/(r/host.R_s**alpha*(1+r/host.R_s)**(eta-alpha))
 '''
 
-mass_dict = {'point_mass':None,'spherical_NFW':calculate_spherical_mass,'triaxial_NFW':calculate_triaxial_mass}
+mass_dict = {'point_mass':calculate_point_mass,'spherical_NFW':calculate_spherical_mass,'triaxial_NFW':calculate_triaxial_mass}

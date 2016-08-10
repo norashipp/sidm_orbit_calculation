@@ -7,17 +7,13 @@ import os
 import sys
 import cProfile
 
-# from guppy import hpy
-
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.calculation.get_gravitational_force import *
-# from sidm_orbit_calculation.src.timestep.particle_evolution import *
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 from sidm_orbit_calculation.src.utils.setup import *
-# from sidm_orbit_calculation.src.memory import *
 
 class Sim:
 	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
@@ -34,7 +30,7 @@ class Sim:
 	def initiate_subhalo(self, mass, initial_position, initial_momentum):
 		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=initial_position, initial_momentum=initial_momentum)
 
-	def sim(self, printing=0, writing=0, plotting=0, outfile='pickle.dat'):
+	def sim(self, printing=0, writing=0, outfile='pickle.dat'):
 		times = [self.time]
 		
 		while self.time < self.tmax:
@@ -43,20 +39,9 @@ class Sim:
 
 			self.subhalo.calculate_energy()
 
-			# self.subhalo.energy += self.subhalo.calculate_energy()
-			# self.subhalo.energy_array.append(self.subhalo.energy)
-
 			# if not self.subhalo.count % 500:
 			times.append(self.time)
 			self.subhalo.count += 1
-			
-			# phi = np.arctan2(self.subhalo.position[1],self.subhalo.position[0])
-			# if printing == 2:
-			# 	print 'time = ', self.time
-			# 	print 'position = %10.5g %10.5g' % (self.subhalo.position[0],self.subhalo.position[1])
-			# 	print 'force = %10.5g %10.5g' % (self.subhalo.gravity.vector(phi)[0],self.subhalo.gravity.vector(phi)[1])
-				# assert 0
-			# self.orbit_count+=1
 
 		times = np.array(times)
 		positions = np.asarray(self.subhalo.position_array)
@@ -70,9 +55,6 @@ class Sim:
 		if writing:
 			self.write_output(outfile)
 
-		if plotting:
-			self.plot_output()
-
 		if printing:
 			print 'r min = ', positions[:,0].min()/self.host.R
 			print 'r max = ', positions[:,0].max()/self.host.R
@@ -83,41 +65,16 @@ class Sim:
 			print 'final drag force = %10.5g %10.5g' % (self.subhalo.drag.force[0],self.subhalo.drag.force[1])
 
 	def write_output(self,output_file):
-		# fn = '/Users/nora/sidm_orbit_calculation/src/data/' + str(self.host.M) + '_' + str(self.subhalo.M) + '_'
-		# i = 0
-		# while os.path.isfile(fn+str(i)+'.dat'):
-		# 	i+=0
-		# fname = fn + str(i) + '.dat'
 		f = open(output_file,'wb')
 		cPickle.dump(self.output,f)
 		f.close()
-
-	def plot_output(self):
-		times,positions,momenta,gravity,drag,density,host = self.output
-		plot = Plotting(times=times,positions=positions,momenta=momenta,gravity=gravity,drag=drag,density=density,energy=energy,host= host)
-		plot.orbit()
-		# plot.drag_force()
-		# plot.density()
-		# plot.test_density()
-		# plot.orbit_color()
-		# plot.radial_position()
-		# plot.angular_position()
-		plot.gravitational_force()
-		# plot.radial_velocity()
-
-###########################################
-
-# dt = 1e4/seconds_to_years
-#simulation = Sim(dt=dt,tmax=2e4*dt,integration_method='euler')
-# simulation = Sim(dt=dt,tmax=2e10/seconds_to_years,integration_method='leapfrog',potential='spherical_NFW') # dynamical time 5e9 years
-# simulation.sim(printing=0,writing=1,plotting=0) # for max printing = 2
 
 ###########################################
 
 host_halo_mass = float(sys.argv[1])
 subhalo_mass = float(sys.argv[2])
-dt = float(sys.argv[3])/seconds_to_years
-tmax = float(sys.argv[4])/seconds_to_years
+dt = float(sys.argv[3])# /1e9 # input in Gyr now!
+tmax = float(sys.argv[4])# /1e9
 integrator = sys.argv[5]
 potential = sys.argv[6]
 index = int(sys.argv[7])
@@ -133,19 +90,10 @@ except:
 homedir = home_directory()
 outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
-# guppy
-# hp = hpy()
-# print "Heap at the beginning of the function\n", hp.heap()
-
 my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 # my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
 
 # cProfile.run('my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)')
-my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)
-
-# print "Heap at the end of the function\n", hp.heap()
-
-# mem = memory()
-# print mem/1e6
+my_sim.sim(printing=0, writing=1, outfile=outfile)
 
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0

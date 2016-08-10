@@ -2,6 +2,8 @@ from __future__ import division
 import numpy as np
 import time
 
+from sidm_orbit_calculation.src.potentials.test_spherical_potentials import *
+
 def euler(subhalo,dt):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
@@ -22,7 +24,7 @@ def euler(subhalo,dt):
 def leapfrog(subhalo,dt):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
-	
+
 	_, f0 = subhalo.gravity.calculate_gravitational_force(position=np.copy(x0))
 
 	x1 = x0 + p0 * dt + 0.5 * f0 * dt ** 2
@@ -35,6 +37,7 @@ def leapfrog(subhalo,dt):
 	print 'leapfrog'
 	print 'x0: %.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
 	print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
+	print 'r = ', np.sqrt(x0[0]**2+x0[1]**2+x0[2]**2)
 	print 'f0: %.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
 	print 'x1: %.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
 	print 'p1: %.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
@@ -42,7 +45,7 @@ def leapfrog(subhalo,dt):
 	print 
 	time.sleep(2)
 	'''
-
+	
 	subhalo.position = x1
 	subhalo.momentum = p1
 

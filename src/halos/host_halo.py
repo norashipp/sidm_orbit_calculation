@@ -22,10 +22,6 @@ class HostHalo:
         self.density_function = density.density_dict[self.potential]
         self.mass_function = mass.mass_dict[self.potential]
 
-        # if self.potential != 'spherical_NFW' and self.potential != 'triaxial_NFW':
-        #     self.density == 'constant'
-        #     print 'host density = ', self.density
-        
         self.M = M # work in units of solar mass, virial mass
         
         self.z = 0.0 # from merger trees?
@@ -37,15 +33,11 @@ class HostHalo:
         self.R = self.virial_radius()
         self.v = self.virial_velocity()
 
-        self.M *= M_sol # need to go through and edit all files to change units
-
         self.R_s = self.scale_radius()
         
         self.rho_s = 1
-        old = self.scale_density_old()
         self.rho_s = self.scale_density()
-        print self.potential, self.rho_s, old
-
+        
         self.rho = 0
 
         self.density_array = []
@@ -59,18 +51,15 @@ class HostHalo:
 
     def virial_radius(self):
         radius = M_to_R(self.M,self.z,'vir') # correct mdef? # returns kpc
-        return radius/m_to_kpc
+        return radius/1000 # Mpc # /m_to_kpc
 
     def scale_radius(self):
-        return self.R/self.c # R_vir / c_vir correct
+        return self.R/self.c # R_vir / c_vir
 
     def virial_velocity(self):
-        velocity = np.sqrt(2*G*self.M*M_sol/self.R)
+        # velocity = np.sqrt(2*G*self.M*M_sol/self.R)
+        velocity = np.sqrt(2*G*self.M/self.R)
         return velocity
 
     def scale_density(self):
         return self.M/self.mass_function(self,0,self.R)
-        
-    def scale_density_old(self):
-        return self.M/(4*np.pi*self.R_s**3*(np.log(1+self.c)-self.c/(1+self.c)))
-        
