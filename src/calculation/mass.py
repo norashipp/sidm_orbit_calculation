@@ -7,7 +7,6 @@ from sidm_orbit_calculation.src.potentials.density import *
 from sidm_orbit_calculation.src.utils.constants import *
 
 def calculate_triaxial_mass(host,a,b):
-    print 'triaxial mass'
     func = lambda phi, theta, r: triaxial_NFW_density(r * np.cos(phi) * np.sin(theta), r * np.sin(phi) * np.sin(theta), r * np.cos(theta), host)*np.sin(theta)*r**2
     # a = 0
     # if not b: b = host.R_s
