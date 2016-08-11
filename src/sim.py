@@ -14,10 +14,13 @@ from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 from sidm_orbit_calculation.src.utils.setup import *
+import sidm_orbit_calculation.src.merger_tree.cluster as cluster
 
 class Sim:
 	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
-		self.host = HostHalo(M=host_halo_mass, potential=potential)
+		
+		self.initiate_host_halo(M=host_halo_mass, potential=potential)
+
 		self.dt = dt
 		self.tmax = tmax
 		self.time = 0.
@@ -26,7 +29,24 @@ class Sim:
 		self.integrate = integrator_dict[integration_method]
 
 		self.initiate_subhalo(mass=subhalo_mass, initial_position=initial_position, initial_momentum=initial_momentum)
-		
+	
+	def initiate_host_halo(self, M, potential):
+		if M:
+			self.host = HostHalo(M=M, potential=potential)
+		else:
+			print 'importing from merger tree'
+			hs = cluster.HostHalos(homedir + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
+			host_idx = 40
+			snap = 0
+
+			a = hs[host_idx].a[snap] 
+			M = hs[host_idx].m_200m[snap]
+			R_s = hs[host_idx].r_s[snap]
+			q = hs[host_idx].b_to_a[snap]
+			s = hs[host_idx].c_to_a[snap]
+
+			self.host = HostHalo(M=M, potential=potential, s = s, q = q, a = a, R_s = R_s)
+
 	def initiate_subhalo(self, mass, initial_position, initial_momentum):
 		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=initial_position, initial_momentum=initial_momentum)
 
