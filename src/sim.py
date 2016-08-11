@@ -17,17 +17,19 @@ from sidm_orbit_calculation.src.utils.setup import *
 
 class Sim:
 	def __init__(self, host_halo_mass, host_idx, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
-		self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx)
-		
 		self.dt = dt
 		self.tmax = tmax
-		self.time = 0.
-		self.orbit_count = 0
+
+		self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx, tmax=tmax)
+		
+		self.time = self.host.cosmo.age(0)-tmax # always end at z=0?
+		
+		# self.orbit_count = 0
 
 		self.integrate = integrator_dict[integration_method]
 
 		self.initiate_subhalo(mass=subhalo_mass, initial_position=initial_position, initial_momentum=initial_momentum)
-	
+
 	def initiate_subhalo(self, mass, initial_position, initial_momentum):
 		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=initial_position, initial_momentum=initial_momentum)
 
@@ -38,7 +40,9 @@ class Sim:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
 
-			# self.host.update(self.time)
+			# get rid of this if statement?
+			if self.host.host_idx != None:
+				self.host.update(self.time)
 
 			self.subhalo.calculate_energy()
 
@@ -53,6 +57,12 @@ class Sim:
 		drag = np.asarray(self.subhalo.drag.force_array)
 		density = np.asarray(self.host.density_array)
 		energy = np.asarray(self.subhalo.energy_array)
+
+		self.host.M_sp = None
+		self.host.R_s_sp = None
+		self.host.q_sp = None
+		self.host.s_sp = None
+
 		self.output = [times,positions,momenta,gravity,drag,density,energy,self.host]
 
 		if writing:
