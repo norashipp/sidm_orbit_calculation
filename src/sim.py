@@ -34,7 +34,7 @@ class Sim:
 		if M:
 			self.host = HostHalo(M=M, potential=potential)
 		else:
-			print 'importing from merger tree'
+			print 'Importing host halo parameters from merger tree...'
 			hs = cluster.HostHalos(homedir + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
 			host_idx = 40
 			snap = 0
