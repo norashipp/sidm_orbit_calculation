@@ -14,13 +14,11 @@ from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 from sidm_orbit_calculation.src.utils.setup import *
-import sidm_orbit_calculation.src.merger_tree.cluster as cluster
 
 class Sim:
-	def __init__(self, host_halo_mass, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
+	def __init__(self, host_halo_mass, host_idx, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
+		self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx)
 		
-		self.initiate_host_halo(M=host_halo_mass, potential=potential)
-
 		self.dt = dt
 		self.tmax = tmax
 		self.time = 0.
@@ -30,23 +28,6 @@ class Sim:
 
 		self.initiate_subhalo(mass=subhalo_mass, initial_position=initial_position, initial_momentum=initial_momentum)
 	
-	def initiate_host_halo(self, M, potential):
-		if M:
-			self.host = HostHalo(M=M, potential=potential)
-		else:
-			print 'Importing host halo parameters from merger tree...'
-			hs = cluster.HostHalos(homedir + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
-			host_idx = 40
-			snap = 0
-
-			a = hs[host_idx].a[snap] 
-			M = hs[host_idx].m_200m[snap]
-			R_s = hs[host_idx].r_s[snap]
-			q = hs[host_idx].b_to_a[snap]
-			s = hs[host_idx].c_to_a[snap]
-
-			self.host = HostHalo(M=M, potential=potential, s = s, q = q, a = a, R_s = R_s)
-
 	def initiate_subhalo(self, mass, initial_position, initial_momentum):
 		self.subhalo = Subhalo(host=self.host, M=mass, initial_position=initial_position, initial_momentum=initial_momentum)
 
@@ -56,6 +37,8 @@ class Sim:
 		while self.time < self.tmax:
 			self.integrate(subhalo=self.subhalo,dt=self.dt)
 			self.time+=self.dt
+
+			# self.host.update(self.time)
 
 			self.subhalo.calculate_energy()
 
@@ -91,18 +74,19 @@ class Sim:
 
 ###########################################
 
-host_halo_mass = float(sys.argv[1])
-subhalo_mass = float(sys.argv[2])
-dt = float(sys.argv[3])# /1e9 # input in Gyr now!
-tmax = float(sys.argv[4])# /1e9
-integrator = sys.argv[5]
-potential = sys.argv[6]
-index = int(sys.argv[7])
+host_idx = int(sys.argv[1])
+host_halo_mass = float(sys.argv[2])
+subhalo_mass = float(sys.argv[3])
+dt = float(sys.argv[4])# /1e9 # input in Gyr now!
+tmax = float(sys.argv[5])# /1e9
+integrator = sys.argv[6]
+potential = sys.argv[7]
+index = int(sys.argv[8])
 # print len(sys.argv)
 
 try:
-    initial_position = np.array([float(sys.argv[8]), float(sys.argv[9]), float(sys.argv[10])])
-    initial_momentum = np.array([float(sys.argv[11]), float(sys.argv[12]), float(sys.argv[13])])
+    initial_position = np.array([float(sys.argv[9]), float(sys.argv[10]), float(sys.argv[11])])
+    initial_momentum = np.array([float(sys.argv[12]), float(sys.argv[13]), float(sys.argv[14])])
 except:
     initial_position = np.array([0,0,0])
     initial_momentum = np.array([0,0,0])
@@ -110,7 +94,7 @@ except:
 homedir = home_directory()
 outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
-my_sim = Sim(host_halo_mass, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
+my_sim = Sim(host_halo_mass, host_idx, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 # my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
 
 # cProfile.run('my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)')
