@@ -22,7 +22,7 @@ class Sim:
 
 		self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx, tmax=tmax)
 		
-		self.time = self.host.cosmo.age(0)-tmax # always end at z=0?
+		self.time = self.host.cosmo.age(0) - tmax # always end at z=0?
 		
 		# self.orbit_count = 0
 

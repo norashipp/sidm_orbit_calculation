@@ -13,6 +13,7 @@ import sidm_orbit_calculation.src.potentials.density as density
 import sidm_orbit_calculation.src.calculation.mass as mass
 from sidm_orbit_calculation.src.utils.setup import *
 import sidm_orbit_calculation.src.merger_tree.cluster as cluster
+import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
 
 class HostHalo:
 
@@ -26,6 +27,7 @@ class HostHalo:
 
         self.potential = potential
 
+        self.potential_function = potentials.potential_dict[potential]
         self.density_function = density.density_dict[self.potential]
         self.mass_function = mass.mass_dict[self.potential]
 
@@ -46,7 +48,7 @@ class HostHalo:
 
             self.M = M # virial_mass(M) # work in 200m?
 
-            self.R = self.virial_radius(M)
+            self.R = self.virial_radius()
 
             self.R_s = R_s
             
@@ -85,7 +87,7 @@ class HostHalo:
             return self.R/self.R_s
         else: 
             c = concentration(self.M, '200m', self.z, model='diemer15')
-            self.R_s = self.R/self.c
+            self.R_s = self.R/c
             return c
 
     def virial_velocity(self):
