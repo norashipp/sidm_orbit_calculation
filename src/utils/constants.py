@@ -3,7 +3,7 @@
 # G = 6.67e-11 # m**2/(kg*s**2)
 G = 4.516483610787051e-15 # Mpc**3/(M_sol*Gyr**2)
 
-M_sol = 2.e30 # kg
+M_sol = 1.988435e30 # kg
 
 kpc_to_km = 3.e16
 m_to_kpc = 3.241e-20
