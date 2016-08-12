@@ -54,14 +54,14 @@ while time < tmax:
 
 	host.update(time)
 
-	pp = []
-	pg = []
-	for i in range(len(xx)):
-		pp.append(host.potential_function(xx[i],yy[i],zz[i],host))
-		pg.append(gala_spherical(np.array([xx[i],yy[i],zz[i]])/(m_to_Mpc))*(m_to_Mpc/s_to_Gyr)**2)
+	# pp = []
+	# pg = []
+	# for i in range(len(xx)):
+	# 	pp.append(host.potential_function(xx[i],yy[i],zz[i],host))
+	# 	pg.append(gala_spherical(np.array([xx[i],yy[i],zz[i]])/(m_to_Mpc))*(m_to_Mpc/s_to_Gyr)**2)
 
-	# pp = host.potential_function(x,y,z,host)
-	# pg = gala_spherical(pos)*(m_to_Mpc/s_to_Gyr)**2
+	pp = host.potential_function(xx,yy,zz,host)
+	pg = gala_spherical(pos)*(m_to_Mpc/s_to_Gyr)**2
 
 	plt.plot(xx/host.R, pp, label='z = %.2f' %z, lw=2)
 	plt.plot(xx/host.R, pg, '--', label='z = %.2f' %z, lw=2)
