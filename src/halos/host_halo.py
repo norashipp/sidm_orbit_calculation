@@ -15,6 +15,8 @@ from sidm_orbit_calculation.src.utils.setup import *
 import sidm_orbit_calculation.src.merger_tree.cluster as cluster
 import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
 
+HOMEDIR = home_directory()
+
 class HostHalo:
 
     def __init__(self, M, potential, idx=None, tmax=None, R_s=None, s=0.99, q=0.999, a=1):
@@ -38,6 +40,8 @@ class HostHalo:
             print tmax
             print 'initial time = ', t0
             self.update(t0)
+
+            self.subs = SubHalos(HOMEDIR + 'subs/sub_%d.dat' % self.host_idx)
 
         else:
             # axis ratios, q > s
@@ -106,8 +110,8 @@ class HostHalo:
 
     def merger_tree(self,host_idx=40):
         print 'Importing host halo parameters from merger tree...'
-        homedir = home_directory()
-        self.hs = cluster.HostHalos(homedir + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
+        # homedir = home_directory()
+        self.hs = cluster.HostHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
         
         aa = self.hs[self.host_idx].a 
         zz = self.redshift(aa)
