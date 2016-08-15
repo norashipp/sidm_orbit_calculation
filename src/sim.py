@@ -101,8 +101,7 @@ except:
     initial_position = np.array([0,0,0])
     initial_momentum = np.array([0,0,0])
 
-homedir = home_directory()
-outfile = homedir + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
+outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%.1e_%.1e_%.1e_%.1e_%s_%s_%i.dat' %(host_halo_mass, subhalo_mass, dt*seconds_to_years, tmax*seconds_to_years, integrator, potential, index)
 
 my_sim = Sim(host_halo_mass, host_idx, subhalo_mass, dt, tmax, integrator, potential, initial_position, initial_momentum)
 # my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
