@@ -52,6 +52,7 @@ class Plotting:
 		pylab.figure()
 		pylab.plot(self.x/self.R,self.y/self.R,'g-',markersize=10,linewidth=2)
 		pylab.plot(self.x[0]/self.R,self.y[0]/self.R,'k*',markersize=10)
+		pylab.plot(0,0,'k^',markersize=10)
 		pylab.xlabel('x')
 		pylab.ylabel('y')
 		# pylab.xlim([-1.0,1.0])

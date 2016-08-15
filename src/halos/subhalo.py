@@ -7,8 +7,9 @@ from sidm_orbit_calculation.src.utils.constants import *
 
 class Subhalo:
 
-	def __init__(self, host, M, initial_position, initial_momentum):
+	def __init__(self, host, M, initial_position, initial_momentum, t0):
 		self.host = host
+		self.t0 = t0
 		self.M = M # *M_sol # work in solar masses
 		self.initial_parameters(initial_position,initial_momentum)
 		
@@ -25,11 +26,11 @@ class Subhalo:
 			self.position, self.momentum = initial_conditions(self)
 			self.position *= self.host.R # initial position in units of host halo virial radius
 		else:
-			self.position = initial_position*self.host.R
-			self.momentum = initial_momentum*self.host.v # *m_to_Mpc/(s_to_Gyr) 
+			self.position = initial_position # *self.host.R
+			self.momentum = initial_momentum # *self.host.v # *m_to_Mpc/s_to_Gyr
 
-		print 'initial position = %.2e, %.2e, %.2e' % (self.position[0], self.position[1], self.position[2])
-		print 'initial momentum = %.2e, %.2e, %.2e' % (self.momentum[0], self.momentum[1], self.momentum[2])
+		# print 'initial position = %.2e, %.2e, %.2e' % (self.position[0], self.position[1], self.position[2])
+		# print 'initial momentum = %.2e, %.2e, %.2e' % (self.momentum[0], self.momentum[1], self.momentum[2])
 
 		self.position_array = [(self.position[0],self.position[1],self.position[2])]
 		self.momentum_array = [(self.momentum[0],self.momentum[1],self.momentum[2])]

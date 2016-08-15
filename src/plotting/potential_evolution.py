@@ -47,18 +47,11 @@ plt.figure()
 
 while time < tmax:
 	time+=dt
-	# time = host.cosmo.age(0)
 
 	z = host.cosmo.age(time,inverse=True)
 	print 'z = ', z
 
 	host.update(time)
-
-	# pp = []
-	# pg = []
-	# for i in range(len(xx)):
-	# 	pp.append(host.potential_function(xx[i],yy[i],zz[i],host))
-	# 	pg.append(gala_spherical(np.array([xx[i],yy[i],zz[i]])/(m_to_Mpc))*(m_to_Mpc/s_to_Gyr)**2)
 
 	pp = host.potential_function(xx,yy,zz,host)
 	pg = gala_spherical(pos)*(m_to_Mpc/s_to_Gyr)**2
