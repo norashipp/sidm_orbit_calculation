@@ -31,8 +31,8 @@ for infile in infiles:
 	f = open(infile,'rb')
 	data = cPickle.load(f)
 	f.close()
-	times,positions,momenta,gravity,drag,density,energy,host_idx = data
-	# times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
+	# times,positions,momenta,gravity,drag,density,energy,host_idx = data
+	times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
 
 	fp = positions[-1]
 	dist = np.sqrt(fp[0]**2 + fp[1]**2  + fp[2]**2)
