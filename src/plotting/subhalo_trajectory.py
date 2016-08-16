@@ -63,4 +63,5 @@ plt.plot(mt_x[0],mt_y[0],'g*',markersize=10)
 # plt.plot([-host_radius,host_radius],[-0.45553861,-0.45553861],'r--',lw=3)
 plt.xlabel('x (Mpc)')
 plt.ylabel('y (Mpc)')
+
 plt.show()
