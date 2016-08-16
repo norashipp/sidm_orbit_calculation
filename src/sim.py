@@ -78,7 +78,7 @@ class Sim:
 		for x in d: print x, eval("type(self.host.subhalos[0].%s)" % x)
 		'''
 
-		self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,host.R]
+		self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
 
 		if writing:
 			self.write_output(outfile)
