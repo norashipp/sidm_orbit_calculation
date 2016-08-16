@@ -160,11 +160,20 @@ class HostHalo:
             vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
             m0 = t_to_m(t0)
 
-            x0 = np.array([x0, y0, z0])
-            p0 = np.array([vx0, vy0, vz0])
+            initial_position = np.array([x0, y0, z0])
+            initial_momentum = np.array([vx0, vy0, vz0])
             
-            subhalo = Subhalo(host=self, M=m0, initial_position=x0, initial_momentum=p0, t0=t0)
+            subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0)
             self.subhalos.append(subhalo)
+
+            if i == 100:
+                print t0, initial_position, initial_momentum
+                times = np.linspace(tt.min(),tt.max(),1000)
+                plt.figure()
+                plt.plot(tt,sub.rel_x,'b.',markersize=5)
+                plt.plot(times,t_to_x(times),'c',lw=2)
+                plt.plot(t0,t_to_x(t0),'c*')
+                plt.show()
 
             '''
             print 'subhalo'

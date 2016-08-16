@@ -1,41 +1,39 @@
-from __future__ import division
-import pylab
-import numpy as np
 import cPickle
-import sys
-import glob
-
+import numpy as np
+from sklearn.neighbors import KernelDensity
 import matplotlib.pyplot as plt
 
-from sidm_orbit_calculation.src.plotting.make_plots import *
-from sidm_orbit_calculation.src.utils.setup import *
-from sidm_orbit_calculation.src.halos.host_halo import *
+def kde_sklearn(data, grid, bandwidth = 1.0, **kwargs):
+    kde_skl = KernelDensity(bandwidth = bandwidth, **kwargs)
+    kde_skl.fit(data[:, np.newaxis])
+    log_pdf = kde_skl.score_samples(grid[:, np.newaxis]) # sklearn returns log(density)
 
-host_idx = int(sys.argv[1])
-integrator = 'leapfrog'
-potential = 'spherical_NFW'
+    return np.exp(log_pdf)
 
-infiles = glob.glob(HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_*.dat' %(host_idx,integrator,potential))
-infiles.sort()
+f = open('/Users/nora/sidm_orbit_calculation/src/final_distribution_40.dat','rb')
+dat = cPickle.load(f)
+f.close()
 
-# final_positions = np.array([])
-final_dists = []
-
-# host = HostHalo(host_idx,potential)
-# host.update(host.cosmo.age(0))
-# print host.R
 host_radius = 1.21100235447
 
-for infile in infiles:
-	f = open(infile,'rb')
-	data = cPickle.load(f)
-	f.close()
-	times,positions,momenta,gravity,drag,density,energy,host_idx = data
-	# times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
+sigma = np.std(dat)
+n = len(dat)
+h = 1.059*sigma*n**-(1/5)
+print 'h = ', h
 
-	fp = positions[-1]
-	dist = np.sqrt(fp[0]**2 + fp[1]**2  + fp[2]**2)
-	final_dists.append(dist)
+grid = np.arange(0,7,0.1)
+kde = kde_sklearn(dat/host_radius, grid, h, kernel='tophat')
 
-plt.hist(final_dists/host_radius,bins=50)
+plt.figure()
+plt.plot(grid,kde)
+plt.title('Tophat KDE')
+plt.xlabel('r/R_200')
+plt.ylabel('subhalos')
+
+plt.figure()
+plt.hist(dat,bins=30,histtype='step',normed=True)
+plt.title('Histogram')
+plt.xlabel('r/R_200')
+plt.ylabel('subhalos')
+
 plt.show()
