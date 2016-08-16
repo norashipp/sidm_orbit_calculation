@@ -131,7 +131,7 @@ for i in range(len(my_sim.host.subhalos)):
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
 	print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
-	outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.2e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
+	outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
 	my_sim.sim(subhalo=subhalo, printing=0, writing=1, outfile=outfile)
 
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
