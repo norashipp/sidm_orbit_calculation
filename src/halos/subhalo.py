@@ -7,12 +7,14 @@ from sidm_orbit_calculation.src.utils.constants import *
 
 class Subhalo:
 
-	def __init__(self, host, M, initial_position, initial_momentum, t0):
+	def __init__(self, host, M, initial_position, initial_momentum, t0, mass_spline):
 		self.host = host
 		self.t0 = t0
 		self.M = M # *M_sol # work in solar masses
-		self.initial_parameters(initial_position,initial_momentum)
+		self.M_sp = mass_spline
 		
+		self.initial_parameters(initial_position,initial_momentum)
+
 		# forces should not necessarily be classes
 		self.gravity = GetGravitationalForce(self.host)
 		self.drag = GetDragForce(self.host)
@@ -40,3 +42,6 @@ class Subhalo:
 		PE = self.gravity.potential_function(self.position[0], self.position[1], self.position[2])
 		E = KE + PE
 		self.energy_array.append(E)
+
+	def update(self, time):
+		self.M = self.M_sp(time)

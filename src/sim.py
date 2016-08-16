@@ -39,6 +39,7 @@ class Sim:
 
 		while self.time < self.host.cosmo.age(0): # assuming all subhalos survive to z=0
 			self.host.update(self.time)
+			subhalo.update(self.time)
 			self.integrate(subhalo=subhalo,dt=self.dt)
 			self.time+=self.dt
 			
@@ -130,9 +131,11 @@ t0 = my_sim.host.cosmo.age(0)
 for i in range(len(my_sim.host.subhalos)):
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
-	print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
-	outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-	my_sim.sim(subhalo=subhalo, printing=0, writing=1, outfile=outfile)
-
+	if subhalo:
+		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
+		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
+		my_sim.sim(subhalo=subhalo, printing=0, writing=1, outfile=outfile)
+	else:
+		print 'Skipping subhalo %i' %i
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
 # cProfile.run('my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)')

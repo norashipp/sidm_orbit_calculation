@@ -145,6 +145,7 @@ class HostHalo:
             try:
                 t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
             except:
+                self.subhalos.append(None)
                 skip+=1
                 continue
 
@@ -163,11 +164,14 @@ class HostHalo:
             initial_position = np.array([x0, y0, z0])
             initial_momentum = np.array([vx0, vy0, vz0])
             
-            subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0)
+            subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0, mass_spline=t_to_m)
             self.subhalos.append(subhalo)
 
-            if i == 100:
+
+            # print i
+            if i == 33:
                 print t0, initial_position, initial_momentum
+                print t0, t_to_x(t0)
                 times = np.linspace(tt.min(),tt.max(),1000)
                 plt.figure()
                 plt.plot(tt,sub.rel_x,'b.',markersize=5)
