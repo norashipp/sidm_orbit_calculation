@@ -16,6 +16,8 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 from sidm_orbit_calculation.src.utils.setup import *
 
+F = open('final_distances_%s.txt' %sys.argv[1],'a')
+
 class Sim:
 	# def __init__(self, host_halo_mass, host_idx, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
 	def __init__(self, host_idx, dt, integration_method, potential):
@@ -47,7 +49,7 @@ class Sim:
 			# if self.host.host_idx != None:
 			# self.host.update(self.time)
 
-			subhalo.calculate_energy() # weird - reorganize
+			# subhalo.calculate_energy() # weird - reorganize
 
 			# if not subhalo.count % 500:
 			times.append(np.copy(self.time))
@@ -79,7 +81,10 @@ class Sim:
 		for x in d: print x, eval("type(self.host.subhalos[0].%s)" % x)
 		'''
 
-		self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
+		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
+                self.output = [times,positions]
+
+                F.write('%s\n' %subhalo.distance_array[-1])
 
 		if writing:
 			self.write_output(outfile)
@@ -134,8 +139,10 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		my_sim.sim(subhalo=subhalo, printing=0, writing=1, outfile=outfile)
+		my_sim.sim(subhalo=subhalo, printing=0, writing=0, outfile=outfile)
+                
 	else:
 		print 'Skipping subhalo %i' %i
+F.close()
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
 # cProfile.run('my_sim.sim(printing=0, writing=1, plotting=0, outfile=outfile)')

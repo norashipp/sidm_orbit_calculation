@@ -20,7 +20,7 @@ class Subhalo:
 		self.drag = GetDragForce(self.host)
 
 		self.count = 0
-
+                self.distance_array = []
 		self.energy_array = []
 		
 	def initial_parameters(self,initial_position,initial_momentum):
@@ -45,3 +45,8 @@ class Subhalo:
 
 	def update(self, time):
 		self.M = self.M_sp(time)
+                self.calculate_energy()
+                self.distance_array.append(self.distance())
+
+        def distance(self):
+            return np.sqrt(self.position[0]**2 + self.position[1]**2 + self.position[2]**2)

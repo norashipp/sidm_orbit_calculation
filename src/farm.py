@@ -12,9 +12,9 @@ from sidm_orbit_calculation.src.utils.setup import *
 username = 'norashipp'
 jobname = 'sidm'
 
-host_idx = sys.argv[1]
+host_idx = int(sys.argv[1])
 dt = 4e-3
-drag = 0
+drag = 1
 if drag:
     integrator = 'dissipative'
 else:

@@ -167,7 +167,7 @@ class HostHalo:
             subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0, mass_spline=t_to_m)
             self.subhalos.append(subhalo)
 
-
+            '''
             # print i
             if i == 33:
                 print t0, initial_position, initial_momentum
@@ -178,6 +178,7 @@ class HostHalo:
                 plt.plot(times,t_to_x(times),'c',lw=2)
                 plt.plot(t0,t_to_x(t0),'c*')
                 plt.show()
+            '''
 
             '''
             print 'subhalo'
