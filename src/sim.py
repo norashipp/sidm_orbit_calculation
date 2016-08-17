@@ -16,7 +16,7 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.calculation.integrate import *
 from sidm_orbit_calculation.src.utils.setup import *
 
-F = open('final_distances_%s.txt' %sys.argv[1],'a')
+F = open('final_distances_%s_drag.txt' %sys.argv[1],'a')
 
 class Sim:
 	# def __init__(self, host_halo_mass, host_idx, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
@@ -139,8 +139,11 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		my_sim.sim(subhalo=subhalo, printing=0, writing=0, outfile=outfile)
-                
+                if subhalo > 30 and subhalo < 35:
+			writing = 1 
+		else:
+			writing = 0
+		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 	else:
 		print 'Skipping subhalo %i' %i
 F.close()
