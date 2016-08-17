@@ -79,8 +79,10 @@ def dissipative(subhalo,dt):
 	'''
 	print 'dissipative'
 	# print 'x0: %.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
-	# print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
+	print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
 	print 'f0: %.3g, %.3g, %.3g' %(f0[0],f0[1],f0[2])
+	print 'fd0: %.3g, %.3g, %.3g' %(fd0[0], fd0[1], fd0[2])
+	print 'fg0: %.3g, %.3g, %.3g' %(fg0[0], fg0[1], fg0[2])
 	# print 'x1: %.3g, %.3g, %.3g' %(x1[0],x1[1],x1[2])
 	# print 'p1: %.3g, %.3g, %.3g' %(p1[0],p1[1],p1[2])
 	print x1-x0
@@ -88,7 +90,7 @@ def dissipative(subhalo,dt):
 	print 
 	time.sleep(2)
 	'''
-
+	
 	subhalo.position = x1
 	subhalo.momentum = p1
 	subhalo.drag.force = fd1
