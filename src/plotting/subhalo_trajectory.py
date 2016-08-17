@@ -1,5 +1,3 @@
-from __future__ import division
-import pylab
 import numpy as np
 import cPickle
 import sys
@@ -9,6 +7,16 @@ from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.utils.setup import *
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.merger_tree.cluster import *
+
+dpi = 175
+fontsize = 15
+plt.rc('savefig', dpi=dpi)
+plt.rc('text', usetex=True)
+plt.rc('font', size=fontsize)
+plt.rc('xtick.major', pad=5)
+plt.rc('xtick.minor', pad=5)
+plt.rc('ytick.major', pad=5)
+plt.rc('ytick.minor', pad=5)
 
 host_idx = int(sys.argv[1])
 sub_idx = int(sys.argv[2])
@@ -53,15 +61,20 @@ print mt_x[0], mt_y[0]
 print x[0], y[0]
 
 plt.figure()
-plt.plot(x, y, 'c', lw=2, label='orbit calculation')
-plt.plot(mt_x, mt_y, 'g', lw=2, label='merger tree')
-plt.plot(0,0,'^k')
-plt.plot(x[0],y[0],'c*',markersize=12)
-plt.plot(mt_x[0],mt_y[0],'g*',markersize=10)
+plt.plot(x, y, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
+plt.plot(mt_x, mt_y, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+plt.plot(0,0,'^k',markersize=12,label=r'$\mathrm{Host\ Center}$')
+plt.plot(x[0],y[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
+# plt.plot(mt_x[0],mt_y[0],'g*',markersize=10)
 # plt.plot(1.03121194,-0.90783956,'r*',markersize=10) # 40, 100
 # plt.plot(-1.29679797, -0.45553861,'r*',markersize=10) # 40, 0
 # plt.plot([-host_radius,host_radius],[-0.45553861,-0.45553861],'r--',lw=3)
-plt.xlabel('x (Mpc)')
-plt.ylabel('y (Mpc)')
+plt.xlabel(r'$\mathrm{x\ (Mpc)}$')
+plt.ylabel(r'$\mathrm{y\ (Mpc)}$')
+plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
+plt.legend(loc='lower left',fontsize=15)
+plt.xlim([-2,2])
+plt.ylim([-2,2])
+plt.grid()
 
 plt.show()
