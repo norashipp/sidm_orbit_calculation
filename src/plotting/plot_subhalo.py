@@ -37,7 +37,7 @@ times, positions, velocities = data
 
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
-t = times[:-1]
+t = times
 
 x = positions[:,0]
 y = positions[:,1]
