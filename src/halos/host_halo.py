@@ -20,7 +20,7 @@ from sidm_orbit_calculation.src.halos.subhalo import *
 class HostHalo:
 
     # def __init__(self, M, potential, idx=None, tmax=None, R_s=None, s=0.99, q=0.999, a=1):
-    def __init__(self, idx, potential):
+    def __init__(self, idx, potential, subs=True):
         # input from merger tree: R_s, a, M_200m, b_to_a, c_to_a
 
         my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.045714, 'sigma8': 0.82, 'ns': 0.96}
@@ -35,7 +35,7 @@ class HostHalo:
         self.mass_function = mass.mass_dict[self.potential]
         
         self.initiate_host()
-        self.initiate_subhalos()
+        if subs: self.initiate_subhalos()
         
         self.rho = 0
         self.density_array = []
@@ -111,7 +111,7 @@ class HostHalo:
     #     return self.R/self.c # R_vir / c_vir
 
     def initiate_host(self):
-        print 'Importing host halo parameters from merger tree...'
+        print 'Importing host %i parameters from merger tree...' %self.host_idx
         hs = cluster.HostHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
         aa = hs[self.host_idx].a 
         zz = self.redshift(aa)

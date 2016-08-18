@@ -36,7 +36,7 @@ for i in range(6):
 	dat = loadtxt(HOMEDIR + 'sidm_orbit_calculation/src/output/final_distances_%i.txt' %host_idx, unpack=True)
 
 	# host_radius = 1.21100235447 # 40
-	host = HostHalo(host_idx,potential)
+	host = HostHalo(host_idx,potential,subs=False)
 	host.update(host.cosmo.age(0))
 	host_radius = host.R
 
@@ -44,7 +44,8 @@ for i in range(6):
 	if compare:
 		subs = mt.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % host_idx)
 		merger_tree = []
-		for sub in subs:
+		for i in range(len(subs)-1):
+			sub = subs[i]
 			dist = np.sqrt(sub.rel_x[-1]**2 + sub.rel_y[-1]**2 + sub.rel_z[-1]**2)
 			merger_tree.append(dist/host_radius)
 
@@ -76,7 +77,7 @@ for i in range(6):
 
 	plt.figure()
 	plt.hist(dat,bins=nbins,histtype='step',normed=True,lw=3)
-	if compare: plt.hist(merger_tree,'g',bins=nbins,histtype='step',normed=True,lw=3)
+	if compare: plt.hist(merger_tree,bins=nbins,histtype='step',normed=True,lw=3)
 	plt.title(r'$\mathrm{Host\ %i\ -\ Histogram}$' %host_idx)
 	plt.xlabel(r'$\mathrm{r/R_{200}}$')
 	plt.ylabel(r'$\mathrm{subhalos}$')

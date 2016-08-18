@@ -35,7 +35,7 @@ class Sim:
 	def sim(self, subhalo, printing=0, writing=0, outfile='pickle.dat'):
 		self.time = subhalo.t0
 		self.host.update(self.time)
-		times = [self.time]
+		times = [np.copy(self.time)]
 
 		while self.time < self.host.cosmo.age(0): # assuming all subhalos survive to z=0
 			self.host.update(self.time)
@@ -137,7 +137,7 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		if sub_idx > 30 and sub_idx < 35:
+		if sub_idx == 101:
 			writing = 1 
 		else:
 			writing = 0
