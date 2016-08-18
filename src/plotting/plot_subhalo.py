@@ -118,7 +118,7 @@ ax[0][2].set_ylim([-2,2])
 
 ####### VELOCITIES #######
 
-print t.shape, x.shape, vx.shape
+print t.shape, x.shape, vx.shape, mt_x.shape, mt_vx.shape
 
 ax[1][0].plot(t, vx, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[1][0].plot(t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
