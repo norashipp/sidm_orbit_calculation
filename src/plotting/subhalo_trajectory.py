@@ -32,8 +32,8 @@ f = open(infile,'rb')
 data = cPickle.load(f)
 f.close()
 # times,positions,momenta,gravity,drag,density,energy,host_idx,host_radius = data
-times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
-# times, positions = data
+# times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
+times, positions, velocities = data
 
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
@@ -61,7 +61,7 @@ mt_dist = np.sqrt(mt_x**2 + mt_y**2 + mt_z**2)
 print mt_x[0], mt_y[0]
 print x[0], y[0]
 
-compare = 1
+compare = 0
 if compare:
 	integrator = 'dissipative'
 	infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
@@ -93,6 +93,7 @@ plt.legend(loc='lower left',fontsize=15)
 plt.xlim([-2,2])
 plt.ylim([-2,2])
 plt.grid()
+plt.savefig('%i_%i_trajectory_y_x.png' %(host_idx,sub_idx))
 
 plt.figure()
 plt.plot(y, z, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
@@ -107,6 +108,8 @@ plt.legend(loc='lower left',fontsize=15)
 plt.xlim([-2,2])
 plt.ylim([-2,2])
 plt.grid()
+plt.savefig('%i_%i_trajectory_z_y.png' %(host_idx,sub_idx))
+
 
 plt.figure()
 plt.plot(z, x, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
@@ -121,5 +124,6 @@ plt.legend(loc='lower left',fontsize=15)
 plt.xlim([-2,2])
 plt.ylim([-2,2])
 plt.grid()
+plt.savefig('%i_%i_trajectory_x_z.png' %(host_idx,sub_idx))
 
-plt.show()
+#plt.show()
