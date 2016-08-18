@@ -13,6 +13,7 @@ my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.045714, 'sigma8': 0.
 cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
 dpi = 175
+'''
 fontsize = 15
 plt.rc('savefig', dpi=dpi)
 plt.rc('text', usetex=True)
@@ -21,6 +22,7 @@ plt.rc('xtick.major', pad=5)
 plt.rc('xtick.minor', pad=5)
 plt.rc('ytick.major', pad=5)
 plt.rc('ytick.minor', pad=5)
+'''
 
 host_idx = int(sys.argv[1])
 sub_idx = int(sys.argv[2])
