@@ -88,7 +88,7 @@ if compare:
 	z_d = positions_drag[:,2]
 
 
-fig, ax = plt.subplots(3,3,sharey=True)
+fig, ax = plt.subplots(3,3,figsize=(12,12))
 plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
 
 ####### ORBITS #######
@@ -100,7 +100,7 @@ ax[0][0].plot(x[0],y[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if compare: ax[0][0].plot(x_d, y_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[0][0].set_xlabel(r'$\mathrm{x\ (Mpc)}$')
 ax[0][0].set_ylabel(r'$\mathrm{y\ (Mpc)}$')
-ax[0][0].legend(loc='lower left',fontsize=15)
+# ax[0][0].legend(loc='lower left',fontsize=15)
 ax[0][0].set_xlim([-2,2])
 ax[0][0].set_ylim([-2,2])
 
@@ -111,7 +111,7 @@ ax[0][1].plot(y[0],z[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if compare: ax[0][1].plot(y_d, z_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[0][1].set_xlabel(r'$\mathrm{y\ (Mpc)}$')
 ax[0][1].set_ylabel(r'$\mathrm{z\ (Mpc)}$')
-ax[0][1].legend(loc='lower left',fontsize=15)
+# ax[0][1].legend(loc='lower left',fontsize=15)
 ax[0][1].set_xlim([-2,2])
 ax[0][1].set_ylim([-2,2])
 
@@ -122,7 +122,7 @@ ax[0][2].plot(z[0],x[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if compare: ax[0][2].plot(z_d, x_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[0][2].set_xlabel(r'$\mathrm{z\ (Mpc)}$')
 ax[0][2].set_ylabel(r'$\mathrm{x\ (Mpc)}$')
-ax[0][2].legend(loc='lower left',fontsize=15)
+# ax[0][2].legend(loc='lower left',fontsize=15)
 ax[0][2].set_xlim([-2,2])
 ax[0][2].set_ylim([-2,2])
 
@@ -135,21 +135,21 @@ ax[1][0].plot(mt_t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][0].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][0].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][0].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
-ax[1][0].legend(loc='lower left',fontsize=15)
+# ax[1][0].legend(loc='lower left',fontsize=15)
 
 ax[1][1].plot(t, vy, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[1][1].plot(mt_t, mt_vy, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][1].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][1].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
-ax[1][1].legend(loc='lower left',fontsize=15)
+# ax[1][1].legend(loc='lower left',fontsize=15)
 
 ax[1][2].plot(t, vz, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[1][2].plot(mt_t, mt_vz, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][2].plot(t, vz_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][2].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][2].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
-ax[1][2].legend(loc='lower left',fontsize=15)
+# ax[1][2].legend(loc='lower left',fontsize=15)
 
 ####### RADIUS #######
 
