@@ -50,6 +50,7 @@ vz = velocities[:,2]
 dist = np.sqrt(x**2 + y**2 + z**2)
 
 sub = subs[sub_idx]
+print sub.rel_x.shape
 mt_x = sub.rel_x[-len(t):]
 mt_y = sub.rel_y[-len(t):]
 mt_z = sub.rel_z[-len(t):]
