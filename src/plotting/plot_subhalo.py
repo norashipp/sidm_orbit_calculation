@@ -28,7 +28,7 @@ host_idx = int(sys.argv[1])
 sub_idx = int(sys.argv[2])
 integrator = 'leapfrog'
 potential = 'spherical_NFW'
-dt = 4e-4
+dt = 4e-3
 
 infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
 
