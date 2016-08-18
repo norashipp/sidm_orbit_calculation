@@ -13,7 +13,7 @@ username = 'norashipp'
 jobname = 'sidm'
 
 host_idx = int(sys.argv[1])
-dt = 4e-4
+dt = 4e-3
 drag = 0
 if drag:
     integrator = 'dissipative'
