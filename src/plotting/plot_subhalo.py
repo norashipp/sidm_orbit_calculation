@@ -81,6 +81,8 @@ if compare:
 fig, ax = plt.subplots(3,3,sharey=True)
 plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
 
+####### ORBITS #######
+
 ax[0][0].plot(x, y, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[0][0].plot(mt_x, mt_y, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][0].plot(0,0,'^k',markersize=12,label=r'$\mathrm{Host\ Center}$')
@@ -114,5 +116,36 @@ ax[0][2].legend(loc='lower left',fontsize=15)
 ax[0][2].set_xlim([-2,2])
 ax[0][2].set_ylim([-2,2])
 
+####### VELOCITIES #######
+
+ax[1][0].plot(t, vx, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
+ax[1][0].plot(t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+if compare: ax[1][0].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
+ax[1][0].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
+ax[1][0].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
+ax[1][0].legend(loc='lower left',fontsize=15)
+
+ax[1][1].plot(t, vy, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
+ax[1][1].plot(t, mt_vy, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+if compare: ax[1][1].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
+ax[1][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
+ax[1][1].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
+ax[1][1].legend(loc='lower left',fontsize=15)
+
+ax[1][2].plot(t, vz, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
+ax[1][2].plot(t, mt_vz, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+if compare: ax[1][2].plot(t, vz_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
+ax[1][2].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
+ax[1][2].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
+ax[1][2].legend(loc='lower left',fontsize=15)
+
+####### RADIUS #######
+
+ax[2][1].plot(t,dist,'c',lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
+ax[2][1].plot(t, mt_dist, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+if compare: ax[2][1].plot(t, dist_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
+ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
+ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
+
 #plt.show()
-plt.savefig('%i_%i_subhalo_plot.png'%(host_idx,sub_idx))
+plt.savefig('host_%i_subbhalo_%i.png'%(host_idx,sub_idx))
