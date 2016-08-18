@@ -2,11 +2,15 @@ import numpy as np
 import cPickle
 import sys
 import matplotlib.pyplot as plt
+from colossus.cosmology import cosmology
 
 from sidm_orbit_calculation.src.plotting.make_plots import *
 from sidm_orbit_calculation.src.utils.setup import *
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.merger_tree.cluster import *
+
+my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.045714, 'sigma8': 0.82, 'ns': 0.96}
+cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
 dpi = 175
 fontsize = 15
@@ -50,14 +54,17 @@ vz = velocities[:,2]
 dist = np.sqrt(x**2 + y**2 + z**2)
 
 sub = subs[sub_idx]
-print sub.rel_x.shape
-mt_x = sub.rel_x[-len(t):]
-mt_y = sub.rel_y[-len(t):]
-mt_z = sub.rel_z[-len(t):]
 
-mt_vx = sub.rel_vx[-len(t):]
-mt_vy = sub.rel_vy[-len(t):]
-mt_vz = sub.rel_vz[-len(t):]
+mt_t = cosmo.age(1/sub.a-1)
+print mt_t[0],mt_t[-1]
+
+mt_x = sub.rel_x
+mt_y = sub.rel_y
+mt_z = sub.rel_z
+
+mt_vx = sub.rel_vx
+mt_vy = sub.rel_vy
+mt_vz = sub.rel_vz
 
 mt_dist = np.sqrt(mt_x**2 + mt_y**2 + mt_z**2)
 
@@ -122,21 +129,21 @@ ax[0][2].set_ylim([-2,2])
 print t.shape, x.shape, vx.shape, mt_x.shape, mt_vx.shape
 
 ax[1][0].plot(t, vx, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
-ax[1][0].plot(t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+ax[1][0].plot(mt_t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][0].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][0].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][0].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
 ax[1][0].legend(loc='lower left',fontsize=15)
 
 ax[1][1].plot(t, vy, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
-ax[1][1].plot(t, mt_vy, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+ax[1][1].plot(mt_t, mt_vy, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][1].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][1].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
 ax[1][1].legend(loc='lower left',fontsize=15)
 
 ax[1][2].plot(t, vz, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
-ax[1][2].plot(t, mt_vz, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+ax[1][2].plot(mt_t, mt_vz, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][2].plot(t, vz_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][2].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][2].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
@@ -145,7 +152,7 @@ ax[1][2].legend(loc='lower left',fontsize=15)
 ####### RADIUS #######
 
 ax[2][1].plot(t,dist,'c',lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
-ax[2][1].plot(t, mt_dist, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
+ax[2][1].plot(mt_t, mt_dist, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[2][1].plot(t, dist_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
