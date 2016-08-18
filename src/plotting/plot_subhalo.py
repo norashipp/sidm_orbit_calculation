@@ -64,9 +64,9 @@ mt_x = sub.rel_x
 mt_y = sub.rel_y
 mt_z = sub.rel_z
 
-mt_vx = sub.rel_vx
-mt_vy = sub.rel_vy
-mt_vz = sub.rel_vz
+mt_vx = sub.rel_vx*1000*m_to_Mpc/s_to_Gyr
+mt_vy = sub.rel_vy*1000*m_to_Mpc/s_to_Gyr
+mt_vz = sub.rel_vz*1000*m_to_Mpc/s_to_Gyr
 
 mt_dist = np.sqrt(mt_x**2 + mt_y**2 + mt_z**2)
 
@@ -88,8 +88,8 @@ if compare:
 	z_d = positions_drag[:,2]
 
 
-fig, ax = plt.subplots(3,3,figsize=(12,12))
-plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
+fig, ax = plt.subplots(3,3,figsize=(20,20))
+# plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
 
 ####### ORBITS #######
 
@@ -128,8 +128,6 @@ ax[0][2].set_ylim([-2,2])
 
 ####### VELOCITIES #######
 
-print t.shape, x.shape, vx.shape, mt_x.shape, mt_vx.shape
-
 ax[1][0].plot(t, vx, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[1][0].plot(mt_t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 if compare: ax[1][0].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
@@ -160,4 +158,4 @@ ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
 
 #plt.show()
-plt.savefig('host_%i_subbhalo_%i.png'%(host_idx,sub_idx))
+plt.savefig('host_%i_subhalo_%i.png'%(host_idx,sub_idx))
