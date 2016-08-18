@@ -80,7 +80,7 @@ class Sim:
 		'''
 
 		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
-		self.output = [times,positions]
+		self.output = [times,positions,momenta]
         # F.write('%s\n' %subhalo.distance_array[-1])
 		if writing:
 			self.write_output(outfile)

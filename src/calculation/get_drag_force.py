@@ -30,7 +30,7 @@ class GetDragForce :
         print 
         time.sleep(2)
         '''
-
+        
         return vec
 
     def calculate_density(self, position):
