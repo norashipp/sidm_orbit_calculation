@@ -165,7 +165,7 @@ ax[1][0].plot(t[0],vx[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[1][0].plot(t, vx_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[1][0].plot(t, vx_tri, 'k--', lw=3, label=r'$\mathrm{Drag}$')
 ax[1][0].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
-ax[1][0].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
+ax[1][0].set_ylabel(r'$\mathrm{vx\ (Mpc/Gyr)}$')
 # ax[1][0].legend(loc='lower left',fontsize=15)
 
 ax[1][1].plot(t, vy, 'c', lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
@@ -183,7 +183,7 @@ ax[1][2].plot(t[0],vz[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[1][2].plot(t, vz_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[1][2].plot(t, vz_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
 ax[1][2].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
-ax[1][2].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
+ax[1][2].set_ylabel(r'$\mathrm{vz\ (Mpc/Gyr)}$')
 # ax[1][2].legend(loc='lower left',fontsize=15)
 
 ####### RADIUS #######
