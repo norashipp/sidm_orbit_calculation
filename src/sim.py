@@ -131,16 +131,18 @@ my_sim = Sim(host_idx, dt, integrator, potential)
 # F = open('final_distances_%s_%s_%s.txt' %(host_idx, integrator, potential),'a')
 
 t0 = my_sim.host.cosmo.age(0)
-for i in range(len(my_sim.host.subhalos)):
+
+# for i in range(len(my_sim.host.subhalos)):
+for i in [32,101]:
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 101:
-		writing = 1 
+	        writing = 1 
 		# else:
-		# writing = 0
+	        # writing = 0
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 	else:
 		print 'Skipping subhalo %i' %i

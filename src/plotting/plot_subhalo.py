@@ -28,7 +28,7 @@ host_idx = int(sys.argv[1])
 sub_idx = int(sys.argv[2])
 integrator = 'leapfrog'
 potential = 'spherical_NFW'
-dt = 4e-3
+dt = 4e-4
 
 infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
 
@@ -162,4 +162,4 @@ ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
 
 #plt.show()
-plt.savefig('host_%i_subhalo_%i.png'%(host_idx,sub_idx))
+plt.savefig('%i_%s_%s_%.0e_%i.png'%(host_idx,potential,integrator,dt,sub_idx))
