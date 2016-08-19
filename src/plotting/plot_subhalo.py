@@ -31,7 +31,7 @@ potential = 'spherical_NFW'
 dt = 4e-3
 
 infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
-
+print infile
 # host_radius = 1.21100235447 # host 40
 
 f = open(infile,'rb')
@@ -58,7 +58,7 @@ dist = np.sqrt(x**2 + y**2 + z**2)
 sub = subs[sub_idx]
 
 mt_t = cosmo.age(1/sub.a-1)
-print mt_t[0],mt_t[-1]
+# print mt_t[0],mt_t[-1]
 
 mt_x = sub.rel_x
 mt_y = sub.rel_y
@@ -70,8 +70,8 @@ mt_vz = sub.rel_vz*1000*m_to_Mpc/s_to_Gyr
 
 mt_dist = np.sqrt(mt_x**2 + mt_y**2 + mt_z**2)
 
-print mt_x[0], mt_y[0]
-print x[0], y[0]
+# print mt_x[0], mt_y[0]
+# print x[0], y[0]
 
 drag = 0
 if drag:
@@ -92,8 +92,6 @@ if drag:
 	vx_d = velocities_drag[:,0]
 	vy_d = velocities_drag[:,1]
 	vz_d = velocities_drag[:,2]
-	
-
 
 triaxial = 1
 if triaxial:
@@ -116,6 +114,23 @@ if triaxial:
 	vy_tri = velocities_tri[:,1]
 	vz_tri = velocities_tri[:,2]
 
+gala = 1
+if gala:
+	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_%i.dat'%(host_idx,sub_idx))
+	orbit = cPickle.load(f)
+	f.close()
+	x_g = orbit.w()[0]
+	y_g = orbit.w()[1]
+	z_g = orbit.w()[2]
+
+	vx_g = orbit.w()[3]
+	vy_g = orbit.w()[4]
+	vz_g = orbit.w()[5]
+
+	t_g = t[:-1]
+
+	dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
+
 fig, ax = plt.subplots(3,3,figsize=(20,20))
 # plt.title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx, sub_idx))
 
@@ -127,6 +142,7 @@ ax[0][0].plot(0,0,'^k',markersize=12,label=r'$\mathrm{Host\ Center}$')
 ax[0][0].plot(x[0],y[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[0][0].plot(x_d, y_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[0][0].plot(x_tri, y_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[0][0].plot(x_g, y_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[0][0].set_xlabel(r'$\mathrm{x\ (Mpc)}$')
 ax[0][0].set_ylabel(r'$\mathrm{y\ (Mpc)}$')
 # ax[0][0].legend(loc='lower left',fontsize=15)
@@ -139,6 +155,7 @@ ax[0][1].plot(0,0,'^k',markersize=12,label=r'$\mathrm{Host\ Center}$')
 ax[0][1].plot(y[0],z[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[0][1].plot(y_d, z_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[0][1].plot(y_tri, z_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[0][1].plot(y_g, z_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[0][1].set_xlabel(r'$\mathrm{y\ (Mpc)}$')
 ax[0][1].set_ylabel(r'$\mathrm{z\ (Mpc)}$')
 # ax[0][1].legend(loc='lower left',fontsize=15)
@@ -151,6 +168,7 @@ ax[0][2].plot(0,0,'^k',markersize=12,label=r'$\mathrm{Host\ Center}$')
 ax[0][2].plot(z[0],x[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[0][2].plot(z_d, x_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[0][2].plot(z_tri, x_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[0][2].plot(z_g, x_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[0][2].set_xlabel(r'$\mathrm{z\ (Mpc)}$')
 ax[0][2].set_ylabel(r'$\mathrm{x\ (Mpc)}$')
 # ax[0][2].legend(loc='lower left',fontsize=15)
@@ -164,6 +182,7 @@ ax[1][0].plot(mt_t, mt_vx, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][0].plot(t[0],vx[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[1][0].plot(t, vx_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[1][0].plot(t, vx_tri, 'k--', lw=3, label=r'$\mathrm{Drag}$')
+if gala: ax[1][0].plot(t_g, vx_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[1][0].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][0].set_ylabel(r'$\mathrm{vx\ (Mpc/Gyr)}$')
 # ax[1][0].legend(loc='lower left',fontsize=15)
@@ -173,6 +192,7 @@ ax[1][1].plot(mt_t, mt_vy, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][1].plot(t[0],vy[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[1][1].plot(t, vy_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[1][1].plot(t, vy_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[1][1].plot(t_g, vy_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[1][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][1].set_ylabel(r'$\mathrm{vy\ (Mpc/Gyr)}$')
 # ax[1][1].legend(loc='lower left',fontsize=15)
@@ -182,6 +202,7 @@ ax[1][2].plot(mt_t, mt_vz, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][2].plot(t[0],vz[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[1][2].plot(t, vz_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[1][2].plot(t, vz_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[1][2].plot(t_g, vz_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[1][2].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[1][2].set_ylabel(r'$\mathrm{vz\ (Mpc/Gyr)}$')
 # ax[1][2].legend(loc='lower left',fontsize=15)
@@ -193,8 +214,9 @@ ax[2][1].plot(mt_t, mt_dist, 'g', lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[2][1].plot(t[0],dist[0],'c*',markersize=15,label=r'$\mathrm{Orbit\ Start}$')
 if drag: ax[2][1].plot(t, dist_d, 'b--', lw=3, label=r'$\mathrm{Drag}$')
 if triaxial: ax[2][1].plot(t, dist_tri, 'k--', lw=3, label=r'$\mathrm{Triaxial}$')
+if gala: ax[2][1].plot(t_g, dist_g, '--', color='violet', lw=3, label=r'$\mathrm{Gala}$')
 ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
 
 #plt.show()
-plt.savefig('%i_%s_%s_%.0e_%i.png'%(host_idx,potential,integrator,dt,sub_idx))
+plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%s_%.0e_%i.png'%(host_idx,potential,integrator,dt,sub_idx))
