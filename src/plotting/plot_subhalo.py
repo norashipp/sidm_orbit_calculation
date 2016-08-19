@@ -180,6 +180,8 @@ fig, ax = plt.subplots(3,3,figsize=(20,20))
 
 ####### ORBITS #######
 
+rmax = 2
+
 ax[0][0].plot(x, y, color=c, lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[0][0].plot(mt_x, mt_y, color=c_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][0].plot(0,0,'k*',markersize=12) # , label=r'$\mathrm{Host\ Center}$')
@@ -191,8 +193,8 @@ if gala_tri: ax[0][0].plot(x_gt, y_gt, color=c_gt, lw=3, label=r'$\mathrm{Gala T
 ax[0][0].set_xlabel(r'$\mathrm{x\ (Mpc)}$')
 ax[0][0].set_ylabel(r'$\mathrm{y\ (Mpc)}$')
 # ax[0][0].legend(loc='lower left',fontsize=15)
-ax[0][0].set_xlim([-2,2])
-ax[0][0].set_ylim([-2,2])
+ax[0][0].set_xlim(-rmax,rmax)
+ax[0][0].set_ylim(-rmax,rmax)
 
 ax[0][1].plot(y, z, color=c, lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[0][1].plot(mt_y, mt_z, color=c_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
@@ -205,8 +207,8 @@ if gala_tri: ax[0][1].plot(y_gt, z_gt, color=c_gt, lw=3, label=r'$\mathrm{Gala T
 ax[0][1].set_xlabel(r'$\mathrm{y\ (Mpc)}$')
 ax[0][1].set_ylabel(r'$\mathrm{z\ (Mpc)}$')
 # ax[0][1].legend(loc='lower left',fontsize=15)
-ax[0][1].set_xlim([-2,2])
-ax[0][1].set_ylim([-2,2])
+ax[0][1].set_xlim(-rmax,rmax)
+ax[0][1].set_ylim(-rmax,rmax)
 
 ax[0][2].plot(z, x, color=c, lw=3, label=r'$\mathrm{Orbit\ Calculation}$')
 ax[0][2].plot(mt_z, mt_x, color=c_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
@@ -219,8 +221,8 @@ if gala_tri: ax[0][2].plot(z_gt, x_gt, color=c_gt, lw=3, label=r'$\mathrm{Gala T
 ax[0][2].set_xlabel(r'$\mathrm{z\ (Mpc)}$')
 ax[0][2].set_ylabel(r'$\mathrm{x\ (Mpc)}$')
 # ax[0][2].legend(loc='lower left',fontsize=15)
-ax[0][2].set_xlim([-2,2])
-ax[0][2].set_ylim([-2,2])
+ax[0][2].set_xlim(-rmax,rmax)
+ax[0][2].set_ylim(-rmax,rmax)
 
 ####### VELOCITIES #######
 
@@ -272,9 +274,10 @@ if gala_tri: ax[2][1].plot(t_gt, dist_gt, color=c_gt, lw=3, label=r'$\mathrm{Gal
 ax[2][1].set_xlabel(r'$\mathrm{t\ (Gyr)}$')
 ax[2][1].set_ylabel(r'$\mathrm{r\ (Mpc)}$')
 ax[2][1].set_xlim(t.min()-1,t.max()+1)
+ax[2][1].set_ylim(0,rmax)
 
 ax[2][1].legend()
-ax[0][1].set_title('Host %i, Subhalo %i' %(host_idx,sub_idx),fontsize=20)
+ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
 # plt.show()
 plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%s_%.0e_%i.png'%(host_idx,potential,integrator,dt,sub_idx))
