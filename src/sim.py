@@ -25,6 +25,7 @@ class Sim:
 		# self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx, tmax=tmax)
 		self.host = HostHalo(idx=host_idx, potential=potential)
 		
+		self.integrator = integration_method
 		self.integrate = integrator_dict[integration_method]
 
 		# self.initiate_subhalo(mass=subhalo_mass, initial_position=initial_position, initial_momentum=initial_momentum)
@@ -81,7 +82,11 @@ class Sim:
 
 		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
 		self.output = [times,positions,momenta]
-        # F.write('%s\n' %subhalo.distance_array[-1])
+
+		F = open('final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+		F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
+		F.close()
+
 		if writing:
 			self.write_output(outfile)
 
@@ -128,21 +133,19 @@ except:
 my_sim = Sim(host_idx, dt, integrator, potential)
 # my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
 
-# F = open('final_distances_%s_%s_%s.txt' %(host_idx, integrator, potential),'a')
-
 t0 = my_sim.host.cosmo.age(0)
 
-# for i in range(len(my_sim.host.subhalos)):
-for i in [32,101]:
+# for i in [32,101]:
+for i in range(len(my_sim.host.subhalos)):
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 101:
-	        writing = 1 
+	        # writing = 1 
 		# else:
-	        # writing = 0
+		writing = 0
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 	else:
 		print 'Skipping subhalo %i' %i
