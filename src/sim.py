@@ -36,6 +36,7 @@ class Sim:
 	def sim(self, subhalo, printing=0, writing=0, outfile='pickle.dat'):
 		self.time = subhalo.t0
 		self.host.update(self.time)
+		# self.host.update(self.host.cosmo.age(0))
 		times = [np.copy(self.time)]
 
 		while self.time < self.host.cosmo.age(0): # assuming all subhalos survive to z=0
@@ -145,7 +146,7 @@ for i in [467,1000]:
 		# if sub_idx == 467:
 		writing = 1 
 		# else:
-		writing = 0
+		# writing = 0
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 	else:
 		print 'Skipping subhalo %i' %i

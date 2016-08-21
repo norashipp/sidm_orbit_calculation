@@ -24,8 +24,8 @@ plt.rc('ytick.minor', pad=5)
 
 host_idx = int(sys.argv[1])
 # potential = 'spherical_NFW'
-potential = 'spherical_NFW'
-dt = 1e-2
+potential = 'triaxial_NFW'
+dt = 4e-3
 subs = np.array(sys.argv[2:],dtype=int)
 
 host = HostHalo(idx=host_idx, potential=potential)

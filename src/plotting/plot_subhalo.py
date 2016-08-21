@@ -96,7 +96,7 @@ if drag:
 	vy_d = velocities_drag[:,1]
 	vz_d = velocities_drag[:,2]
 
-triaxial = 1
+triaxial = 0
 if triaxial:
 	integrator = 'leapfrog'
 	potential = 'triaxial_NFW'
@@ -134,7 +134,7 @@ if gala:
 
 	dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 
-gala_tri = 1
+gala_tri = 0
 if gala_tri:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 	orbit = cPickle.load(f)
@@ -151,11 +151,11 @@ if gala_tri:
 
 	dist_gt = np.sqrt(x_gt**2 + y_gt**2 + z_gt**2)
 
-constant = 0
+constant = 1
 if constant:
 	integrator = 'leapfrog'
 	potential = 'spherical_NFW'
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_no_update.dat' %(host_idx,integrator,potential,dt,sub_idx)
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_const0.dat' %(host_idx,integrator,potential,dt,sub_idx)
 	f = open(infile,'rb')
 	data = cPickle.load(f)
 	f.close()
@@ -196,11 +196,11 @@ c_g = 'b'
 c_gt = c_g
 
 ls_mt = '-'
-ls = '-'
+ls = '--'
 ls_tri = '--'
 ls_const = '-.'
 ls_d = '-.'
-ls_g = '-'
+ls_g = '--'
 ls_gt = '--'
 
 fig, ax = plt.subplots(3,3,figsize=(20,20))
@@ -315,4 +315,4 @@ ax[2][1].legend()
 ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
 # plt.show()
-plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%s_%.0e_%i.png'%(host_idx,potential,integrator,dt,sub_idx))
+plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%s_%.0e_%i_constant_potential.png'%(host_idx,potential,integrator,dt,sub_idx))
