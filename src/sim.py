@@ -142,10 +142,10 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		# if sub_idx == 101:
-	        # writing = 1 
-		# else:
-		writing = 0
+		if sub_idx == 101 or sub_idx == 32:
+			writing = 1 
+		else:
+			writing = 0
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 	else:
 		print 'Skipping subhalo %i' %i
