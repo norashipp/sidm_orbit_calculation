@@ -1,3 +1,4 @@
+from __future__ import division
 import numpy as np
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
