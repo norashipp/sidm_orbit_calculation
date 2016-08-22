@@ -96,7 +96,7 @@ if drag:
 	vy_d = velocities_drag[:,1]
 	vz_d = velocities_drag[:,2]
 
-triaxial = 0
+triaxial = 1
 if triaxial:
 	integrator = 'leapfrog'
 	potential = 'triaxial_NFW'
@@ -134,7 +134,7 @@ if gala:
 
 	dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 
-gala_tri = 0
+gala_tri = 1
 if gala_tri:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 	orbit = cPickle.load(f)
@@ -151,11 +151,11 @@ if gala_tri:
 
 	dist_gt = np.sqrt(x_gt**2 + y_gt**2 + z_gt**2)
 
-constant = 1
+constant = 0
 if constant:
 	integrator = 'leapfrog'
-	potential = 'spherical_NFW'
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_const0.dat' %(host_idx,integrator,potential,dt,sub_idx)
+	potential = 'triaxial_NFW'
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_constant_potential.dat' %(host_idx,integrator,potential,dt,sub_idx)
 	f = open(infile,'rb')
 	data = cPickle.load(f)
 	f.close()
@@ -196,11 +196,11 @@ c_g = 'b'
 c_gt = c_g
 
 ls_mt = '-'
-ls = '--'
+ls = '-'
 ls_tri = '--'
 ls_const = '-.'
 ls_d = '-.'
-ls_g = '--'
+ls_g = '-'
 ls_gt = '--'
 
 fig, ax = plt.subplots(3,3,figsize=(20,20))
@@ -213,7 +213,7 @@ rmax = 1
 ax[0][0].plot(mt_x, mt_y, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][0].plot(x, y, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[0][0].plot(x_tri, y_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[0][0].plot(x_const, y_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[0][0].plot(x_const, y_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[0][0].plot(x_d, y_d, color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[0][0].plot(x_g, y_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[0][0].plot(x_gt, y_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -228,7 +228,7 @@ ax[0][0].set_ylim(-rmax,rmax)
 ax[0][1].plot(mt_y, mt_z, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][1].plot(y, z, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[0][1].plot(y_tri, z_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[0][1].plot(y_const, z_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[0][1].plot(y_const, z_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[0][1].plot(y_d, z_d, color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[0][1].plot(y_g, z_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[0][1].plot(y_gt, z_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -243,7 +243,7 @@ ax[0][1].set_ylim(-rmax,rmax)
 ax[0][2].plot(mt_z, mt_x, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][2].plot(z, x, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[0][2].plot(z_tri, x_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[0][2].plot(z_const, x_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[0][2].plot(z_const, x_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[0][2].plot(z_d, x_d,color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[0][2].plot(z_g, x_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[0][2].plot(z_gt, x_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -260,7 +260,7 @@ ax[0][2].set_ylim(-rmax,rmax)
 ax[1][0].plot(mt_t, mt_vx, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][0].plot(t, vx, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[1][0].plot(t, vx_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Drag}$')
-if constant: ax[1][0].plot(t, vx_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[1][0].plot(t, vx_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[1][0].plot(t, vx_d,color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[1][0].plot(t_g, vx_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[1][0].plot(t_gt, vx_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -273,7 +273,7 @@ ax[1][0].set_xlim(t.min()-1,t.max()+1)
 ax[1][1].plot(mt_t, mt_vy, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][1].plot(t, vy, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[1][1].plot(t, vy_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[1][1].plot(t, vy_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[1][1].plot(t, vy_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[1][1].plot(t, vy_d, color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[1][1].plot(t_g, vy_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[1][1].plot(t_gt, vy_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -286,7 +286,7 @@ ax[1][1].set_xlim(t.min()-1,t.max()+1)
 ax[1][2].plot(mt_t, mt_vz, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[1][2].plot(t, vz, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[1][2].plot(t, vz_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[1][2].plot(t, vz_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[1][2].plot(t, vz_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[1][2].plot(t, vz_d, color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[1][2].plot(t_g, vz_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[1][2].plot(t_gt, vz_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -301,7 +301,7 @@ ax[1][2].set_xlim(t.min()-1,t.max()+1)
 ax[2][1].plot(mt_t, mt_dist, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[2][1].plot(t,dist, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 if triaxial: ax[2][1].plot(t, dist_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-if constant: ax[2][1].plot(t, dist_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Spherical\ NFW - Constant\ Potential}$')
+if constant: ax[2][1].plot(t, dist_const, color=c_const, ls=ls_const, lw=3, label=r'$\mathrm{Constant\ Potential}$')
 if drag: ax[2][1].plot(t, dist_d, color=c_d, ls=ls_d, lw=3, label=r'$\mathrm{Drag}$')
 if gala: ax[2][1].plot(t_g, dist_g, color=c_g, ls=ls_g, lw=3, label=r'$\mathrm{Gala\ Spherical}$')
 if gala_tri: ax[2][1].plot(t_gt, dist_gt, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gala\ Triaxial}$')
@@ -315,4 +315,4 @@ ax[2][1].legend()
 ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
 # plt.show()
-plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%s_%.0e_%i_constant_potential.png'%(host_idx,potential,integrator,dt,sub_idx))
+plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))

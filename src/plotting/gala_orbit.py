@@ -24,7 +24,7 @@ plt.rc('ytick.minor', pad=5)
 
 host_idx = int(sys.argv[1])
 # potential = 'spherical_NFW'
-potential = 'triaxial_NFW'
+potential = 'spherical_NFW'
 dt = 4e-3
 subs = np.array(sys.argv[2:],dtype=int)
 
