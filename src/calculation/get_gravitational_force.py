@@ -26,14 +26,15 @@ class GetGravitationalForce:
         return mag, vec
            
     def calculate_partial_force(self, position):
-        dx = 1e18 # is this causing problems?
+        # dx = 1e18 # is this causing problems?
+        dx = 1e-5
         fx = partial_derivative(self.potential_function,0,position,dx)
         fy = partial_derivative(self.potential_function,1,position,dx)
         fz = partial_derivative(self.potential_function,2,position,dx)
         
         vec = np.array([-fx,-fy,-fz])
-        ep = 1e-16
-        vec[np.where(np.abs(vec) <= 1000*ep)] = 0
+        # ep = 1e-16
+        # vec[np.where(np.abs(vec) <= 1000*ep)] = 0
         
         mag = np.sqrt(fx**2 + fy**2 + fz**2)
 

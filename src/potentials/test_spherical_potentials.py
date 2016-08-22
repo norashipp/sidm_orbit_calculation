@@ -3,6 +3,7 @@ import numpy as np
 
 from sidm_orbit_calculation.src.utils.constants import *
 from sidm_orbit_calculation.src.potentials.triaxial_potential import triaxial_NFW_potential
+import sidm_orbit_calculation.src.potentials.triaxial_BT as BT
 
 '''
 Collection of spherically symmetric test potentials
@@ -34,4 +35,4 @@ def spherical_NFW_potential(x, y, z, host):
 	ep = 0
 	return -4*np.pi*G*host.rho_s*host.R_s**2*np.log(1+r/host.R_s)/(r/host.R_s+ep)
 
-potential_dict = {'spherical_harmonic':spherical_harmonic_oscilator,'point_mass':point_mass_potential,'isochrone':isochrone_potential,'spherical_NFW':spherical_NFW_potential,'triaxial_NFW':triaxial_NFW_potential}
+potential_dict = {'spherical_harmonic':spherical_harmonic_oscilator,'point_mass':point_mass_potential,'isochrone':isochrone_potential,'spherical_NFW':spherical_NFW_potential,'triaxial_NFW':triaxial_NFW_potential, 'triaxial_NFW_BT':BT.triaxial_NFW_potential}
