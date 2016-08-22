@@ -24,7 +24,7 @@ class HostHalo:
     def __init__(self, idx, potential, subs=True):
         # input from merger tree: R_s, a, M_200m, b_to_a, c_to_a
 
-        my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.045714, 'sigma8': 0.82, 'ns': 0.96}
+        my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.0469, 'sigma8': 0.82, 'ns': 0.95}
         self.cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
         self.host_idx = idx
@@ -86,7 +86,7 @@ class HostHalo:
         return 1/a - 1
 
     def virial_radius(self, M, z):
-        radius = M_to_R(M, z, '200m') # correct mdef? # returns kpc
+        radius = M_to_R(M*self.cosmo.h, z, '200m')/self.cosmo.h # returns kpc
         return radius/1000 # Mpc
 
     def concentration(self):
@@ -119,8 +119,8 @@ class HostHalo:
         tt = self.cosmo.age(zz) # Gyr
         # print 'time range = ', tt.min(), tt.max()
 
-        self.M_sp = interp1d(tt,hs[self.host_idx].m_200m)
-        self.R_s_sp = interp1d(tt,hs[self.host_idx].r_s)
+        self.M_sp = interp1d(tt,hs[self.host_idx].m_200m/self.cosmo.h)
+        self.R_s_sp = interp1d(tt,hs[self.host_idx].r_s/(self.cosmo.h*(1+zz)))
         self.q_sp = interp1d(tt,hs[self.host_idx].b_to_a)
         self.s_sp = interp1d(tt,hs[self.host_idx].c_to_a)
 

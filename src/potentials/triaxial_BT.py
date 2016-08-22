@@ -25,7 +25,7 @@ def F2(u):
 
 	# return 1/(alpha-2) * (-2/3 + 1/u*integral1 - 1/u**3*integral2)
 
-	return -1/3 + (2*u*u - 3*u + 6)/(6*u*u) + (1/u - u**-3)*np.log(1+u)
+	return -1./3 + (2*u*u - 3*u + 6)/(6*u*u) + (1/u - u**-3)*np.log(1+u)
 
 def F3(u):
 	# integrand = lambda t: t**(4-alpha) / (t+1)**(3-alpha)
@@ -58,6 +58,7 @@ def triaxial_NFW_potential(x, y, z, host):
 	# M = 2.10670171738e+13
 	# v_c = 0.810346103989
 	# R = 0.144898
+	# v_c = np.sqrt(G*M/host.R_s)
 	# a = 1
 	# b = 0.58406
 	# c = 0.44725

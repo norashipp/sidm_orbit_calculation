@@ -21,4 +21,4 @@ def triaxial_NFW_density(x,y,z,host):
 	eta = 3
 	return host.rho_s / (R**alpha * (1+R)**(eta-alpha))
 
-density_dict = {'point_mass': constant_density, 'spherical_NFW': spherical_NFW_density, 'triaxial_NFW': triaxial_NFW_density}
+density_dict = {'point_mass': constant_density, 'spherical_NFW': spherical_NFW_density, 'triaxial_NFW': triaxial_NFW_density, 'triaxial_NFW_BT': triaxial_NFW_density}

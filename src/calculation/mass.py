@@ -2,22 +2,44 @@ from __future__ import division
 from scipy.integrate import tplquad
 from scipy.integrate import quad
 import numpy as np
+import time
 from colossus.halo.mass_so import R_to_M
 
 from sidm_orbit_calculation.src.potentials.density import *
 from sidm_orbit_calculation.src.utils.constants import *
 # from sidm_orbit_calculation.src.utils.geometry import *
 
+def triaxial_integrand(phi, theta, r, host):
+    sinth = np.sin(theta)
+    costh = np.cos(theta)
+    sinph = np.sin(phi)
+    cosph = np.cos(phi)
+    r2 = r*r
+    return triaxial_NFW_density(r*cosph*sinth, r*sinph*sinth, r*costh, host) * sinth*r2
+
 def calculate_triaxial_mass(host,a,b):
-    func = lambda phi, theta, r: triaxial_NFW_density(r*np.cos(phi)*np.sin(theta), r*np.sin(phi)*np.sin(theta), r*np.cos(theta), host) * np.sin(theta)*r**2
-    # a = 0
-    # if not b: b = host.R_s
-    # print R_to_M(host.R*m_to_kpc,0,'vir')
+    # t0 = time.time()
+    # func = lambda phi, theta, r: triaxial_NFW_density(r*np.cos(phi)*np.sin(theta), r*np.sin(phi)*np.sin(theta), r*np.cos(theta), host) * np.sin(theta)*r*r
+    def integrand(phi, theta, r):
+        sinth = np.sin(theta)
+        costh = np.cos(theta)
+        sinph = np.sin(phi)
+        cosph = np.cos(phi)
+        r2 = r*r
+        return triaxial_NFW_density(r*cosph*sinth, r*sinph*sinth, r*costh, host) * sinth*r2
+
     gfun = lambda r: 0
     hfun = lambda r: np.pi
     qfun = lambda r, theta: 0
     rfun = lambda r, theta: 2*np.pi
-    res = tplquad(func,a,b,gfun,hfun,qfun,rfun)[0]
+
+    epsabs = 1.
+    epsrel = 1.
+
+    # res = tplquad(func,a,b,gfun,hfun,qfun,rfun)[0]
+    res = tplquad(integrand, a, b, gfun, hfun, qfun, rfun, epsabs=epsabs, epsrel=epsrel)[0]
+    # t1 = time.time()
+    # print 'time passed = %.2f seconds' %(t1-t0)
     return res
 
 def calculate_spherical_mass(host,a,b):
@@ -46,4 +68,4 @@ def triaxial_NFW_density(r,theta,phi,host):
     return host.rho_s/(r/host.R_s**alpha*(1+r/host.R_s)**(eta-alpha))
 '''
 
-mass_dict = {'point_mass':calculate_point_mass,'spherical_NFW':calculate_spherical_mass,'triaxial_NFW':calculate_triaxial_mass}
+mass_dict = {'point_mass':calculate_point_mass,'spherical_NFW':calculate_spherical_mass,'triaxial_NFW':calculate_triaxial_mass, 'triaxial_NFW_BT':calculate_triaxial_mass}

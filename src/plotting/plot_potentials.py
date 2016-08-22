@@ -22,10 +22,10 @@ host.update(host.cosmo.age(0))
 
 usys = UnitSystem(u.Mpc, u.Gyr, u.Msun, u.degree, u.Mpc/u.Gyr)
 
-# M = host.mass_function(host=host, a=0, b=host.R_s)
-M = host.M
-# v = np.sqrt(G*M/host.R_s)
-v = host.v
+M = host.mass_function(host=host, a=0, b=host.R_s)
+# M = host.M
+v = np.sqrt(G*M/host.R_s)
+# v = host.v
 R = host.R_s
 
 a = 1
