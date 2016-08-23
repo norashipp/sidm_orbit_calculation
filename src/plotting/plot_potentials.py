@@ -13,31 +13,40 @@ from sidm_orbit_calculation.src.utils.constants import *
 import sidm_orbit_calculation.src.potentials.triaxial_BT as BT
 
 
-potential = 'triaxial_NFW'
+potential = 'triaxial_NFW_BT'
 host_idx = int(sys.argv[1])
 host = HostHalo(idx=host_idx, potential=potential, subs=False)
 host.update(host.cosmo.age(0))
 # host.q = 0.999
 # host.s = 0.99
 
+gravity = GetGravitationalForce(host)
+
 usys = UnitSystem(u.Mpc, u.Gyr, u.Msun, u.degree, u.Mpc/u.Gyr)
 
 M = host.mass_function(host=host, a=0, b=host.R_s)
-# M = host.M
-v = np.sqrt(G*M/host.R_s)
-# v = host.v
-R = host.R_s
+# v = np.sqrt(G*M/host.R_s)
+fg, _ = gravity.calculate_gravitational_force([host.R_s,0,0])
+v_c = np.sqrt(fg*host.R_s)
 
+'''
+eb = 0.3
+ec = 0.5
+a = 1
+b = np.sqrt(1-eb**2)
+c = np.sqrt(1-ec**2)
+print a, b, c
+'''
 a = 1
 b = host.q
 c = host.s
 
-print M, v, R, a, b, c
+# print M, v_c, np.sqrt(G*M/host.R_s)
 
 # if host.potential == 'spherical_NFW':
 # 	pot = gp.SphericalNFWPotential(v_c = v*u.Mpc/u.Gyr, r_s=R*u.Mpc, units=usys)
 # if host.potential == 'triaxial_NFW':
-triaxial = gp.LeeSutoTriaxialNFWPotential(v_c =v*u.Mpc/u.Gyr, r_s = R*u.Mpc, a = a, b = b, c = c, units=usys)
+triaxial = gp.LeeSutoTriaxialNFWPotential(v_c =v_c*u.Mpc/u.Gyr, r_s = host.R_s*u.Mpc, a = a, b = b, c = c, units=usys)
 
 x_vals = np.linspace(1e-2*host.R,host.R,100)
 y = 0
@@ -79,7 +88,9 @@ tri_ratio = tri/tri_gala.T[0]
 tri_ratio_BT = tri_BT/tri_gala.T[0]
 tri_dens_ratio = tri_dens/tri_dens_gala.T[0]
 
-print tri_dens_ratio.min(), tri_dens_ratio.max()
+# print tri_dens_ratio.min(), tri_dens_ratio.max()
+print tri_ratio_BT.min(), tri_ratio_BT.max()
+print tri_ratio.min(), tri_ratio.max()
 
 plt.figure()
 plt.plot(x_vals, tri, 'c', linewidth=3, label='triaxial')
