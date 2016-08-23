@@ -150,13 +150,13 @@ class HostHalo:
                 skip+=1
                 continue
 
-            t_to_x = interp1d(tt,sub.rel_x)
-            t_to_y = interp1d(tt,sub.rel_y)
-            t_to_z = interp1d(tt,sub.rel_z)
+            t_to_x = interp1d(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)))
+            t_to_y = interp1d(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)))
+            t_to_z = interp1d(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)))
             t_to_vx = interp1d(tt,sub.rel_vx*1000*m_to_Mpc/s_to_Gyr)
             t_to_vy = interp1d(tt,sub.rel_vy*1000*m_to_Mpc/s_to_Gyr)
             t_to_vz = interp1d(tt,sub.rel_vz*1000*m_to_Mpc/s_to_Gyr)
-            t_to_m = interp1d(tt,sub.m_200m)
+            t_to_m = interp1d(tt,sub.m_200m/self.cosmo.h)
 
             x0, y0, z0 = t_to_x(t0), t_to_y(t0), t_to_z(t0)
             vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)

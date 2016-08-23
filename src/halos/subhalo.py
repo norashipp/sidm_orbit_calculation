@@ -45,8 +45,8 @@ class Subhalo:
 
 	def update(self, time):
 		self.M = self.M_sp(time)
-                self.calculate_energy()
-                self.distance_array.append(self.distance())
+		self.calculate_energy()
+		self.distance_array.append(self.distance())
 
-        def distance(self):
-            return np.sqrt(self.position[0]**2 + self.position[1]**2 + self.position[2]**2)
+	def distance(self):
+		return np.sqrt(self.position[0]**2 + self.position[1]**2 + self.position[2]**2)

@@ -63,9 +63,10 @@ sub = subs[sub_idx]
 mt_t = cosmo.age(1/sub.a-1)
 # print mt_t[0],mt_t[-1]
 
-mt_x = sub.rel_x
-mt_y = sub.rel_y
-mt_z = sub.rel_z
+h = 0.7
+mt_x = sub.rel_x/(h*(1/sub.a))
+mt_y = sub.rel_y/(h*(1/sub.a))
+mt_z = sub.rel_z/(h*(1/sub.a))
 
 mt_vx = sub.rel_vx*1000*m_to_Mpc/s_to_Gyr
 mt_vy = sub.rel_vy*1000*m_to_Mpc/s_to_Gyr
@@ -99,7 +100,7 @@ if drag:
 triaxial = 0
 if triaxial:
 	integrator = 'leapfrog'
-	potential = 'triaxial_NFW_BT'
+	potential = 'triaxial_NFW'
 	infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
 	f = open(infile_triaxial,'rb')
 	data = cPickle.load(f)
@@ -117,7 +118,7 @@ if triaxial:
 	vy_tri = velocities_tri[:,1]
 	vz_tri = velocities_tri[:,2]
 
-gala = 1
+gala = 0
 if gala:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_spherical_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 	orbit = cPickle.load(f)
@@ -134,7 +135,7 @@ if gala:
 
 	dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 
-gala_tri = 1
+gala_tri = 0
 if gala_tri:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 	orbit = cPickle.load(f)
@@ -151,7 +152,7 @@ if gala_tri:
 
 	dist_gt = np.sqrt(x_gt**2 + y_gt**2 + z_gt**2)
 
-constant = 1
+constant = 0
 if constant:
 	integrator = 'leapfrog'
 	potential = 'triaxial_NFW_BT'

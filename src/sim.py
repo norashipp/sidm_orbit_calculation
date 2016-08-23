@@ -136,7 +136,7 @@ my_sim = Sim(host_idx, dt, integrator, potential)
 
 t0 = my_sim.host.cosmo.age(0)
 
-for i in [32]:
+for i in [32,101,467,1000]:
 # for i in range(len(my_sim.host.subhalos)):
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
@@ -147,8 +147,8 @@ for i in [32]:
 		writing = 1 
 		# else:
 		# writing = 0
-		# my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
-		cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
+		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
+		# cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
 	else:
 		print 'Skipping subhalo %i' %i
 

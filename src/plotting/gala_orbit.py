@@ -24,7 +24,7 @@ plt.rc('ytick.minor', pad=5)
 
 host_idx = int(sys.argv[1])
 # potential = 'spherical_NFW'
-potential = 'spherical_NFW'
+potential = 'triaxial_NFW'
 dt = 4e-3
 subs = np.array(sys.argv[2:],dtype=int)
 
@@ -34,8 +34,11 @@ host.update(host.cosmo.age(0)) # potential will not be evolving
 usys = UnitSystem(u.Mpc, u.Gyr, u.Msun, u.degree, u.Mpc/u.Gyr)
 
 M = host.mass_function(host=host, a=0, b=host.R_s)
-v = np.sqrt(G*M/host.R_s)
 R = host.R_s
+
+gravity = GetGravitationalForce(host)
+fg, _ = gravity.calculate_partial_force([host.R_s,0,0])
+v = np.sqrt(fg*host.R_s)
 
 if host.potential == 'spherical_NFW':
 	pot = gp.SphericalNFWPotential(v_c = v*u.Mpc/u.Gyr, r_s=R*u.Mpc, units=usys)
