@@ -10,6 +10,7 @@ def spherical_NFW_density(x,y,z,host):
 	return host.rho_s/(R*(1+R)**2)
 
 def triaxial_NFW_density(x,y,z,host):
+	# assuming alpha = 1
 	x2 = x*x
 	y2 = y*y
 	z2 = z*z
@@ -19,6 +20,7 @@ def triaxial_NFW_density(x,y,z,host):
 	R = r/host.R_s	
 	alpha = 1
 	eta = 3
-	return host.rho_s / (R**alpha * (1+R)**(eta-alpha))
+	# return host.rho_s / (R**alpha * (1+R)**(eta-alpha))
+	return host.rho_s / (R * (1+R)**2)
 
 density_dict = {'point_mass': constant_density, 'spherical_NFW': spherical_NFW_density, 'triaxial_NFW': triaxial_NFW_density, 'triaxial_NFW_BT': triaxial_NFW_density}

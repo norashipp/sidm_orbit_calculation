@@ -25,9 +25,9 @@ class GetGravitationalForce:
         mag, vec = self.calculate_partial_force(position)
         return mag, vec
            
-    def calculate_partial_force(self, position):
+    def calculate_partial_force(self, position, dx=1e-5):
         # dx = 1e18 # is this causing problems?
-        dx = 1e-5
+        # dx = 1e-5
         fx = partial_derivative(self.potential_function,0,position,dx)
         fy = partial_derivative(self.potential_function,1,position,dx)
         fz = partial_derivative(self.potential_function,2,position,dx)

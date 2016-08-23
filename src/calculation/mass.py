@@ -9,6 +9,27 @@ from sidm_orbit_calculation.src.potentials.density import *
 from sidm_orbit_calculation.src.utils.constants import *
 # from sidm_orbit_calculation.src.utils.geometry import *
 
+'''
+def calculate_triaxial_mass(host,a,b):
+    t0 = time.time()
+    def integrand(z, y, x):
+        r2 = x*x + y*y + z*z
+        if r2>b*b:
+            return 0
+        else:
+            return triaxial_NFW_density(x, y, z, host)
+            
+    gfun = lambda x: a
+    hfun = lambda x: b
+    qfun = lambda x, y: a
+    rfun = lambda x, y: b
+
+    res = tplquad(integrand,a,b,gfun,hfun,qfun,rfun,epsabs=1,epsrel=1)[0]
+
+    t1 = time.time()
+    print 'time passed = %.2f seconds' %(t1-t0)
+    return res
+
 def triaxial_integrand(phi, theta, r, host):
     sinth = np.sin(theta)
     costh = np.cos(theta)
@@ -16,9 +37,9 @@ def triaxial_integrand(phi, theta, r, host):
     cosph = np.cos(phi)
     r2 = r*r
     return triaxial_NFW_density(r*cosph*sinth, r*sinph*sinth, r*costh, host) * sinth*r2
-
+'''
 def calculate_triaxial_mass(host,a,b):
-    # t0 = time.time()
+    t0 = time.time()
     # func = lambda phi, theta, r: triaxial_NFW_density(r*np.cos(phi)*np.sin(theta), r*np.sin(phi)*np.sin(theta), r*np.cos(theta), host) * np.sin(theta)*r*r
     def integrand(phi, theta, r):
         sinth = np.sin(theta)
@@ -38,8 +59,8 @@ def calculate_triaxial_mass(host,a,b):
 
     # res = tplquad(func,a,b,gfun,hfun,qfun,rfun)[0]
     res = tplquad(integrand, a, b, gfun, hfun, qfun, rfun, epsabs=epsabs, epsrel=epsrel)[0]
-    # t1 = time.time()
-    # print 'time passed = %.2f seconds' %(t1-t0)
+    t1 = time.time()
+    print 'time passed = %.2f seconds' %(t1-t0)
     return res
 
 def calculate_spherical_mass(host,a,b):

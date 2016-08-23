@@ -17,8 +17,8 @@ potential = 'triaxial_NFW_BT'
 host_idx = int(sys.argv[1])
 host = HostHalo(idx=host_idx, potential=potential, subs=False)
 host.update(host.cosmo.age(0))
-# host.q = 0.999
-# host.s = 0.99
+host.q = 0.8
+host.s = 0.6
 
 gravity = GetGravitationalForce(host)
 
@@ -26,20 +26,21 @@ usys = UnitSystem(u.Mpc, u.Gyr, u.Msun, u.degree, u.Mpc/u.Gyr)
 
 M = host.mass_function(host=host, a=0, b=host.R_s)
 # v = np.sqrt(G*M/host.R_s)
-fg, _ = gravity.calculate_gravitational_force([host.R_s,0,0])
+fg, _ = gravity.calculate_partial_force([host.R_s,0,0])
 v_c = np.sqrt(fg*host.R_s)
+print fg, v_c
 
-'''
-eb = 0.3
-ec = 0.5
-a = 1
-b = np.sqrt(1-eb**2)
-c = np.sqrt(1-ec**2)
-print a, b, c
-'''
+# eb = 0.3
+# ec = 0.5
+# a = 1
+# b = np.sqrt(1-eb**2)
+# c = np.sqrt(1-ec**2)
+# print a, b, c
+
 a = 1
 b = host.q
 c = host.s
+print 'a = %.3f, b = %.3f, c = %.3f' %(a,b,c)
 
 # print M, v_c, np.sqrt(G*M/host.R_s)
 
@@ -131,8 +132,8 @@ plt.legend()
 
 ######################################
 
-'''
 
+'''
 host_sph = HostHalo(idx=host_idx,potential='spherical_NFW',subs=False)
 host_sph.update(host_sph.cosmo.age(0))
 
@@ -140,7 +141,11 @@ M_sph = calculate_spherical_mass(host=host_sph, a=0, b=host_sph.R_s)
 v_sph = np.sqrt(G*M_sph/host_sph.R_s)
 R_sph = host_sph.R_s
 
-spherical = gp.SphericalNFWPotential(v_c = v_sph*u.Mpc/u.Gyr, r_s=R_sph*u.Mpc, units=usys)
+gravity_sph = GetGravitationalForce(host_sph)
+fg, _ = gravity_sph.calculate_partial_force([host_sph.R_s,0,0])
+v_c = np.sqrt(fg*host_sph.R_s)
+
+spherical = gp.SphericalNFWPotential(v_c = v_c*u.Mpc/u.Gyr, r_s=R_sph*u.Mpc, units=usys)
 
 # x = np.linspace(1e20,1e22,100)
 # x = np.ones(100)*1e22
@@ -171,6 +176,7 @@ sph_dens_gala = np.asarray(sph_dens_gala)
 sph_ratio = sph / sph_gala.T[0]
 sph_dens_ratio = sph_dens/sph_dens_gala.T[0]
 
+'''
 print sph_dens_ratio.min(), sph_dens_ratio.max()
 
 plt.figure()
@@ -185,17 +191,19 @@ plt.plot(x_vals, sph_dens_ratio, 'k', linewidth=2, label='spherical density rati
 plt.xscale('log')
 plt.title('density ratio')
 plt.legend()
+'''
 
 plt.figure()
 plt.plot(x_vals, sph, 'b', linewidth=2, label='spherical')
 plt.plot(x_vals, sph_gala, 'k--', linewidth=2, label='gala spherical')
 plt.legend()
 plt.xscale('log')
+plt.grid()
 
 plt.figure()
 plt.plot(x_vals, sph_ratio, 'b', linewidth=2, label='spherical ratio')
 plt.xscale('log')
 plt.legend()
+plt.grid()
 '''
-
 plt.show()
