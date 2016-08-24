@@ -101,7 +101,7 @@ if drag:
 
 	vt_d = np.sqrt(vx_d**2 + vy_d**2 + vz_d**2)
 
-triaxial = 0
+triaxial = 1
 if triaxial:
 	integrator = 'leapfrog'
 	potential = 'triaxial_NFW'
@@ -142,7 +142,7 @@ if gala:
 	dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 	vt_g = np.sqrt(vx_g**2 + vy_g**2 + vz_g**2)
 
-gala_tri = 0
+gala_tri = 1
 if gala_tri:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 	orbit = cPickle.load(f)
@@ -208,11 +208,11 @@ c_g = 'b'
 c_gt = c_g
 
 ls_mt = '-'
-ls = '--'
+ls = '-'
 ls_tri = '--'
 ls_const = '-.'
 ls_d = '-.'
-ls_g = '--'
+ls_g = '-'
 ls_gt = '--'
 
 fig, ax = plt.subplots(3,3,figsize=(20,20))
@@ -220,7 +220,7 @@ fig, ax = plt.subplots(3,3,figsize=(20,20))
 
 ####### ORBITS #######
 
-rmax = 2
+rmax = 0.5
 
 ax[0][0].plot(x_mt, y_mt, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 ax[0][0].plot(x, y, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
@@ -349,5 +349,5 @@ if gala_tri: ax[2][2].plot(0,0, color=c_gt, ls=ls_gt, lw=3, label=r'$\mathrm{Gal
 ax[2][2].legend(loc='lower center',fontsize=30)
 ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
-plt.show()
-# plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
+# plt.show()
+plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
