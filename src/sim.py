@@ -84,9 +84,9 @@ class Sim:
 		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
 		self.output = [times,positions,momenta]
 
-		# F = open('final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
-		# F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
-		# F.close()
+        	F = open('final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+		F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
+		F.close()
 
 		if writing:
 			self.write_output(outfile)
@@ -136,15 +136,15 @@ my_sim = Sim(host_idx, dt, integrator, potential)
 
 t0 = my_sim.host.cosmo.age(0)
 
-for i in [0,10,20,30,40,50,60,70,80,90,100]:
-# for i in range(len(my_sim.host.subhalos)):
+# for i in [0,10,20,30,40,50,60,70,80,90,100]:
+for i in range(len(my_sim.host.subhalos)):
 	subhalo = my_sim.host.subhalos[i]
 	sub_idx = i
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 467:
-		writing = 1 
+		# writing = 1 
 		# else:
 		# writing = 0
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)

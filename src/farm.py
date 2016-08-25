@@ -19,7 +19,7 @@ if drag:
     integrator = 'dissipative'
 else:
     integrator = 'leapfrog'
-potential = 'spherical_NFW'
+potential = 'triaxial_NFW_BT'
 
 batch = 'sbatch --account=kicp --partition=kicp --job-name=%s --output=log.out --error=log.err --mem-per-cpu=5000 ' %(jobname)
 command = 'sim.py %i %.2e %s %s' %(host_idx, dt, integrator, potential)
