@@ -24,7 +24,7 @@ final_dists = []
 # host = HostHalo(host_idx,potential)
 # host.update(host.cosmo.age(0))
 # print host.R
-host_radius = 1.21100235447
+# host_radius = 1.21100235447
 i = 0
 for infile in infiles:
 	print i
@@ -32,8 +32,9 @@ for infile in infiles:
 	data = cPickle.load(f)
 	f.close()
 	# times,positions,momenta,gravity,drag,density,energy,host_idx = data
-	times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
-
+	# times,positions,momenta,gravity,drag,density,energy,host_idx,potential,host_radius = data
+	times, positions, momenta = data
+	
 	fp = positions[-1]
 	dist = np.sqrt(fp[0]**2 + fp[1]**2  + fp[2]**2)
 	final_dists.append(dist)

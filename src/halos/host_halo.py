@@ -123,6 +123,9 @@ class HostHalo:
         self.R_s_sp = interp1d(tt,hs[self.host_idx].r_s/(self.cosmo.h*(1+zz)))
         self.q_sp = interp1d(tt,hs[self.host_idx].b_to_a)
         self.s_sp = interp1d(tt,hs[self.host_idx].c_to_a)
+        self.ax_sp = interp1d(tt,hs[self.host_idx].ax)
+        self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
+        self.az_sp = interp1d(tt,hs[self.host_idx].az)
 
     def initiate_subhalos(self):
         subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
@@ -208,6 +211,10 @@ class HostHalo:
 
         self.rho_s = 1
         self.rho_s = self.scale_density()
+
+        self.ax = self.ax_sp(time)
+        self.ay = self.ay_sp(time)
+        self.az = self.az_sp(time)
 
         '''
         print 
