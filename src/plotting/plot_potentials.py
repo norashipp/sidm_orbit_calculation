@@ -89,7 +89,7 @@ tri_ratio = tri/tri_gala.T[0]
 tri_ratio_BT = tri_BT/tri_gala.T[0]
 tri_dens_ratio = tri_dens/tri_dens_gala.T[0]
 
-# print tri_dens_ratio.min(), tri_dens_ratio.max()
+print tri_dens_ratio.min(), tri_dens_ratio.max()
 print tri_ratio_BT.min(), tri_ratio_BT.max()
 print tri_ratio.min(), tri_ratio.max()
 
@@ -109,7 +109,6 @@ plt.xscale('log')
 plt.title('potential ratio')
 plt.legend()
 plt.grid()
-
 '''
 plt.figure()
 plt.plot(x_vals, tri_dens, 'c--', linewidth=2, label='triaxial')
@@ -126,7 +125,6 @@ plt.xscale('log')
 plt.title('density ratio')
 plt.legend()
 '''
-
 # plt.show()
 
 
@@ -176,7 +174,6 @@ sph_dens_gala = np.asarray(sph_dens_gala)
 sph_ratio = sph / sph_gala.T[0]
 sph_dens_ratio = sph_dens/sph_dens_gala.T[0]
 
-'''
 print sph_dens_ratio.min(), sph_dens_ratio.max()
 
 plt.figure()
@@ -191,7 +188,6 @@ plt.plot(x_vals, sph_dens_ratio, 'k', linewidth=2, label='spherical density rati
 plt.xscale('log')
 plt.title('density ratio')
 plt.legend()
-'''
 
 plt.figure()
 plt.plot(x_vals, sph, 'b', linewidth=2, label='spherical')
@@ -206,4 +202,5 @@ plt.xscale('log')
 plt.legend()
 plt.grid()
 '''
+
 plt.show()
