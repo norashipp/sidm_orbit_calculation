@@ -59,7 +59,7 @@ for host_idx in hosts:
 			mass.append(sub.m_200m[-1])
 		dist_mt = np.asarray(dist_mt)[np.not_equal(host.subhalos,None)]
 		mass = np.asarray(mass)[np.not_equal(host.subhalos,None)]
-		# print dist_mt.shape, mass.shape, dist.shape
+		print dist_mt.shape, mass.shape, dist.shape
 
 	plot_kde = 0
 	if plot_kde:
@@ -93,16 +93,18 @@ for host_idx in hosts:
 	# nbins = np.sqrt(len(dist))
 	# print nbins
 	nbins = 10
+	bins = np.linspace(0,5,11)
 
 	plt.figure()
-	plt.hist(dist,color='c',bins=nbins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Spherical\ NFW}$')
-	if triaxial: plt.hist(dist_tri,color='b',bins=nbins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Triaxial\ NFW}$')
-	if compare: plt.hist(dist_mt,color='g',bins=nbins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Merger\ Tree}$')
+	plt.hist(dist,color='c',bins=bins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Spherical\ NFW}$')
+	if triaxial: plt.hist(dist_tri,color='b',bins=bins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Triaxial\ NFW}$')
+	if compare: plt.hist(dist_mt,color='g',bins=bins,histtype='step',normed=True,lw=3,weights=mass,label=r'$\mathrm{Merger\ Tree}$')
 	plt.title(r'$\mathrm{Host\ %i}$' %host_idx)
 	plt.xlabel(r'$\mathrm{r/R_{200}}$')
 	plt.ylabel(r'$\mathrm{mass\ weighted\ subhalo\ distribution}$')
 	plt.grid()
 	plt.xlim([0,5])
+	plt.legend()
 	plt.savefig('plots/subhalo_distribution_hist_%i_%s_%s_%.0e.png' %(host_idx,integrator,potential,dt))
 
 	# plt.show()

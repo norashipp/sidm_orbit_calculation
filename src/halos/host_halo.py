@@ -123,6 +123,7 @@ class HostHalo:
         self.R_s_sp = interp1d(tt,hs[self.host_idx].r_s/(self.cosmo.h*(1+zz)))
         self.q_sp = interp1d(tt,hs[self.host_idx].b_to_a)
         self.s_sp = interp1d(tt,hs[self.host_idx].c_to_a)
+        
         self.ax_sp = interp1d(tt,hs[self.host_idx].ax)
         self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
         self.az_sp = interp1d(tt,hs[self.host_idx].az)
@@ -197,6 +198,39 @@ class HostHalo:
             print 'total: ', sub_count
             print 
             '''
+
+    def rotate_orbit(velocity):
+        u = uniform(0,1)
+        v = uniform(0,1)
+
+        phi = 2*np.pi*u
+        theta = np.arccos(2*v - 1)
+        
+        # cos_theta = uniform(-1,1)
+        # phi = uniform(0,2*np.pi)
+
+        # sin_theta = np.sqrt(1-cos_theta**2)
+        north_south = choice([-1,1])
+        if north_south == -1: theta+=np.pi
+        # sin_theta *= north_south
+
+        # rotate around x by theta
+        # rotate around z by phi
+        # cos theta uniformly distributed
+        # phi uniformly distributed
+        # randomly select between northern and southern hemisphere
+
+        Rx = np.array([[1, 0, 0], [0, np.cos(theta), -np.sin(theta)], [0, np.sin(theta), np.cos(theta)]])
+        Rz = np.array([[np.cos(phi), -np.sin(phi), 0], [np.sin(phi), np.cos(phi), 0], [0, 0, 1]])
+
+        velocity_rotated = np.dot(Rx,velocity)
+        velocity_rotated = np.dot(Rz, velocity_rotated)
+
+        position = np.array([1, 0, 0])
+        position_rotated = np.dot(Rx, position)
+        position_rotated = np.dot(Rz, position_rotated)
+
+        return position_rotated, velocity_rotated
 
     def update(self, time):
         self.M = self.M_sp(time)

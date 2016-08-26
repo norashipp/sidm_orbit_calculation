@@ -2,6 +2,7 @@ import numpy as np
 from scipy.misc import derivative
 from scipy.integrate import quad
 import time
+from numpy import linalg
 
 import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
 from sidm_orbit_calculation.src.utils.geometry import *
@@ -11,6 +12,7 @@ on a test particle at any point'''
 
 class GetGravitationalForce:
     def __init__(self, host):
+        self.host = host
         self.potential = potentials.potential_dict[host.potential]
         self.potential_function = lambda x,y,z: self.potential(x=x,y=y,z=z,host=host)
         
@@ -22,9 +24,42 @@ class GetGravitationalForce:
         return self.density_function(position[0], position[1], position[2], host)
 
     def calculate_gravitational_force(self, position):
-        mag, vec = self.calculate_partial_force(position)
+        position_rotated = self.rotate(position)
+        mag, vec = self.calculate_partial_force(position_rotated)
+        # mag, vec = self.calculate_partial_force(position)
         return mag, vec
-           
+         
+    def rotate(self,position):
+        axis = np.array([self.host.ax,self.host.ay,self.host.az])
+        r = linalg.norm(axis)
+        print 'r = ', r
+        costh = self.host.az/r
+        sinth = np.sqrt(1 - costh)
+        rxy = linalg.norm(axis[:1])
+        cosph = self.host.ax/rxy
+        sinph = self.host.ay/rxy
+        
+        cospsi = 1
+        sinpsi = 0
+
+        # r = np.sqrt(self.host.ax*self.host.ax + self.host.ay*self.host.ay + self.host.az*self.host.az)
+        # theta = np.arccos(self.host.az/r)
+        # phi = np.arctan2(self.host.ay,self.host.ax)
+
+        a11 = cosph
+        a12 = sinph
+        a13 = 0
+        a21 = -costh*sinph
+        a22 = costh*cosph
+        a23 = sinth
+        a31 = sinth*sinph
+        a32 = -sinth*cosph
+        a33 = costh
+
+        A = np.array([[a11,a12,a13],[a21,a22,a23],[a31,a32,a33]])
+
+        return np.dot(A,position)
+
     def calculate_partial_force(self, position, dx=1e-5):
         # dx = 1e18 # is this causing problems?
         # dx = 1e-5
