@@ -1,3 +1,5 @@
+from __future__ import division
+
 import numpy as np
 from scipy.misc import derivative
 from scipy.integrate import quad
@@ -31,21 +33,40 @@ class GetGravitationalForce:
          
     def rotate(self,position):
         axis = np.array([self.host.ax,self.host.ay,self.host.az])
-        r = linalg.norm(axis)
-        print 'r = ', r
-        costh = self.host.az/r
-        sinth = np.sqrt(1 - costh)
-        rxy = linalg.norm(axis[:1])
-        cosph = self.host.ax/rxy
-        sinph = self.host.ay/rxy
         
-        cospsi = 1
-        sinpsi = 0
+        r = linalg.norm(axis)
+
+        costh = self.host.az/r
+        sinth = np.sqrt(1 - costh**2)
+        
+        # rxy = linalg.norm(axis[:2])
+        # cosph = self.host.ax/rxy
+        # sinph = self.host.ay/rxy
+        
+        cosph = self.host.ax/(r*sinth)
+        sinph = self.host.ay/(r*sinth)
+
+        print 'phi = ', np.arccos(cosph), np.arcsin(sinph)
+        print 'theta = ', np.arccos(costh), np.arcsin(sinth)
+
+        # cospsi = 1
+        # sinpsi = 0
 
         # r = np.sqrt(self.host.ax*self.host.ax + self.host.ay*self.host.ay + self.host.az*self.host.az)
         # theta = np.arccos(self.host.az/r)
         # phi = np.arctan2(self.host.ay,self.host.ax)
 
+        
+        phi = np.pi/4
+        theta = np.pi/2
+
+        # r, theta, phi = spherical_coordinates(axis)
+        # print r, theta, phi
+        cosph = np.cos(phi)
+        sinph = np.sin(phi)
+        costh = np.cos(theta)
+        sinth = np.sin(theta)
+        
         a11 = cosph
         a12 = sinph
         a13 = 0
