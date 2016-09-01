@@ -26,10 +26,51 @@ class GetGravitationalForce:
         return self.density_function(position[0], position[1], position[2], host)
 
     def calculate_gravitational_force(self, position):
-        # position_rotated = self.rotate(position)
-        mag, vec = self.calculate_partial_force(position)
+        axis = np.array([self.host.ax,self.host.ay,self.host.az])
+        position_rotated = rotate(position,axis)
+        mag, _ = self.calculate_partial_force(position_rotated)
+        _, theta, phi = spherical_coordinates(position)
+        fx, fy, fz = cartesian_coordinates(mag,theta,phi)
+        vec = -1*np.array([fx, fy, fz])
         # mag, vec = self.calculate_partial_force(position)
         return mag, vec
+
+    '''
+    def rotate(self,position):
+        # THIS ONLY WORKS WITH THE SINGLE AXIS DIRECTION
+        axis = np.array([self.host.ax,self.host.ay,self.host.az])
+
+        _, theta1, phi1 = spherical_coordinates(np.array([1,0,0]))
+        _, theta2, phi2 = spherical_coordinates(axis)
+
+        phi = np.pi/2 - phi1
+        theta = theta1 - theta2
+        psi = phi2 - np.pi/2
+
+        c1 = np.cos(phi)
+        c2 = np.cos(theta)
+        c3 = np.cos(psi)
+
+        s1 = np.sin(phi)
+        s2 = np.sin(theta)
+        s3 = np.sin(psi)
+        
+        R1 = np.array([[c1, -s1, 0],[s1, c1, 0], [0, 0, 1]])
+        R2 = np.array([[1, 0, 0],[0, c2, -s2], [0, s2, c2]])
+        R3 = np.array([[c3, -s3, 0], [s3, c3, 0], [0, 0, 1]])
+
+        rot1 = np.dot(R1,position)
+        rot2 = np.dot(R2,rot1)
+        rot3 = np.dot(R3,rot2)
+
+        return rot3
+    '''
+
+    def vector(self,phi,theta):
+        fx = -1.*mag*np.cos(phi)*np.sin(theta)
+        fy = -1.*self.force*np.sin(phi)*np.sin(theta)
+        fz = -1.*self.force*np.cos(theta)
+        return np.array([fx, fy, fz])
 
     def calculate_partial_force(self, position, dx=1e-5):
         # dx = 1e18 # is this causing problems?

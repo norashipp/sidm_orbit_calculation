@@ -24,7 +24,7 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 
-infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
+infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx,integrator,potential,dt,sub_idx)
 
 # host_radius = 1.21100235447 # host 40
 
@@ -50,7 +50,7 @@ mt_z = sub.rel_z
 mt_dist = np.sqrt(mt_x**2 + mt_y**2 + mt_z**2)
 
 # GALA COMPARISON
-gala = 1
+gala = 0
 if gala:
 	f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_%i.dat'%(host_idx,sub_idx))
 	orbit = cPickle.load(f)
