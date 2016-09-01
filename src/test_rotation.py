@@ -1,0 +1,19 @@
+import sys
+
+from sidm_orbit_calculation.src.halos.host_halo import *
+
+host_idx = 40
+potential = 'spherical_NFW'
+host = HostHalo(host_idx,potential,subs=False)
+host.update(host.cosmo.age(0))
+gravity = GetGravitationalForce(host)
+
+axis = np.array([sys.argv[1],sys.argv[2],sys.argv[3]],dtype=float)
+norm = linalg.norm(axis)
+host.ax = axis[0]/norm
+host.ay = axis[1]/norm
+host.az = axis[2]/norm
+
+pr = gravity.rotate([1,0,0])
+
+print pr
