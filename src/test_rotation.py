@@ -16,4 +16,4 @@ host.az = axis[2]/norm
 
 pr = gravity.rotate([1,0,0])
 
-print pr
+print '%.2f %.2f %.2f' %(pr[0], pr[1], pr[2])

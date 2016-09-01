@@ -30,73 +30,33 @@ class GetGravitationalForce:
         mag, vec = self.calculate_partial_force(position_rotated)
         # mag, vec = self.calculate_partial_force(position)
         return mag, vec
-         
+
     def rotate(self,position):
+        # THIS ONLY WORKS WITH THE SINGLE AXIS DIRECTION
         axis = np.array([self.host.ax,self.host.ay,self.host.az])
+
+        _, theta1, phi1 = spherical_coordinates(np.array([1,0,0]))
+        _, theta2, phi2 = spherical_coordinates(axis)
+
+        phi = np.pi/2 - phi1
+        theta = theta1 - theta2
+        psi = phi2 - np.pi/2
+
+        c1 = np.cos(phi)
+        c2 = np.cos(theta)
+        c3 = np.cos(psi)
+
+        s1 = np.sin(phi)
+        s2 = np.sin(theta)
+        s3 = np.sin(psi)
         
-        r = linalg.norm(axis)
-
-        costh = self.host.az/r
-        sinth = np.sqrt(1 - costh**2)
-        
-        # rxy = linalg.norm(axis[:2])
-        # cosph = self.host.ax/rxy
-        # sinph = self.host.ay/rxy
-        
-        cosph = self.host.ax/(r*sinth)
-        sinph = self.host.ay/(r*sinth)
-
-        print 'phi = ', np.arccos(cosph), np.arcsin(sinph)
-        print 'theta = ', np.arccos(costh), np.arcsin(sinth)
-
-        # cospsi = 1
-        # sinpsi = 0
-
-        # r = np.sqrt(self.host.ax*self.host.ax + self.host.ay*self.host.ay + self.host.az*self.host.az)
-        # theta = np.arccos(self.host.az/r)
-        # phi = np.arctan2(self.host.ay,self.host.ax)
-
-        '''
-        phi = np.pi/4
-        theta = np.pi/2
-
-        # r, theta, phi = spherical_coordinates(axis)
-        # print r, theta, phi
-        cosph = np.cos(phi)
-        sinph = np.sin(phi)
-        costh = np.cos(theta)
-        sinth = np.sin(theta)
-        
-        a11 = cosph
-        a12 = sinph
-        a13 = 0
-        a21 = -costh*sinph
-        a22 = costh*cosph
-        a23 = sinth
-        a31 = sinth*sinph
-        a32 = -sinth*cosph
-        a33 = costh
-
-        A = np.array([[a11,a12,a13],[a21,a22,a23],[a31,a32,a33]])
-
-        return np.dot(A,position)
-        '''
-
-        c1 = cosph
-        c2 = costh
-        c3 = 1
-
-        s1 = sinph
-        s2 = sinth
-        s3 = 0
-
-        R1 = np.array([[c1, -s1, 0],[c1, 0, 0], [0, 0, 1]])
+        R1 = np.array([[c1, -s1, 0],[s1, c1, 0], [0, 0, 1]])
         R2 = np.array([[1, 0, 0],[0, c2, -s2], [0, s2, c2]])
         R3 = np.array([[c3, -s3, 0], [s3, c3, 0], [0, 0, 1]])
 
         rot1 = np.dot(R1,position)
-        rot2 = np.dot(R2,m1)
-        rot3 = np.dot(R3,m2)
+        rot2 = np.dot(R2,rot1)
+        rot3 = np.dot(R3,rot2)
 
         return rot3
 
