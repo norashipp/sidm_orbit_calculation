@@ -14,10 +14,8 @@ def cartesian_coordinates(r,theta,phi):
 	z = r * np.cos(theta)
 	return x, y, z
 
-def rotate(self,position):
+def rotate(position,axis):
         # THIS ONLY WORKS WITH THE SINGLE AXIS DIRECTION
-        axis = np.array([self.host.ax,self.host.ay,self.host.az])
-
         _, theta1, phi1 = spherical_coordinates(axis)
         _, theta2, phi2 = spherical_coordinates(np.array([1,0,0]))
 

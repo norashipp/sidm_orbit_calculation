@@ -170,8 +170,8 @@ class HostHalo:
             initial_position = np.array([x0, y0, z0])
             initial_momentum = np.array([vx0, vy0, vz0])
             
-            initial_position = rotate(initial_position)
-            initial_momentum = rotate(initial_momentum)
+            # initial_position = rotate(initial_position)
+            # initial_momentum = rotate(initial_momentum)
 
             subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0, mass_spline=t_to_m)
             self.subhalos.append(subhalo)
