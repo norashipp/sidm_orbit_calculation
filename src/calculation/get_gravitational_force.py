@@ -56,7 +56,7 @@ class GetGravitationalForce:
         # theta = np.arccos(self.host.az/r)
         # phi = np.arctan2(self.host.ay,self.host.ax)
 
-        
+        '''
         phi = np.pi/4
         theta = np.pi/2
 
@@ -80,6 +80,25 @@ class GetGravitationalForce:
         A = np.array([[a11,a12,a13],[a21,a22,a23],[a31,a32,a33]])
 
         return np.dot(A,position)
+        '''
+
+        c1 = cosph
+        c2 = costh
+        c3 = 1
+
+        s1 = sinph
+        s2 = sinth
+        s3 = 0
+
+        R1 = np.array([[c1, -s1, 0],[c1, 0, 0], [0, 0, 1]])
+        R2 = np.array([[1, 0, 0],[0, c2, -s2], [0, s2, c2]])
+        R3 = np.array([[c3, -s3, 0], [s3, c3, 0], [0, 0, 1]])
+
+        rot1 = np.dot(R1,position)
+        rot2 = np.dot(R2,m1)
+        rot3 = np.dot(R3,m2)
+
+        return rot3
 
     def calculate_partial_force(self, position, dx=1e-5):
         # dx = 1e18 # is this causing problems?
