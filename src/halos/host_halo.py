@@ -17,6 +17,7 @@ from sidm_orbit_calculation.src.utils.setup import *
 import sidm_orbit_calculation.src.merger_tree.cluster as cluster
 import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
 from sidm_orbit_calculation.src.halos.subhalo import *
+from sidm_orbit_calculation.src.utils.geometry import *
 
 class HostHalo:
 
@@ -169,6 +170,9 @@ class HostHalo:
             initial_position = np.array([x0, y0, z0])
             initial_momentum = np.array([vx0, vy0, vz0])
             
+            initial_position = rotate(initial_position)
+            initial_momentum = rotate(initial_momentum)
+
             subhalo = Subhalo(host=self, M=m0, initial_position=initial_position, initial_momentum=initial_momentum, t0=t0, mass_spline=t_to_m)
             self.subhalos.append(subhalo)
 

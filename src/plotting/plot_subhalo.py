@@ -38,7 +38,7 @@ subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.da
 
 for sub_idx in sub_idx_array:
 	print 'Plotting subhalo %i' %sub_idx
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_spherical_NFW_%.0e_%i.dat' %(host_idx,integrator,dt,sub_idx)
 	sub = subs[sub_idx]
 
 	f = open(infile,'rb')
@@ -96,8 +96,8 @@ for sub_idx in sub_idx_array:
 	triaxial = 1
 	if triaxial:
 		integrator = 'leapfrog'
-		potential = 'triaxial_NFW'
-		infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
+		potential = 'triaxial_NFW_BT'
+		infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx,integrator,potential,dt,sub_idx)
 		f = open(infile_triaxial,'rb')
 		data = cPickle.load(f)
 		f.close()
