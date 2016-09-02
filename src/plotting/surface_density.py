@@ -13,20 +13,30 @@ from sidm_orbit_calculation.src.utils.setup import *
 from sidm_orbit_calculation.src.halos.host_halo import *
 from sidm_orbit_calculation.src.merger_tree.cluster import *
 
+dpi = 175
+fontsize = 15
+plt.rc('savefig', dpi=dpi)
+plt.rc('text', usetex=True)
+plt.rc('font', size=fontsize)
+plt.rc('xtick.major', pad=5)
+plt.rc('xtick.minor', pad=5)
+plt.rc('ytick.major', pad=5)
+plt.rc('ytick.minor', pad=5)
+
 hosts = np.array(sys.argv[1:],dtype=int)
 # host_idx = int(sys.argv[1])
 integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 
-v_thresh = 0 # km/s
+v_thresh = 150 # km/s
 
 for host_idx in hosts:
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
 
 	pos = np.loadtxt(infile)
 	r = np.sqrt(pos[:,0]**2 + pos[:,1]**2 + pos[:,2]**2)
-	print 'number of subhalos = %i' %len(r)
+	print 'Number of subhalos = %i' %len(r)
 
 	host = HostHalo(host_idx,potential)
 	host.update(host.cosmo.age(0))
@@ -76,20 +86,22 @@ for host_idx in hosts:
 	
 	vshell = 4/3*np.pi*(rbins[1:]**3-rbins[:-1]**3)
 
-	print 'results'
-	print nsubs, np.sum(nsubs)
-	print nsubs_mt, np.sum(nsubs_mt)
-	print subcount
+	# print 'results'
+	# print nsubs, np.sum(nsubs)
+	# print nsubs_mt, np.sum(nsubs_mt)
+	# print subcount
 
 	plt.figure()
-	plt.bar(rbins[:-1],nsubs/vshell,width=rbins[1]-rbins[0],color='c',alpha=0.5,label='spherical NFW')
-	plt.bar(rbins[:-1],nsubs_mt/vshell,width=rbins[1]-rbins[0],color='g',alpha=0.5,label='merger tree',zorder=0)
+	plt.bar(rbins[:-1],nsubs/vshell,width=rbins[1]-rbins[0],color='c',alpha=0.5,label=r'$\mathrm{Spherical\ NFW}$')
+	plt.bar(rbins[:-1],nsubs_mt/vshell,width=rbins[1]-rbins[0],color='g',alpha=0.5,label=r'$\mathrm{Merger\ Tree}$',zorder=0)
 	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs, color='c', bins=rbins, histtype='step', lw=3, normed=True)
 	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs_mt, color='g', bins=rbins, histtype='step', lw=3, normed=True)
 	plt.grid()
-	plt.xlabel('x/R200m')
-	plt.ylabel('surface density')
-	plt.title('surface density profile, v_thresh = %.2f' %v_thresh)
+	plt.xlabel(r'$\mathrm{x/R_{200m}}$')
+	plt.ylabel(r'$\mathrm{Surface\ Density\ (subhalos/Mpc^3)}$')
+	plt.title(r'$\mathrm{Host\ %i,\ v_{thresh}\ =\ %.2f\ km/s}$' %(host_idx,v_thresh))
 	plt.legend()
-	# plt.show()
-	plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e.png'  %(host_idx,integrator,potential,dt))
+	plt.yscale('log')
+	plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
+
+# plt.show()

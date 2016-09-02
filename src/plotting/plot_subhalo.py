@@ -114,7 +114,7 @@ for sub_idx in sub_idx_array:
 
 		vt_tri = np.sqrt(vx_tri**2 + vy_tri**2 + vz_tri**2)
 
-	gala = 1
+	gala = 0
 	if gala:
 		f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_spherical_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 		orbit = cPickle.load(f)
@@ -132,7 +132,7 @@ for sub_idx in sub_idx_array:
 		dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 		vt_g = np.sqrt(vx_g**2 + vy_g**2 + vz_g**2)
 
-	gala_tri = 1
+	gala_tri = 0
 	if gala_tri:
 		f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 		orbit = cPickle.load(f)
@@ -209,7 +209,7 @@ for sub_idx in sub_idx_array:
 
 	####### ORBITS #######
 
-	rmax = 2
+	rmax = 1
 
 	ax[0][0].plot(x_mt, y_mt, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 	ax[0][0].plot(x, y, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
@@ -338,6 +338,6 @@ for sub_idx in sub_idx_array:
 	ax[2][2].legend(loc='lower center',fontsize=30)
 	ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
-	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
+	# plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
 
-# plt.show()
+plt.show()
