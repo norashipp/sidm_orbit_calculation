@@ -143,7 +143,7 @@ for i in [32,101,467,1000]:
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		# outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		outfile = HOMEDIR + 'scratch-midway/sidm_output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx, integrator, potential, dt, sub_idx)
+		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 467:
 		writing = 1 
 		# else:

@@ -250,6 +250,7 @@ class HostHalo:
         self.rho_s = 1
         self.rho_s = self.scale_density()
 
+        time = self.cosmo.age(0) # maybe evolving axis direction is causing weirdness
         self.ax = self.ax_sp(time)
         self.ay = self.ay_sp(time)
         self.az = self.az_sp(time)
