@@ -50,6 +50,15 @@ for host_idx in hosts:
 	# print rbins
 	nsubs = np.zeros_like(rbins[:-1])
 	nsubs_mt = np.zeros_like(rbins[:-1])
+
+	drag = 1
+	if drag:
+		integrator = 'dissipative'
+		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
+		pos = np.loadtxt(infile)
+		rd = np.sqrt(pos[:,0]**2 + pos[:,1]**2 + pos[:,2]**2)
+		nsubs_d = np.zeros_like(rbins[:-1])
+
 	ri = 0
 	for i in range(len(host.subhalos)): # make this the outer loop, make list of subhalos to include, then bin them
 		if host.subhalos[i]:
@@ -60,29 +69,34 @@ for host_idx in hosts:
 			vmax_acc = vmax_sp(host.subhalos[i].t0)
 			if vmax_acc > v_thresh:
 				subcount += 1
+
 				# determine radial bins for each
+
 				# merger tree
 				rf = np.sqrt(subs[i].rel_x[-1]**2 + subs[i].rel_y[-1]**2 + subs[i].rel_z[-1]**2)
 				diff = rf - rbins[:-1]
 				diff[diff<0] = np.inf
 				rbin = diff.argmin()
-				# print 'merger tree'
-				# print rf
-				# print rbin
 				nsubs_mt[rbin] += 1
 
-				# calculation
+				# spherical NFW
 				diff = r[ri] - rbins[:-1]
-				ri+=1
 				diff[diff<0] = np.inf
 				rbin = diff.argmin()
-				# print 'calculation'
-				# print r[i]
-				# print rbin
-				# print 
 				nsubs[rbin] += 1
-		# else:
-			# print 'skipping %i' %i
+
+				# drag force
+				if drag:
+				    diff = rd[ri] - rbins[:-1]
+				    diff[diff<0] = np.inf
+				    rbin = diff.argmin()
+				    nsubs_d[rbin] += 1
+
+				ri+=1
+			# else:
+			# 	print 'not updating'
+        # else:
+        # 	print 'skipping %i' %i
 	
 	vshell = 4/3*np.pi*(rbins[1:]**3-rbins[:-1]**3)
 
@@ -92,16 +106,15 @@ for host_idx in hosts:
 	# print subcount
 
 	plt.figure()
-	plt.bar(rbins[:-1],nsubs/vshell,width=rbins[1]-rbins[0],color='c',alpha=0.5,label=r'$\mathrm{Spherical\ NFW}$')
-	plt.bar(rbins[:-1],nsubs_mt/vshell,width=rbins[1]-rbins[0],color='g',alpha=0.5,label=r'$\mathrm{Merger\ Tree}$',zorder=0)
-	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs, color='c', bins=rbins, histtype='step', lw=3, normed=True)
-	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs_mt, color='g', bins=rbins, histtype='step', lw=3, normed=True)
+	plt.bar(rbins[:-1],nsubs/vshell,width=rbins[1]-rbins[0],color='c',alpha=0.8,label=r'$\mathrm{Spherical\ NFW}$',zorder=1)
+	plt.bar(rbins[:-1],nsubs_mt/vshell,width=rbins[1]-rbins[0],color='g',alpha=1.0,label=r'$\mathrm{Merger\ Tree}$',zorder=0)
+	plt.bar(rbins[:-1],nsubs_d/vshell,width=rbins[1]-rbins[0],color='m',alpha=0.5,label=r'$\mathrm{Drag\ Force}$',zorder=2)
 	plt.grid()
 	plt.xlabel(r'$\mathrm{r/R_{200m}}$')
 	plt.ylabel(r'$\mathrm{Density\ (subhalos/Mpc^3)}$')
 	plt.title(r'$\mathrm{Host\ %i,\ v_{thresh}\ =\ %.2f\ km/s}$' %(host_idx,v_thresh))
 	plt.legend()
 	plt.yscale('log')
-	plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
+	# plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
 
-# plt.show()
+plt.show()
