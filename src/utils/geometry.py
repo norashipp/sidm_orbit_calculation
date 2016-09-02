@@ -16,8 +16,8 @@ def cartesian_coordinates(r,theta,phi):
 
 def rotate(position,axis):
         # THIS ONLY WORKS WITH THE SINGLE AXIS DIRECTION
-        _, theta1, phi1 = spherical_coordinates(axis)
-        _, theta2, phi2 = spherical_coordinates(np.array([1,0,0]))
+        _, theta2, phi2 = spherical_coordinates(axis)
+        _, theta1, phi1 = spherical_coordinates(np.array([1,0,0]))
 
         phi = np.pi/2 - phi1
         theta = theta1 - theta2
