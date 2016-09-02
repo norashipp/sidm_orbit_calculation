@@ -62,8 +62,8 @@ def dissipative(subhalo,dt):
 	
 	_, fg0 = subhalo.gravity.calculate_gravitational_force(position=np.copy(x0))
 	
-	fd0 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0))
-	print 'rho0: %.3g' %subhalo.host.rho 
+	fd0 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0),subhalo_mass=subhalo.M)
+	# print 'rho0: %.3g' %subhalo.host.rho 
 	
 	f0 = fg0 + fd0
 
@@ -72,11 +72,12 @@ def dissipative(subhalo,dt):
 	p_half = p0 + lmbda * dt * f0
 
 	_, fg1 = subhalo.gravity.calculate_gravitational_force(position=np.copy(x1))
-	fd1 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0))
+	fd1 = subhalo.drag.calculate_drag_force(position=np.copy(x0),momentum=np.copy(p0),subhalo_mass=subhalo.M)
 	f1 = fg1 + fd1
 
 	p1 = p0 + 0.5 * dt * (f0 + f1)
 
+	'''
 	print 'dissipative'
 	# print 'x0: %.3g, %.3g, %.3g' %(x0[0],x0[1],x0[2])
 	print 'p0: %.3g, %.3g, %.3g' %(p0[0],p0[1],p0[2])
@@ -89,7 +90,8 @@ def dissipative(subhalo,dt):
 	print p1-p0
 	print 
 	time.sleep(2)
-	
+	'''
+
 	subhalo.position = x1
 	subhalo.momentum = p1
 	subhalo.drag.force = fd1

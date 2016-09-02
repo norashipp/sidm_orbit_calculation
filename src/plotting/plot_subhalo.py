@@ -31,14 +31,14 @@ host_idx = int(sys.argv[1])
 # sub_idx = int(sys.argv[2])
 sub_idx_array = np.array(sys.argv[2:],dtype=int)
 integrator = 'leapfrog'
-potential = 'spherical_NFW'
 dt = 4e-3
 
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 for sub_idx in sub_idx_array:
 	print 'Plotting subhalo %i' %sub_idx
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_spherical_NFW_%.0e_%i.dat' %(host_idx,integrator,dt,sub_idx)
+	potential = 'spherical_NFW'
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
 	sub = subs[sub_idx]
 
 	f = open(infile,'rb')

@@ -15,6 +15,6 @@ host.ax = axis[0]/norm
 host.ay = axis[1]/norm
 host.az = axis[2]/norm
 
-pr = rotate([0,1,0],axis)
+pr = rotate([-1,-1,-1],axis)
 
 print '%.2f %.2f %.2f' %(pr[0], pr[1], pr[2])
