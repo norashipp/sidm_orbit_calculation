@@ -4,6 +4,7 @@ import time
 
 import sidm_orbit_calculation.src.potentials.density as density
 from sidm_orbit_calculation.src.utils.constants import *
+from sidm_orbit_calculation.src.utils.geometry import *
 
 class GetDragForce :
     def __init__(self, host) :
@@ -18,7 +19,9 @@ class GetDragForce :
         sigma_mDM = 3 * (1e-2*m_to_Mpc)**2 * M_sol # cm**2/g --> Mpc**2/M_sol # number from kalhoefer paper
         # sigma_mDM = 10 # testing
         # self.host.update_density(position)
-        self.host.rho = self.calculate_density(position)
+        axis = np.array([self.host.ax,self.host.ay,self.host.az])
+        position_rotated = rotate(position,axis)
+        self.host.rho = self.calculate_density(position_rotated)
         vec  = 0.25 * sigma_mDM * momentum**2 * self.host.rho
         vec *= -np.sign(momentum)
         
