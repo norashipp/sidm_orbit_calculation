@@ -132,7 +132,7 @@ for sub_idx in sub_idx_array:
 		dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 		vt_g = np.sqrt(vx_g**2 + vy_g**2 + vz_g**2)
 
-	gala_tri = 0
+	gala_tri = 1
 	if gala_tri:
 		f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 		orbit = cPickle.load(f)

@@ -29,7 +29,7 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 
-v_thresh = 150 # km/s
+v_thresh = 0 # km/s
 
 for host_idx in hosts:
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
@@ -97,8 +97,8 @@ for host_idx in hosts:
 	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs, color='c', bins=rbins, histtype='step', lw=3, normed=True)
 	# plt.hist(np.ones_like(rbins[:-1]), weights=nsubs_mt, color='g', bins=rbins, histtype='step', lw=3, normed=True)
 	plt.grid()
-	plt.xlabel(r'$\mathrm{x/R_{200m}}$')
-	plt.ylabel(r'$\mathrm{Surface\ Density\ (subhalos/Mpc^3)}$')
+	plt.xlabel(r'$\mathrm{r/R_{200m}}$')
+	plt.ylabel(r'$\mathrm{Density\ (subhalos/Mpc^3)}$')
 	plt.title(r'$\mathrm{Host\ %i,\ v_{thresh}\ =\ %.2f\ km/s}$' %(host_idx,v_thresh))
 	plt.legend()
 	plt.yscale('log')
