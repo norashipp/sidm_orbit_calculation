@@ -14,12 +14,12 @@ jobname = 'sidm'
 
 host_idx = int(sys.argv[1])
 dt = 4e-3
-drag = 0
+drag = 1
 if drag:
     integrator = 'dissipative'
 else:
     integrator = 'leapfrog'
-potential = 'triaxial_NFW_BT'
+potential = 'spherical_NFW'
 
 batch = 'sbatch --account=kicp --partition=kicp --job-name=%s --output=log.out --error=log.err --mem-per-cpu=5000 ' %(jobname)
 command = 'sim.py %i %.2e %s %s' %(host_idx, dt, integrator, potential)
