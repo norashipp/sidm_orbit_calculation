@@ -135,6 +135,7 @@ for host_idx in hosts:
 	# print nsubs_mt, np.sum(nsubs_mt)
 	# print subcount
 
+	rbc/=host.R
 
 	# PLOTTING
 	plt.figure()
