@@ -83,10 +83,12 @@ class Sim:
 
 		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
 		self.output = [times,positions,momenta]
-
-        	F = open('final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
-		F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
-		F.close()
+		
+		write_pos = 1
+		if write_pos:
+			F = open('final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+			F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
+			F.close()
 
 		if writing:
 			self.write_output(outfile)

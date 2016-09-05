@@ -138,7 +138,14 @@ class HostHalo:
         # for sub in subs:
         for i in range(len(subs)-1):
             sub = subs[i]
-            sub_count+=1        
+            sub_count+=1
+
+            vthresh = 100 # km/s
+            if sub.v_max[-1] < vthresh:
+                self.subhalos.append(None)
+                skip+=1
+                continue
+
             aa = sub.a
             zz = self.redshift(aa)
             tt = self.cosmo.age(zz) # Gyr
