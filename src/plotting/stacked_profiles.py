@@ -38,13 +38,17 @@ rbins = np.linspace(0,3,nbins+1)
 dr = rbins[1]-rbins[0]
 rbc = rbins[1:]-dr/2
 
-sigma = np.ones_like(nbins)
-sigma_mt = np.ones_like(nbins)
-sigma_d = np.ones_like(nbins)
+# sigma = np.ones_like(nbins)
+# sigma_mt = np.ones_like(nbins)
+# sigma_d = np.ones_like(nbins)
 
-var = np.zeros_like(nbins)
-var_mt = np.zeros_like(nbins)
-var_d = np.zeros_like(nbins)
+sigma = np.ones(nbins)
+sigma_mt = np.ones(nbins)
+sigma_d = np.ones(nbins)
+
+# var = np.zeros_like(nbins)
+# var_mt = np.zeros_like(nbins)
+# var_d = np.zeros_like(nbins)
 
 for host_idx in hosts:
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
@@ -103,21 +107,25 @@ for host_idx in hosts:
 	sd_mt = nmt*dr/vshell
 	sd_d = nd*dr/vshell
 
-	sigma*=sd
-	sigma_mt*=sd_mt
-	sigma_d*=sd_d
+	sigma[host_idx] = sd
+	sigma_mt[host_idx] = sd_mt
+	sigma_d[host_idx] = sd_d
 
-	var+=(nsubs/sd**2)
-	var_mt+=(nsubs/sd_mt**2)
-	var_d+=(nsubs/sd_d**2)
+	# sigma*=sd 
+	# sigma_mt*=sd_mt
+	# sigma_d*=sd_d
 
-sigma = sigma**(1/len(hosts))
-sigma_mt = sigma_mt**(1/len(hosts))
-sigma_d = sigma_d**(1/len(hosts))
+	# var+=(nsubs/sd**2)
+	# var_mt+=(nsubs/sd_mt**2)
+	# var_d+=(nsubs/sd_d**2)
 
-err = sigma/len(hosts)*np.sqrt(var)
-err_mt = sigma/len(hosts)*np.sqrt(var_mt)
-err_d = sigma/len(hosts)*np.sqrt(var_d)
+sigma = np.median(sigma,axis=0)**(1/len(hosts))
+sigma_mt = np.median(sigma_mt,axis=0)**(1/len(hosts))
+sigma_d = np.median(sigma_d,axis=0)**(1/len(hosts))
+
+# err = sigma/len(hosts)*np.sqrt(var)
+# err_mt = sigma/len(hosts)*np.sqrt(var_mt)
+# err_d = sigma/len(hosts)*np.sqrt(var_d)
 
 # PLOTTING
 plt.figure()
