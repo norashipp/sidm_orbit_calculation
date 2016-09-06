@@ -149,7 +149,7 @@ for host_idx in hosts:
 		plt.errorbar(rbc,sd_mt,xerr=dr,yerr=np.sqrt(nsubs_mt),ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 	else:
 		plt.plot(rbc,sd,'-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
-		plt.plot(rbc,sd_d,'-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
+		plt.plot(rbc,sd_d,'--',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
 		plt.plot(rbc,sd_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 	plt.grid()
 	plt.xlabel(r'$\mathrm{r/R_{200m}}$')
@@ -157,5 +157,5 @@ for host_idx in hosts:
 	plt.title(r'$\mathrm{Host\ %i,\ v_{thresh}\ =\ %.2f\ km/s}$' %(host_idx,v_thresh))
 	plt.legend()
 	plt.yscale('log')
-	# plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
-plt.show()
+	plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
+# plt.show()

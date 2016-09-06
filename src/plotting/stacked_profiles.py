@@ -25,6 +25,7 @@ plt.rc('ytick.minor', pad=5)
 
 hosts = np.array(sys.argv[1:],dtype=int)
 # host = np.arange(51) # correct number?
+nhosts = len(hosts)
 
 integrator = 'leapfrog'
 potential = 'spherical_NFW'
@@ -42,15 +43,16 @@ rbc = rbins[1:]-dr/2
 # sigma_mt = np.ones_like(nbins)
 # sigma_d = np.ones_like(nbins)
 
-sigma = np.ones(nbins)
-sigma_mt = np.ones(nbins)
-sigma_d = np.ones(nbins)
+sigma = np.ones((nhosts,nbins))
+sigma_mt = np.ones((nhosts,nbins))
+sigma_d = np.ones((nhosts,nbins))
 
 # var = np.zeros_like(nbins)
 # var_mt = np.zeros_like(nbins)
 # var_d = np.zeros_like(nbins)
 
-for host_idx in hosts:
+for j in range(nhosts):
+	host_idx = hosts[j]
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
 
 	x,y,z = np.loadtxt(infile,unpack=True)
@@ -70,10 +72,10 @@ for host_idx in hosts:
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 
-	n = np.zeros_like(nbins)
-	nmt = np.zeros_like(nbins)
+	n = np.zeros(nbins)
+	nmt = np.zeros(nbins)
 	if drag:
-		nd = np.zeros_like(nbins)
+		nd = np.zeros(nbins)
 	
 	nsubs = 0
 	ri = 0
@@ -101,15 +103,15 @@ for host_idx in hosts:
 					nd[rbin] += 1
 				ri+=1
 
-	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(nbins*host.R)**3)
+	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(rbins[:-1]*host.R)**3)
 	
 	sd = n*dr/vshell
 	sd_mt = nmt*dr/vshell
 	sd_d = nd*dr/vshell
 
-	sigma[host_idx] = sd
-	sigma_mt[host_idx] = sd_mt
-	sigma_d[host_idx] = sd_d
+	sigma[j] = sd
+	sigma_mt[j] = sd_mt
+	sigma_d[j] = sd_d
 
 	# sigma*=sd 
 	# sigma_mt*=sd_mt
@@ -119,18 +121,20 @@ for host_idx in hosts:
 	# var_mt+=(nsubs/sd_mt**2)
 	# var_d+=(nsubs/sd_d**2)
 
-sigma = np.median(sigma,axis=0)**(1/len(hosts))
-sigma_mt = np.median(sigma_mt,axis=0)**(1/len(hosts))
-sigma_d = np.median(sigma_d,axis=0)**(1/len(hosts))
+sigma = np.median(sigma,axis=0)**(1/nhosts)
+sigma_mt = np.median(sigma_mt,axis=0)**(1/nhosts)
+sigma_d = np.median(sigma_d,axis=0)**(1/nhosts)
+print 'results'
+print sigma
 
-# err = sigma/len(hosts)*np.sqrt(var)
-# err_mt = sigma/len(hosts)*np.sqrt(var_mt)
-# err_d = sigma/len(hosts)*np.sqrt(var_d)
+# err = sigma/nhosts*np.sqrt(var)
+# err_mt = sigma/nhosts*np.sqrt(var_mt)
+# err_d = sigma/nhosts*np.sqrt(var_d)
 
 # PLOTTING
 plt.figure()
-err = 0
-if err:
+error = 0
+if error:
 	plt.errorbar(rbc,sigma,xerr=dr/2,yerr=err,ls='-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
 	plt.errorbar(rbc,sigma_d,xerr=dr/2,yerr=err_d,ls='-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
 	plt.errorbar(rbc,sigma_mt,xerr=dr/2,yerr=err_mt,ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
