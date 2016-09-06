@@ -23,8 +23,8 @@ plt.rc('xtick.minor', pad=5)
 plt.rc('ytick.major', pad=5)
 plt.rc('ytick.minor', pad=5)
 
-hosts = np.array(sys.argv[1:],dtype=int)
-# host = np.arange(51) # correct number?
+# hosts = np.array(sys.argv[1:],dtype=int)
+hosts = np.arange(51) # correct number?
 nhosts = len(hosts)
 
 integrator = 'leapfrog'
@@ -53,7 +53,7 @@ sigma_d = np.ones((nhosts,nbins))
 
 for j in range(nhosts):
 	host_idx = hosts[j]
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
 
 	x,y,z = np.loadtxt(infile,unpack=True)
 	r = np.sqrt(x**2 + y**2 + z**2)
@@ -67,8 +67,7 @@ for j in range(nhosts):
 	subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 	if drag:
-		integrator = 'dissipative'
-		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
+		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 
@@ -145,8 +144,8 @@ else:
 plt.grid()
 plt.xlabel(r'$\mathrm{r/R_{200m}}$')
 plt.ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^2)}$')
-plt.title(r'$\mathrm{Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(v_thresh))
+plt.title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
 plt.legend()
 plt.yscale('log')
-# plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
+plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
 plt.show()

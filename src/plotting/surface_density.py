@@ -32,6 +32,7 @@ dt = 4e-3
 v_thresh = 100 # km/s
 
 for host_idx in hosts:
+	integrator = 'leapfrog'
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
 
 	pos = np.loadtxt(infile)
