@@ -33,18 +33,18 @@ drag = 1
 
 v_thresh = 100 # km/s
 
-nbins = 13
-rbins = np.linspace(0,3,nbins)
+nbins = 12
+rbins = np.linspace(0,3,nbins+1)
 dr = rbins[1]-rbins[0]
 rbc = rbins[1:]-dr/2
 
-sigma = np.ones_like(rbins[:-1])
-sigma_mt = np.ones_like(rbins[:-1])
-sigma_d = np.ones_like(rbins[:-1])
+sigma = np.ones_like(nbins)
+sigma_mt = np.ones_like(nbins)
+sigma_d = np.ones_like(nbins)
 
-var = np.zeros_like(rbins[:-1])
-var_mt = np.zeros_like(rbins[:-1])
-var_d = np.zeros_like(rbins[:-1])
+var = np.zeros_like(nbins)
+var_mt = np.zeros_like(nbins)
+var_d = np.zeros_like(nbins)
 
 for host_idx in hosts:
 	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
@@ -66,10 +66,10 @@ for host_idx in hosts:
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 
-	n = np.zeros_like(rbins[:-1])
-	nmt = np.zeros_like(rbins[:-1])
+	n = np.zeros_like(nbins)
+	nmt = np.zeros_like(nbins)
 	if drag:
-		nd = np.zeros_like(rbins[:-1])
+		nd = np.zeros_like(nbins)
 	
 	nsubs = 0
 	ri = 0
@@ -97,7 +97,7 @@ for host_idx in hosts:
 					nd[rbin] += 1
 				ri+=1
 
-	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(rbins[:-1]*host.R)**3)
+	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(nbins*host.R)**3)
 	
 	sd = n*dr/vshell
 	sd_mt = nmt*dr/vshell
