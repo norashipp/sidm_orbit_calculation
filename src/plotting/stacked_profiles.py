@@ -67,6 +67,7 @@ for j in range(nhosts):
 	subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 	if drag:
+		sigma = 6
 		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
@@ -131,21 +132,31 @@ print sigma
 # err_d = sigma/nhosts*np.sqrt(var_d)
 
 # PLOTTING
-plt.figure()
+fig, ax = plt.subplots(2,1)
 error = 0
 if error:
-	plt.errorbar(rbc,sigma,xerr=dr/2,yerr=err,ls='-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
-	plt.errorbar(rbc,sigma_d,xerr=dr/2,yerr=err_d,ls='-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
-	plt.errorbar(rbc,sigma_mt,xerr=dr/2,yerr=err_mt,ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
+	ax[0].errorbar(rbc,sigma,xerr=dr/2,yerr=err,ls='-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
+	ax[0].errorbar(rbc,sigma_d,xerr=dr/2,yerr=err_d,ls='-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
+	ax[0].errorbar(rbc,sigma_mt,xerr=dr/2,yerr=err_mt,ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 else:
-	plt.plot(rbc,sigma,'-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
-	plt.plot(rbc,sigma_d,'-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
-	plt.plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
+	ax[0].plot(rbc,sigma,'-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
+	ax[0].plot(rbc,sigma_d,'-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
+	ax[0].plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
+
+ax[1].plot(rbc,sigma_d/sigma,'-',color='r',label=r'$\mathrm{Drag\ Force\ Ratio}$')
+
 plt.grid()
-plt.xlabel(r'$\mathrm{r/R_{200m}}$')
-plt.ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^2)}$')
-plt.title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
-plt.legend()
-plt.yscale('log')
+ax[0].set_xlabel(r'$\mathrm{r/R_{200m}}$')
+ax[0].set_ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^2)}$')
+ax[0].set_title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
+ax[0].legend()
+ax[0].set_yscale('log')
+
+ax[1].set_xlabel(r'$\mathrm{r/R_{200m}}$')
+ax[1].set_ylabel(r'$\mathrm{\Sigma_{drag} /\Sigma}$')
+ax[1].legend()
+ax[1].set_yscale('log')
+
 plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
+
 plt.show()

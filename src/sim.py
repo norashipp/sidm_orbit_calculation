@@ -86,7 +86,7 @@ class Sim:
 		
 		write_pos = 1
 		if write_pos:
-			F = open('output/final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+			F = open('output/%s_%s/sigma_6/final_positions_%i_%s_%s_%.0e.txt' %(self.integrator,self.host.potential,self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
 			F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
 			F.close()
 
@@ -145,7 +145,7 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		# outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx, integrator, potential, dt, sub_idx)
+		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%s_%s/sigma_6/%i_%s_%s_%.0e_%i_major_axis.dat' %(integrator,potential,host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 467:
 		# writing = 1 
 		# else:
