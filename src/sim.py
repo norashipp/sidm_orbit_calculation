@@ -84,9 +84,9 @@ class Sim:
 		# self.output = [times,positions,momenta,gravity,drag,density,energy,self.host.host_idx,self.host.potential,self.host.R]
 		self.output = [times,positions,momenta]
 		
-		write_pos = 1
+		write_pos = 0
 		if write_pos:
-			F = open('output/%s_%s/sigma_6/final_positions_%i_%s_%s_%.0e.txt' %(self.integrator,self.host.potential,self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+			F = open('output/%s_%s/sigma_9/final_positions_%i_%s_%s_%.0e.txt' %(self.integrator,self.host.potential,self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
 			F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
 			F.close()
 
@@ -145,11 +145,11 @@ for i in range(len(my_sim.host.subhalos)):
 	if subhalo:
 		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
 		# outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%s_%s/sigma_6/%i_%s_%s_%.0e_%i_major_axis.dat' %(integrator,potential,host_idx, integrator, potential, dt, sub_idx)
+		outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/sigma21/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
 		# if sub_idx == 467:
 		# writing = 1 
 		# else:
-		writing = 0
+		writing = 1
 		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
 		# cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
 	else:
