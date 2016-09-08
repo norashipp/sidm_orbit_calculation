@@ -23,8 +23,8 @@ plt.rc('xtick.minor', pad=5)
 plt.rc('ytick.major', pad=5)
 plt.rc('ytick.minor', pad=5)
 
-# hosts = np.array(sys.argv[1:],dtype=int)
-hosts = np.arange(51) # correct number?
+hosts = np.array(sys.argv[1:],dtype=int)
+if len(hosts) == 0: hosts = np.arange(1,51)
 nhosts = len(hosts)
 
 integrator = 'leapfrog'
@@ -32,7 +32,7 @@ potential = 'spherical_NFW'
 dt = 4e-3
 drag = 1
 
-v_thresh = 100 # km/s
+v_thresh = 0 # km/s
 
 nbins = 12
 rbins = np.linspace(0,3,nbins+1)
@@ -53,7 +53,7 @@ sigma_d = np.ones((nhosts,nbins))
 
 for j in range(nhosts):
 	host_idx = hosts[j]
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
 
 	x,y,z = np.loadtxt(infile,unpack=True)
 	r = np.sqrt(x**2 + y**2 + z**2)
@@ -67,10 +67,11 @@ for j in range(nhosts):
 	subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 	if drag:
-		sigma = 6
-		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
+		# sig = 6
+		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
+		print len(r),len(rd)
 
 	n = np.zeros(nbins)
 	nmt = np.zeros(nbins)
@@ -81,7 +82,7 @@ for j in range(nhosts):
 	ri = 0
 	for i in range(len(host.subhalos)):
 		if host.subhalos[i]:
-			# print i
+			# print host.subhalos[i]
 			zz = 1/subs[i].a - 1
 			tt = host.cosmo.age(zz)
 			vmax = subs[i].v_max[-1]
@@ -121,9 +122,9 @@ for j in range(nhosts):
 	# var_mt+=(nsubs/sd_mt**2)
 	# var_d+=(nsubs/sd_d**2)
 
-sigma = np.median(sigma,axis=0)**(1/nhosts)
-sigma_mt = np.median(sigma_mt,axis=0)**(1/nhosts)
-sigma_d = np.median(sigma_d,axis=0)**(1/nhosts)
+sigma = np.median(sigma,axis=0)
+sigma_mt = np.median(sigma_mt,axis=0)
+sigma_d = np.median(sigma_d,axis=0)
 print 'results'
 print sigma
 
@@ -132,31 +133,36 @@ print sigma
 # err_d = sigma/nhosts*np.sqrt(var_d)
 
 # PLOTTING
-fig, ax = plt.subplots(2,1)
+fig, ax = plt.subplots(1,2,figsize=(20,8))
 error = 0
 if error:
 	ax[0].errorbar(rbc,sigma,xerr=dr/2,yerr=err,ls='-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
 	ax[0].errorbar(rbc,sigma_d,xerr=dr/2,yerr=err_d,ls='-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
 	ax[0].errorbar(rbc,sigma_mt,xerr=dr/2,yerr=err_mt,ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 else:
-	ax[0].plot(rbc,sigma,'-',color='b',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
-	ax[0].plot(rbc,sigma_d,'-',color='r',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
+	ax[0].plot(rbc,sigma,'-',color='r',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
+	ax[0].plot(rbc,sigma_d,'-',color='b',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
 	ax[0].plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 
-ax[1].plot(rbc,sigma_d/sigma,'-',color='r',label=r'$\mathrm{Drag\ Force\ Ratio}$')
+ax[1].plot(rbc,sigma_d/sigma,'-',color='b',label=r'$\mathrm{Drag\ Force\ Ratio}$',lw=3)
 
-plt.grid()
+ax[0].grid()
 ax[0].set_xlabel(r'$\mathrm{r/R_{200m}}$')
 ax[0].set_ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^2)}$')
 ax[0].set_title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
 ax[0].legend()
 ax[0].set_yscale('log')
+ax[0].set_xscale('log')
+ax[0].set_xlim(0,3*host.R)
 
+ax[1].grid()
 ax[1].set_xlabel(r'$\mathrm{r/R_{200m}}$')
 ax[1].set_ylabel(r'$\mathrm{\Sigma_{drag} /\Sigma}$')
 ax[1].legend()
 ax[1].set_yscale('log')
+ax[1].set_xscale('log')
+ax[1].set_xlim(0,3*host.R)
 
-plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
+# plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
 
 plt.show()

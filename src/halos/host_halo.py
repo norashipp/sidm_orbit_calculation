@@ -155,6 +155,7 @@ class HostHalo:
             dd = np.sqrt(sub.rel_x**2 + sub.rel_y**2 + sub.rel_z**2) # Mpc
             ratio_to_tt = interp1d(dd/hostR,tt)            
             
+            # t0 = tt[0]
             try:
                 t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
             except:
