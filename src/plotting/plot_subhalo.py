@@ -38,7 +38,7 @@ subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.da
 for sub_idx in sub_idx_array:
 	print 'Plotting subhalo %i' %sub_idx
 	potential = 'spherical_NFW'
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_leapfrog_%s_%.0e_%i.dat' %(host_idx,potential,dt,sub_idx)
 	sub = subs[sub_idx]
 
 	f = open(infile,'rb')
@@ -73,10 +73,9 @@ for sub_idx in sub_idx_array:
 	dist_mt = np.sqrt(x_mt**2 + y_mt**2 + z_mt**2)
 	vt_mt = np.sqrt(vx_mt**2 + vy_mt**2 + vz_mt**2)
 
-	drag = 0
+	drag = 1
 	if drag:
-		integrator = 'dissipative'
-		infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx,integrator,potential,dt,sub_idx)
+		infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/%i_dissipative_%s_%.0e_%i.dat' %(host_idx,potential,dt,sub_idx)
 		f = open(infile_drag,'rb')
 		data = cPickle.load(f)
 		f.close()
@@ -93,7 +92,7 @@ for sub_idx in sub_idx_array:
 
 		vt_d = np.sqrt(vx_d**2 + vy_d**2 + vz_d**2)
 
-	triaxial = 1
+	triaxial = 0
 	if triaxial:
 		integrator = 'leapfrog'
 		potential = 'triaxial_NFW_BT'
@@ -133,7 +132,7 @@ for sub_idx in sub_idx_array:
 		dist_g = np.sqrt(x_g**2 + y_g**2 + z_g**2)
 		vt_g = np.sqrt(vx_g**2 + vy_g**2 + vz_g**2)
 
-	gala_tri = 1
+	gala_tri = 0
 	if gala_tri:
 		f = open(HOMEDIR + 'sidm_orbit_calculation/src/output/gala_orbit_%i_triaxial_NFW_%.0e_%i.dat'%(host_idx,dt,sub_idx))
 		orbit = cPickle.load(f)

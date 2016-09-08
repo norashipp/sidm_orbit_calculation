@@ -18,8 +18,22 @@ plt.rc('xtick.minor', pad=5)
 plt.rc('ytick.major', pad=5)
 plt.rc('ytick.minor', pad=5)
 
+def get_radii(r):
+	minima = np.r_[True, r[1:] < r[:-1]] & np.r_[r[:-1] < r[1:], True]
+	maxima = np.r_[True, r[1:] > r[:-1]] & np.r_[r[:-1] > r[1:], True]
+	if len(minima) < 2 or len(maxima) < 2:
+		return None
+	else:
+		if r[1] > r[0]:
+			rp = minima[1]
+			ra = maxima[0]
+		elif r[1] < r[0]:
+			rp = minima[0]
+			ra = maxima[1]
+		return rp, ra
+
 hosts = np.array(sys.argv[1:],dtype=int)
-if len(hosts) == 0: hosts = np.arange(51) # correct number?
+if len(hosts) == 0: hosts = np.arange(51)
 nhosts = len(hosts)
 print '%i hosts' %nhosts
 
@@ -57,7 +71,8 @@ for j in range(nhosts):
 		if host.subhalos[i]:
 			sub_idx = i
 			print 'calculating subhalo %i' %i
-			infile = HOMEDIR+'sidm_orbit_calculation/src/output/leapfrog_%s/%i_leapfrog_%s_%.0e_%i_major_axis.dat' %(potential,host_idx,potential,dt,sub_idx)
+			# infile = HOMEDIR+'sidm_orbit_calculation/src/output/leapfrog_%s/%i_leapfrog_%s_%.0e_%i.dat' %(potential,host_idx,potential,dt,sub_idx)
+			infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_leapfrog_%s_%.0e_%i.dat' %(host_idx,potential,dt,sub_idx)
 			f = open(infile,'rb')
 			data = cPickle.load(f)
 			f.close()
@@ -66,7 +81,8 @@ for j in range(nhosts):
 
 			if drag:
 				sigma = 6
-				infile = HOMEDIR+'sidm_orbit_calculation/src/output/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i_major_axis.dat' %(potential,sigma,host_idx,potential,dt,sub_idx)
+				# infile = HOMEDIR+'sidm_orbit_calculation/src/output/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i.dat' %(potential,sigma,host_idx,potential,dt,sub_idx)
+				infile = HOMEDIR+'sidm_orbit_calculation/src/output/sigma%i/%i_dissipative_%s_%.0e_%i.dat' %(sigma,host_idx,potential,dt,sub_idx)
 				f = open(infile,'rb')
 				data = cPickle.load(f)
 				f.close()
@@ -82,59 +98,26 @@ for j in range(nhosts):
 				dmt = np.sqrt(subs[i].rel_x**2 + subs[i].rel_y**2 + subs[i].rel_z**2)
 				dmt = dmt[tt>sub.t0]
 				tt = tt[tt>sub.t0]
-				rpmt = np.inf
-				ramt = -np.inf
-				for r in dmt:
-					if r < rpmt:
-						rpmt = r
-					else:
-						rperi_mt.append(rpmt/host.R)
-						break
-				for r in dmt:
-					if r > rpmt and r > ramt:
-						ramt = r
-					else:
-						rapo_mt.append(ramt/host.R)
-						break
+				
+				rpmt,ramt = get_radii(dmt)
+				if rpmt == None: continue
 				ratio_mt.append(ramt/rpmt)
 
 				# spherical NFW
-				rp = np.inf
-				ra = -np.inf
-				for r in d:
-					if r < rp:
-						rp = r
-					else:
-						rperi.append(rp/host.R)
-						break
-				for r in d:
-					if r > rp and r > ra:
-						ra = r
-					else:
-						rapo.append(ra/host.R)
-						break
-				if host_idx == 40 and sub_idx == 32:
-					print rp
+				rp,ra = get_radii(d)
 				ratio.append(ra/rp)
 
 				# drag force
 				if drag:
-					rpd = np.inf
-					rad = -np.inf
-					for r in dd:
-						if r < rpd:
-							rpd = r
-						else:
-							rperi_d.append(rpd/host.R)
-							break
-					for r in dd:
-						if r > rpd and r > rad:
-							rad = r
-						else:
-							rapo_d.append(rad/host.R)
-							break
-				ratio.append(rad/rpd)
+					rpd,rad = get_radii(dd)
+					ratio.append(rad/rpd)
 
+				plt.figure()
+				plt.plot(tt,dmt)
+				plt.plot([tt.min(),tt.max()],[rpmt,rpmt],'*',markersize=10)
+				plt.plot([tt.min(),tt.max()],[ramt,ramt],'*',markersize=10)
+				plt.show()
+				break
 '''
 rperi = np.asarray(rperi)
 rapo = np.asarray(rapo)
