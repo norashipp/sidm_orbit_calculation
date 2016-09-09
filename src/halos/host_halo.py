@@ -140,11 +140,11 @@ class HostHalo:
             sub = subs[i]
             sub_count+=1
 
-            vthresh = 100 # km/s
-            if sub.v_max[-1] < vthresh:
-                self.subhalos.append(None)
-                skip+=1
-                continue
+            # vthresh = 100 # km/s
+            # if sub.v_max[-1] < vthresh:
+            #     self.subhalos.append(None)
+            #     skip+=1
+            #     continue
 
             aa = sub.a
             zz = self.redshift(aa)
@@ -155,13 +155,13 @@ class HostHalo:
             dd = np.sqrt(sub.rel_x**2 + sub.rel_y**2 + sub.rel_z**2) # Mpc
             ratio_to_tt = interp1d(dd/hostR,tt)            
             
-            # t0 = tt[0]
-            try:
-                t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
-            except:
-                self.subhalos.append(None)
-                skip+=1
-                continue
+            t0 = tt[0]
+            # try:
+            #     t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
+            # except:
+            #     self.subhalos.append(None)
+            #     skip+=1
+            #     continue
 
             t_to_x = interp1d(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)))
             t_to_y = interp1d(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)))
