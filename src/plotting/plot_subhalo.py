@@ -67,7 +67,7 @@ for sub_idx in sub_idx_array:
 
 	t_mt = cosmo.age(1/sub.a-1)
 	idx = t_mt >= host.subhalos[sub_idx].t0
-	idx = np.insert(idx,0,idx[0]-1)
+	# idx = np.insert(idx,0,idx[0]-1)
 	t_mt = t_mt[idx]
 
 	h = 0.7

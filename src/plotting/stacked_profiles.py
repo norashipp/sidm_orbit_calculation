@@ -53,7 +53,7 @@ sigma_d = np.ones((nhosts,nbins))
 
 for j in range(nhosts):
 	host_idx = hosts[j]
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
+	infile = HOMEDIR+'Dropbox/SIDMdata/final_positions_cutoffs/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
 
 	x,y,z = np.loadtxt(infile,unpack=True)
 	r = np.sqrt(x**2 + y**2 + z**2)
@@ -68,7 +68,7 @@ for j in range(nhosts):
 
 	if drag:
 		# sig = 6
-		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
+		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions_cutoffs/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 		print len(r),len(rd)
@@ -148,7 +148,7 @@ ax[1].plot(rbc,sigma_d/sigma,'-',color='b',label=r'$\mathrm{Drag\ Force\ Ratio}$
 
 ax[0].grid()
 ax[0].set_xlabel(r'$\mathrm{r/R_{200m}}$')
-ax[0].set_ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^2)}$')
+ax[0].set_ylabel(r'$\mathrm{\Sigma /R_{200m}\ (subhalos/Mpc^3)}$')
 ax[0].set_title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
 ax[0].legend()
 ax[0].set_yscale('log')
@@ -159,10 +159,10 @@ ax[1].grid()
 ax[1].set_xlabel(r'$\mathrm{r/R_{200m}}$')
 ax[1].set_ylabel(r'$\mathrm{\Sigma_{drag} /\Sigma}$')
 ax[1].legend()
-ax[1].set_yscale('log')
+# ax[1].set_yscale('log')
 ax[1].set_xscale('log')
 ax[1].set_xlim(0,3*host.R)
 
-# plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
+plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
 
-plt.show()
+# plt.show()
