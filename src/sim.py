@@ -86,7 +86,7 @@ class Sim:
 		
 		write_pos = 1
 		if write_pos:
-			F = open('output/final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+			F = open('output/final_positions/final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
 			F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
 			F.close()
 

@@ -17,7 +17,7 @@ class GetDragForce :
         self.force_array = []
 
     def calculate_drag_force(self, position, momentum, subhalo_mass) :
-        sigma_mDM = 3 * (1e-2*m_to_Mpc)**2 * 1000*M_sol # cm**2/g --> Mpc**2/M_sol # number from kalhoefer paper
+        sigma_mDM = 21 * (1e-2*m_to_Mpc)**2 * 1000*M_sol # cm**2/g --> Mpc**2/M_sol # number from kalhoefer paper
         # sigma_mDM = 10 # testing
         axis = np.array([self.host.ax,self.host.ay,self.host.az])
         position_rotated = rotate(position,axis)

@@ -29,10 +29,11 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 
-v_thresh = 100 # km/s
+v_thresh = 0 # km/s
 
 for host_idx in hosts:
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
+	integrator = 'leapfrog'
+	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
 
 	pos = np.loadtxt(infile)
 	r = np.sqrt(pos[:,0]**2 + pos[:,1]**2 + pos[:,2]**2)
@@ -56,7 +57,7 @@ for host_idx in hosts:
 	drag = 1
 	if drag:
 		integrator = 'dissipative'
-		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
+		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions/final_positions_%i_%s_%s_%.0e.txt' %(host_idx,integrator,potential,dt)
 		pos = np.loadtxt(infile)
 		rd = np.sqrt(pos[:,0]**2 + pos[:,1]**2 + pos[:,2]**2)
 		nsubs_d = np.zeros_like(rbins[:-1])
@@ -157,5 +158,7 @@ for host_idx in hosts:
 	plt.title(r'$\mathrm{Host\ %i,\ v_{thresh}\ =\ %.2f\ km/s}$' %(host_idx,v_thresh))
 	plt.legend()
 	plt.yscale('log')
-	plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
-# plt.show()
+	plt.xscale('log')
+	plt.xlim(0,3*host.R)
+	# plt.savefig('plots/subhalo_distribution_%i_%s_%s_%.0e_%i.png'  %(host_idx,integrator,potential,dt,v_thresh))
+plt.show()
