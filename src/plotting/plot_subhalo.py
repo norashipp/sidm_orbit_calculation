@@ -92,7 +92,8 @@ for sub_idx in sub_idx_array:
 
 	drag = 1
 	if drag:
-		infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/sigma3/%i_dissipative_%s_%.0e_%i.dat' %(host_idx,potential,dt,sub_idx)
+		sigma = 3
+		infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/sigma%i/%i_dissipative_%s_%.0e_%i.dat' %(sigma,host_idx,potential,dt,sub_idx)
 		f = open(infile_drag,'rb')
 		data = cPickle.load(f)
 		f.close()
@@ -113,7 +114,8 @@ for sub_idx in sub_idx_array:
 	if triaxial:
 		integrator = 'leapfrog'
 		potential = 'triaxial_NFW_BT'
-		infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx,integrator,potential,dt,sub_idx)
+		infile_triaxial = HOMEDIR+'Dropbox/SIDMdata/%s_%s/%i_%s_%s_%.0e_%i_major_axis.dat' %(integrator,potential,host_idx,integrator,potential,dt,sub_idx)
+		# infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx,integrator,potential,dt,sub_idx)
 		# infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_spherical_NFW_%.0e_%i_major_axis.dat' %(host_idx,integrator,dt,sub_idx)
 		f = open(infile_triaxial,'rb')
 		data = cPickle.load(f)

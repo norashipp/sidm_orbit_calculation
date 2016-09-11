@@ -91,12 +91,13 @@ class HostHalo:
         return radius/1000 # Mpc
 
     def concentration(self):
-        if self.R_s:
-            return self.R/self.R_s
-        else: 
-            c = concentration(self.M, '200m', self.z, model='diemer15')
-            self.R_s = self.R/c
-            return c
+        return self.R/self.R_s
+        # if self.R_s:
+        #     return self.R/self.R_s
+        # else: 
+        #     c = concentration(self.M, '200m', self.z, model='diemer15')
+        #     self.R_s = self.R/c
+        #     return c
 
     def virial_velocity(self):
         return np.sqrt(2*G*self.M/self.R)
@@ -128,6 +129,19 @@ class HostHalo:
         self.ax_sp = interp1d(tt,hs[self.host_idx].ax)
         self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
         self.az_sp = interp1d(tt,hs[self.host_idx].az)
+
+        rho = []
+        self.rho_s = 1
+        for t in tt:
+            self.M = self.M_sp(time)
+            self.R_s = self.R_s_sp(time)
+            self.q = self.q_sp(time)
+            self.s = self.s_sp(time)
+            rho.append(self.scale_density())
+
+        rho = np.asarray(rho_s)
+        lrho = np.log(rho)
+        self.lrho_s_sp = interp1d(tt,lrho)
 
     def initiate_subhalos(self):
         subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
@@ -255,8 +269,7 @@ class HostHalo:
         self.c = self.concentration()        
         self.v = self.virial_velocity()
 
-        self.rho_s = 1
-        self.rho_s = self.scale_density()
+        self.rho_s = np.exp(lrho_s_sp(time))
 
         time = self.cosmo.age(0) # maybe evolving axis direction is causing weirdness
         self.ax = self.ax_sp(time)
