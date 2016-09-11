@@ -133,13 +133,15 @@ class HostHalo:
         rho = []
         self.rho_s = 1
         for t in tt:
-            self.M = self.M_sp(time)
-            self.R_s = self.R_s_sp(time)
-            self.q = self.q_sp(time)
-            self.s = self.s_sp(time)
+            self.z = self.cosmo.age(t,inverse=True)
+            self.M = self.M_sp(t)
+            self.R_s = self.R_s_sp(t)
+            self.R = self.virial_radius(self.M, self.z)
+            self.q = self.q_sp(t)
+            self.s = self.s_sp(t)
             rho.append(self.scale_density())
 
-        rho = np.asarray(rho_s)
+        rho = np.asarray(rho)
         lrho = np.log(rho)
         self.lrho_s_sp = interp1d(tt,lrho)
 
@@ -269,7 +271,7 @@ class HostHalo:
         self.c = self.concentration()        
         self.v = self.virial_velocity()
 
-        self.rho_s = np.exp(lrho_s_sp(time))
+        self.rho_s = np.exp(self.lrho_s_sp(time))
 
         time = self.cosmo.age(0) # maybe evolving axis direction is causing weirdness
         self.ax = self.ax_sp(time)
