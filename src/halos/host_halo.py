@@ -181,35 +181,39 @@ class HostHalo:
 
             hostM = self.M_sp(tt)
             hostR = self.virial_radius(hostM, zz)
-            dd = np.sqrt(sub.rel_x**2 + sub.rel_y**2 + sub.rel_z**2) # Mpc
+            dd = np.sqrt(sub.rel_x*sub.rel_x + sub.rel_y*sub.rel_y + sub.rel_z*sub.rel_z) # Mpc
             ratio_to_tt = interp1d(dd/hostR,tt)            
             
             # t0 = tt[0]
             # t0 = tt[-10]
             try:
-                t0 = ratio_to_tt(1) # determine when subhalo is at a distance of 2 * host.R
+                t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
             except:
                 self.subhalos.append(None)
                 skip+=1
                 continue
             
-            t_to_x = interp1d(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)))
-            t_to_y = interp1d(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)))
-            t_to_z = interp1d(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)))
-            t_to_vx = interp1d(tt,sub.rel_vx*1000*m_to_Mpc/s_to_Gyr)
-            t_to_vy = interp1d(tt,sub.rel_vy*1000*m_to_Mpc/s_to_Gyr)
-            t_to_vz = interp1d(tt,sub.rel_vz*1000*m_to_Mpc/s_to_Gyr)
+            x = sub.rel_x/(self.cosmo.h*(1/sub.a))
+            y = sub.rel_y/(self.cosmo.h*(1/sub.a))
+            z = sub.rel_z/(self.cosmo.h*(1/sub.a))
+
+            t_to_x = interp1d(tt,x)
+            t_to_y = interp1d(tt,y)
+            t_to_z = interp1d(tt,z)
+            # t_to_vx = interp1d(tt,sub.rel_vx*1000*m_to_Mpc/s_to_Gyr)
+            # t_to_vy = interp1d(tt,sub.rel_vy*1000*m_to_Mpc/s_to_Gyr)
+            # t_to_vz = interp1d(tt,sub.rel_vz*1000*m_to_Mpc/s_to_Gyr)
             t_to_m = interp1d(tt,sub.m_200m/self.cosmo.h)
 
             x0, y0, z0 = t_to_x(t0), t_to_y(t0), t_to_z(t0)
-            vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
+            # vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
             m0 = t_to_m(t0)
 
             # print 'checking lengths: ', len(tt), len(sub.rel_x/(self.cosmo.h*(1/sub.a)))
             s = 0.05
-            xsp = UnivariateSpline(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)),s=s)
-            ysp = UnivariateSpline(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)),s=s)
-            zsp = UnivariateSpline(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)),s=s)
+            xsp = UnivariateSpline(tt,x,s=s)
+            ysp = UnivariateSpline(tt,y,s=s)
+            zsp = UnivariateSpline(tt,z,s=s)
 
             vxsp = xsp.derivative()
             vysp = ysp.derivative()

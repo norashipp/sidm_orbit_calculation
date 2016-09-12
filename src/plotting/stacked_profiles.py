@@ -31,9 +31,9 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 drag = 1
-triaxial = 0
+triaxial = 1
 
-v_thresh = 0 # km/s
+v_thresh = 100 # km/s
 
 nbins = 12
 rbins = np.linspace(0,3,nbins+1)
@@ -60,12 +60,12 @@ for j in range(nhosts):
 	x,y,z = np.loadtxt(infile,unpack=True)
 	r = np.sqrt(x**2 + y**2 + z**2)
 
-	host = HostHalo(host_idx,potential)
+	host = HostHalo(host_idx,potential,subs=False)
 	host.update(host.cosmo.age(0))
 	print 'Host %i' %host_idx
 	print 'M = %.2e' %host.M
 	print 'Number of subhalos = %i' %len(r)
-
+	
 	subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 	if drag:
@@ -88,33 +88,45 @@ for j in range(nhosts):
 	
 	nsubs = 0
 	ri = 0
-	for i in range(len(host.subhalos)):
-		if host.subhalos[i]:
-			# print host.subhalos[i]
-			zz = 1/subs[i].a - 1
-			tt = host.cosmo.age(zz)
-			vmax = subs[i].v_max[-1]
-			if vmax > v_thresh:
-				nsubs += 1
-				# merger tree
-				rf = np.sqrt(subs[i].rel_x[-1]**2 + subs[i].rel_y[-1]**2 + subs[i].rel_z[-1]**2)
-				diff = np.abs(rf - rbc*host.R)
+	for i in range(len(subs)-1):
+		# if host.subhalos[i]:
+		# print host.subhalos[i]
+		zz = 1/subs[i].a - 1
+		tt = host.cosmo.age(zz)
+		vmax = subs[i].v_max[-1]
+		if vmax > v_thresh and len(tt) > 10:
+			hostM = host.M_sp(tt)
+			hostR = host.virial_radius(hostM, zz)
+			dd = np.sqrt(subs[i].rel_x*subs[i].rel_x + subs[i].rel_y*subs[i].rel_y + subs[i].rel_z*subs[i].rel_z) # Mpc
+			ratio_to_tt = interp1d(dd/hostR,tt)
+
+			try:
+				t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
+			except:
+				continue
+
+			nsubs += 1
+
+			# merger tree
+			rf = np.sqrt(subs[i].rel_x[-1]**2 + subs[i].rel_y[-1]**2 + subs[i].rel_z[-1]**2)
+			diff = np.abs(rf - rbc*host.R)
+			rbin = diff.argmin()
+			nmt[rbin] += 1
+			# spherical NFW
+			diff = np.abs(r[ri] - rbc*host.R)
+			rbin = diff.argmin()
+			n[rbin] += 1
+			# drag force
+			if drag:
+				diff = np.abs(rd[ri] - rbc*host.R)
 				rbin = diff.argmin()
-				nmt[rbin] += 1
-				# spherical NFW
-				diff = np.abs(r[ri] - rbc*host.R)
+				nd[rbin] += 1
+			if triaxial:
+				diff = np.abs(rt[ri] - rbc*host.R)
 				rbin = diff.argmin()
-				n[rbin] += 1
-				# drag force
-				if drag:
-					diff = np.abs(rd[ri] - rbc*host.R)
-					rbin = diff.argmin()
-					nd[rbin] += 1
-				if triaxial:
-					diff = np.abs(rt[ri] - rbc*host.R)
-					rbin = diff.argmin()
-					nt[rbin] += 1	
-				ri+=1
+				nt[rbin] += 1	
+			ri+=1
+	print 'nsubs = %i' %nsubs
 
 	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(rbins[:-1]*host.R)**3)
 	
