@@ -31,6 +31,7 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 drag = 1
+triaxial = 1
 
 v_thresh = 0 # km/s
 
@@ -53,8 +54,9 @@ sigma_d = np.ones((nhosts,nbins))
 
 for j in range(nhosts):
 	host_idx = hosts[j]
-	infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_leapfrog_%s_%.0e.txt' %(host_idx,potential,dt)
 
+	# spherical NFW
+	infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/final_positions_%i_leapfrog_spherical_NFW_%.0e.txt' %(host_idx,dt)
 	x,y,z = np.loadtxt(infile,unpack=True)
 	r = np.sqrt(x**2 + y**2 + z**2)
 
@@ -68,15 +70,22 @@ for j in range(nhosts):
 
 	if drag:
 		# sig = 6
-		infile = HOMEDIR+'sidm_orbit_calculation/src/output/final_positions_cutoffs/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
+		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/final_positions_%i_dissipative_%s_%.0e.txt' %(host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 		print len(r),len(rd)
+
+	if triaxial:
+		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/final_positions_%i_leapfrog_triaxial_NFW_BT_%.0e.txt' %(host_idx,dt)
+		x,y,z = np.loadtxt(infile,unpack=True)
+		rt = np.sqrt(x**2 + y**2 + z**2)
 
 	n = np.zeros(nbins)
 	nmt = np.zeros(nbins)
 	if drag:
 		nd = np.zeros(nbins)
+	if triaxial:
+		nt = np.zeros(nbins)
 	
 	nsubs = 0
 	ri = 0
@@ -102,6 +111,10 @@ for j in range(nhosts):
 					diff = np.abs(rd[ri] - rbc*host.R)
 					rbin = diff.argmin()
 					nd[rbin] += 1
+				if triaxial:
+					diff = np.abs(rt[ri] - rbc*host.R)
+					rbin = diff.argmin()
+					nt[rbin] += 1	
 				ri+=1
 
 	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(rbins[:-1]*host.R)**3)
@@ -163,6 +176,6 @@ ax[1].set_yscale('log')
 ax[1].set_xscale('log')
 ax[1].set_xlim(0,3*host.R)
 
-# plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
+plt.savefig('plots/subhalo_distribution_%s_%.0e_%i_%i.png'  %(potential,dt,v_thresh,nhosts))
 
-plt.show()
+# plt.show()
