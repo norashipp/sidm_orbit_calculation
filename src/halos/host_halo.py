@@ -3,6 +3,7 @@ import numpy as np
 from scipy.integrate import quad
 from scipy.interpolate import interp1d
 from time import sleep
+from scipy.interpolate import UnivariateSpline
 
 from colossus.cosmology import cosmology
 from colossus.halo.mass_so import M_to_R
@@ -91,12 +92,13 @@ class HostHalo:
         return radius/1000 # Mpc
 
     def concentration(self):
-        if self.R_s:
-            return self.R/self.R_s
-        else: 
-            c = concentration(self.M, '200m', self.z, model='diemer15')
-            self.R_s = self.R/c
-            return c
+        return self.R/self.R_s
+        # if self.R_s:
+        #     return self.R/self.R_s
+        # else: 
+        #     c = concentration(self.M, '200m', self.z, model='diemer15')
+        #     self.R_s = self.R/c
+        #     return c
 
     def virial_velocity(self):
         return np.sqrt(2*G*self.M/self.R)
@@ -129,6 +131,21 @@ class HostHalo:
         self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
         self.az_sp = interp1d(tt,hs[self.host_idx].az)
 
+        rho = []
+        self.rho_s = 1
+        for t in tt:
+            self.z = self.cosmo.age(t,inverse=True)
+            self.M = self.M_sp(t)
+            self.R_s = self.R_s_sp(t)
+            self.R = self.virial_radius(self.M, self.z)
+            self.q = self.q_sp(t)
+            self.s = self.s_sp(t)
+            rho.append(self.scale_density())
+
+        rho = np.asarray(rho)
+        lrho = np.log(rho)
+        self.lrho_s_sp = interp1d(tt,lrho)
+
     def initiate_subhalos(self):
         subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
         print "Initiating subhahlos..."
@@ -140,15 +157,21 @@ class HostHalo:
             sub = subs[i]
             sub_count+=1
 
+            '''
             vthresh = 100 # km/s
             if sub.v_max[-1] < vthresh:
                 self.subhalos.append(None)
                 skip+=1
                 continue
+            '''
 
             aa = sub.a
             zz = self.redshift(aa)
             tt = self.cosmo.age(zz) # Gyr
+            
+            if len(tt) < 10:
+                self.subhalos.append(None)
+                continue
 
             hostM = self.M_sp(tt)
             hostR = self.virial_radius(hostM, zz)
@@ -156,13 +179,14 @@ class HostHalo:
             ratio_to_tt = interp1d(dd/hostR,tt)            
             
             # t0 = tt[0]
+            # t0 = tt[-10]
             try:
-                t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
+                t0 = ratio_to_tt(1) # determine when subhalo is at a distance of 2 * host.R
             except:
                 self.subhalos.append(None)
                 skip+=1
                 continue
-
+            
             t_to_x = interp1d(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)))
             t_to_y = interp1d(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)))
             t_to_z = interp1d(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)))
@@ -175,9 +199,41 @@ class HostHalo:
             vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
             m0 = t_to_m(t0)
 
+            # print 'checking lengths: ', len(tt), len(sub.rel_x/(self.cosmo.h*(1/sub.a)))
+            s = 0.05
+            xsp = UnivariateSpline(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)),s=s)
+            ysp = UnivariateSpline(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)),s=s)
+            zsp = UnivariateSpline(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)),s=s)
+
+            vxsp = xsp.derivative()
+            vysp = ysp.derivative()
+            vzsp = zsp.derivative()
+
+            '''
+            plt.figure(figsize=(5,5))
+            plt.plot(tt,xsp(tt))
+            plt.plot(tt,ysp(tt))
+            plt.plot(tt,zsp(tt))
+
+            plt.figure(figsize=(5,5))
+            plt.plot(tt,vxsp(tt))
+            plt.plot(tt,vysp(tt))
+            plt.plot(tt,vzsp(tt))
+
+            plt.show()
+            '''
+
+            vx0 = vxsp(t0)
+            vy0 = vysp(t0)
+            vz0 = vzsp(t0)
+
             initial_position = np.array([x0, y0, z0])
             initial_momentum = np.array([vx0, vy0, vz0])
-            
+
+            # print 'initial parameters'
+            # print initial_position
+            # print initial_momentum
+
             # initial_position = rotate(initial_position)
             # initial_momentum = rotate(initial_momentum)
 
@@ -255,8 +311,7 @@ class HostHalo:
         self.c = self.concentration()        
         self.v = self.virial_velocity()
 
-        self.rho_s = 1
-        self.rho_s = self.scale_density()
+        self.rho_s = np.exp(self.lrho_s_sp(time))
 
         time = self.cosmo.age(0) # maybe evolving axis direction is causing weirdness
         self.ax = self.ax_sp(time)

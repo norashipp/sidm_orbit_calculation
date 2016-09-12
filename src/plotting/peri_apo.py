@@ -18,6 +18,8 @@ plt.rc('xtick.minor', pad=5)
 plt.rc('ytick.major', pad=5)
 plt.rc('ytick.minor', pad=5)
 
+'''
+# first after infall
 def get_radii(r):
 	minima = np.r_[True, r[1:] < r[:-1]] & np.r_[r[:-1] < r[1:], True]
 	maxima = np.r_[True, r[1:] > r[:-1]] & np.r_[r[:-1] > r[1:], True]
@@ -34,6 +36,26 @@ def get_radii(r):
 			rp = r[minima][0]
 			ra = r[maxima][1]
 		return rp, ra
+'''
+# last
+def get_radii(r):
+	minima = np.r_[True, r[1:] < r[:-1]] & np.r_[r[:-1] < r[1:], True]
+	maxima = np.r_[True, r[1:] > r[:-1]] & np.r_[r[:-1] > r[1:], True]
+	# print r[minima]
+	# print r[maxima]
+	if len(r[minima]) < 2 or len(r[maxima]) < 2:
+		# print 'problem..'
+		return None, None
+	else:
+		if r[-1] < r[-2]:
+			rp = r[minima][-2]
+			ra = r[maxima][-1]
+		elif r[-1] > r[-2]:
+			rp = r[minima][-1]
+			ra = r[maxima][-2]
+		return rp, ra
+
+
 
 hosts = np.array(sys.argv[1:],dtype=int)
 if len(hosts) == 0: hosts = np.arange(51)
@@ -50,10 +72,11 @@ rbins = np.linspace(0,3,nbins+1)
 # dr = rbins[1]-rbins[0]
 # rbc = rbins[1:]-dr/2
 
+plt.figure()
 
-sigs = [3,6]
+sigs = [3,6 ]
 colors = ['b','g','r','c','m','y','k','w']
-for j, sig in enumerate(sigs):
+for k, sig in enumerate(sigs):
 	dperi = []
 	dapo = []
 	
@@ -64,8 +87,6 @@ for j, sig in enumerate(sigs):
 		print 'Host %i' %host_idx
 		print 'M = %.2e' %host.M
 		subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
-		
-		plt.figure()
 
 		for i in range(len(host.subhalos)):
 			# print 'subhalo %i' %i
@@ -73,7 +94,8 @@ for j, sig in enumerate(sigs):
 				sub_idx = i
 				# print 'calculating subhalo %i' %i
 				# infile = HOMEDIR+'sidm_orbit_calculation/src/output/leapfrog_%s/%i_leapfrog_%s_%.0e_%i.dat' %(potential,host_idx,potential,dt,sub_idx)
-				infile = HOMEDIR+'sidm_orbit_calculation/src/output/leapfrog_%s/%i_leapfrog_%s_%.0e_%i_major_axis.dat' %(potential,host_idx,potential,dt,sub_idx)
+				# infile = HOMEDIR+'sidm_orbit_calculation/src/output/leapfrog_%s/%i_leapfrog_%s_%.0e_%i_major_axis.dat' %(potential,host_idx,potential,dt,sub_idx)
+				infile = HOMEDIR+'Dropbox/SIDMdata/leapfrog_%s/%i_leapfrog_%s_%.0e_%i_major_axis.dat' %(potential,host_idx,potential,dt,sub_idx)
 				f = open(infile,'rb')
 				data = cPickle.load(f)
 				f.close()
@@ -105,7 +127,8 @@ for j, sig in enumerate(sigs):
 			
 				# drag force
 				# infile = HOMEDIR+'sidm_orbit_calculation/src/output/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i.dat' %(potential,sigma,host_idx,potential,dt,sub_idx)
-				infile = HOMEDIR+'sidm_orbit_calculation/src/output/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i_major_axis.dat' %(potential,sig,host_idx,potential,dt,sub_idx)
+				# infile = HOMEDIR+'sidm_orbit_calculation/src/output/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i_major_axis.dat' %(potential,sig,host_idx,potential,dt,sub_idx)
+				infile = HOMEDIR+'Dropbox/SIDMdata/dissipative_%s/sigma_%i/%i_dissipative_%s_%.0e_%i_major_axis.dat' %(potential,sig,host_idx,potential,dt,sub_idx)
 				f = open(infile,'rb')
 				data = cPickle.load(f)
 				f.close()
@@ -126,18 +149,28 @@ for j, sig in enumerate(sigs):
 				dperi.append(dp)
 				dapo.append(da)
 
-		c = colors[j]
-		# FIX COLORS
-		# print dperi
-		# print dapo
-		plt.hist(dperi,histtype='step',lw=3,normed=True,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
-		# plt.hist(dapo,histtype='step',lw=3,normed=True)
+	
+	writing = 1
+	if writing:
+		np.savetxt('output/pericenter_z_0_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
+		np.savetxt('output/apocenter_z_0_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
+		# F = open('output/peri_apo_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),'a')
+		# F.write('%s %s\n' %(dperi,dapo))
+		# F.close()
 
-	plt.grid()
+	# bins = np.logspace(0,0.25,20)
+	# c = colors[k]
+	# FIX COLORS
+	# print dperi
+	# print dapo
+	plt.hist(dperi,bins=10,histtype='step',lw=3,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
+	# plt.hist(dapo,histtype='step',lw=3,normed=True)
+
 	plt.xlabel(r'$\mathrm{\Delta r_{p}/R_{200m}}$')
-	# plt.xlabel(r'$\mathrm{\Delta r_{p}/R_{200m}}$')
 	plt.ylabel(r'$\mathrm{subhalos}$')
+	plt.yscale('log')
 	plt.legend()
+	plt.grid()
 	# plt.savefig('plots/pericenter_%s_%.0e_%i.png'  %(potential,dt,nhosts))
 
-plt.show()
+# plt.show()
