@@ -31,13 +31,17 @@ integrator = 'leapfrog'
 potential = 'spherical_NFW'
 dt = 4e-3
 drag = 1
-triaxial = 1
+triaxial = 0
+triaxial_drag = 0
 
 v_thresh = 100 # km/s
 
 nbins = 12
-rbins = np.linspace(0,3,nbins+1)
-dr = rbins[1]-rbins[0]
+# rbins = np.linspace(0,3,nbins+1)
+rbins = np.logspace(np.log10(0.05),np.log10(3),nbins+1)
+# rbins = np.log()
+print rbins
+dr = rbins[1:]-rbins[:-1]
 rbc = rbins[1:]-dr/2
 
 # sigma = np.ones_like(nbins)
@@ -48,6 +52,7 @@ sigma = np.ones((nhosts,nbins))
 sigma_mt = np.ones((nhosts,nbins))
 sigma_d = np.ones((nhosts,nbins))
 sigma_t = np.ones((nhosts,nbins))
+sigma_td = np.ones((nhosts,nbins))
 
 # var = np.zeros_like(nbins)
 # var_mt = np.zeros_like(nbins)
@@ -70,7 +75,7 @@ for j in range(nhosts):
 
 	if drag:
 		sig = 21
-		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/sigma%i/final_positions_%i_dissipative_%s_%.0e.txt' %(sig,host_idx,potential,dt)
+		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/sigma%i/final_positions_%i_dissipative_spherical_NFW_%.0e.txt' %(sig,host_idx,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
 		
@@ -79,12 +84,20 @@ for j in range(nhosts):
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rt = np.sqrt(x**2 + y**2 + z**2)
 
+	if triaxial_drag:
+		sig = 21
+		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/sigma%i/final_positions_%i_dissipative_triaxial_NFW_BT_%.0e.txt' %(sig,host_idx,dt)
+		x,y,z = np.loadtxt(infile,unpack=True)
+		rtd = np.sqrt(x**2 + y**2 + z**2)
+
 	n = np.zeros(nbins)
 	nmt = np.zeros(nbins)
 	if drag:
 		nd = np.zeros(nbins)
 	if triaxial:
 		nt = np.zeros(nbins)
+	if triaxial_drag:
+		ntd = np.zeros(nbins)
 	
 	nsubs = 0
 	ri = 0
@@ -125,8 +138,14 @@ for j in range(nhosts):
 				diff = np.abs(rt[ri] - rbc*host.R)
 				rbin = diff.argmin()
 				nt[rbin] += 1	
+			if triaxial_drag:
+				diff = np.abs(rt[ri] - rbc*host.R)
+				rbin = diff.argmin()
+				ntd[rbin] += 1
 			ri+=1
 	print 'nsubs = %i' %nsubs
+	print 
+
 
 	vshell = 4/3*np.pi*((rbins[1:]*host.R)**3-(rbins[:-1]*host.R)**3)
 	
@@ -134,11 +153,13 @@ for j in range(nhosts):
 	sd_mt = nmt*dr/vshell
 	if drag: sd_d = nd*dr/vshell
 	if triaxial: sd_t = nt*dr/vshell
+	if triaxial_drag: sd_td = ntd*dr/vshell
 
 	sigma[j] = sd
 	sigma_mt[j] = sd_mt
 	if drag: sigma_d[j] = sd_d
 	if triaxial: sigma_t[j] = sd_t
+	if triaxial_drag: sigma_td[j] = sd_td
 
 	# sigma*=sd 
 	# sigma_mt*=sd_mt
@@ -152,6 +173,9 @@ sigma = np.median(sigma,axis=0)
 sigma_mt = np.median(sigma_mt,axis=0)
 if drag: sigma_d = np.median(sigma_d,axis=0)
 if triaxial: sigma_t = np.median(sigma_t,axis=0)
+if triaxial_drag: sigma_td = np.median(sigma_td,axis=0)
+
+# np.savetxt('surface_density_profile.txt',(sigma,sigma_mt,sigma_d,sigma_t,sigma_td))
 
 # print 'results'
 # print sigma
@@ -169,11 +193,13 @@ if error:
 	ax[0].errorbar(rbc,sigma_mt,xerr=dr/2,yerr=err_mt,ls='-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 else:
 	ax[0].plot(rbc,sigma,'-',color='r',label=r'$\mathrm{Spherical\ NFW}$',lw=3,markersize='10')
-	if drag: ax[0].plot(rbc,sigma_d,'-',color='b',label=r'$\mathrm{Drag\ Force}$',lw=3,markersize='10')
+	if drag: ax[0].plot(rbc,sigma_d,'-',color='b',label=r'$\mathrm{\Spherical\ NFW\ (Drag)}$',lw=3,markersize='10')
 	if triaxial: ax[0].plot(rbc,sigma_t,'-',color='m',label=r'$\mathrm{Triaxial\ NFW}$',lw=3,markersize='10')
+	if triaxial_drag: ax[0].plot(rbc,sigma_td,'-',color='k',label=r'$\mathrm{Triaxial\ NFW\ (Drag)}$',lw=3,markersize='10')
 	ax[0].plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 	
-ax[1].plot(rbc,sigma_d/sigma,'-',color='b',label=r'$\mathrm{Drag\ Force\ Ratio}$',lw=3)
+if drag: ax[1].plot(rbc,sigma_d/sigma,'-',color='b',label=r'$\mathrm{Drag\ Force\ Ratio\ (Spherical)}$',lw=3)
+if triaxial_drag: ax[1].plot(rbc,sigma_td/sigma,'-',color='k',label=r'$\mathrm{Drag\ Force\ Ratio\ (Triaxial)}$',lw=3)
 
 ax[0].grid()
 ax[0].set_xlabel(r'$\mathrm{r/R_{200m}}$')
@@ -182,15 +208,15 @@ ax[0].set_title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(n
 ax[0].legend()
 ax[0].set_yscale('log')
 ax[0].set_xscale('log')
-ax[0].set_xlim(0,3*host.R)
+# ax[0].set_xlim(0,3*host.R)
 
 ax[1].grid()
 ax[1].set_xlabel(r'$\mathrm{r/R_{200m}}$')
-ax[1].set_ylabel(r'$\mathrm{\Sigma_{drag} /\Sigma}$')
+ax[1].set_ylabel(r'$\mathrm{\Sigma_{drag} / \Sigma}$')
 ax[1].legend()
 # ax[1].set_yscale('log')
 ax[1].set_xscale('log')
-ax[1].set_xlim(0,3*host.R)
+# ax[1].set_xlim(0,3*host.R)
 
 plt.savefig('plots/subhalo_distribution_%.0e_%i_%i.png'  %(dt,v_thresh,nhosts))
 

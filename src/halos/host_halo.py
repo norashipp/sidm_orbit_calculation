@@ -187,7 +187,7 @@ class HostHalo:
             # t0 = tt[0]
             # t0 = tt[-10]
             try:
-                t0 = ratio_to_tt(2) # determine when subhalo is at a distance of 2 * host.R
+                t0 = ratio_to_tt(1) # determine when subhalo is at a distance of n * host.R
             except:
                 self.subhalos.append(None)
                 skip+=1

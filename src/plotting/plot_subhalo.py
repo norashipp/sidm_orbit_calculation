@@ -434,7 +434,9 @@ for sub_idx in sub_idx_array:
 
 	dmt_sp = UnivariateSpline(t_mt,dist_mt,s=0)
 	plt.figure()
-	plt.plot(dist/dmt_sp(t),lw=3)
+	plt.plot(t,dist/dmt_sp(t),lw=3)
+	plt.xlabel(r'$\mathrm{Gyr}$')
+	plt.ylabel(r'$\mathrm{Distance\ Ratio}$')
 	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/%i_%s_%.0e_%i_ratio.png'%(host_idx,integrator,dt,sub_idx))
 
 # plt.show()
