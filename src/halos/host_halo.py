@@ -23,7 +23,7 @@ from sidm_orbit_calculation.src.utils.geometry import *
 class HostHalo:
 
     # def __init__(self, M, potential, idx=None, tmax=None, R_s=None, s=0.99, q=0.999, a=1):
-    def __init__(self, idx, potential, subs=True):
+    def __init__(self, idx, potential, subs=True, scale_density=True):
         # input from merger tree: R_s, a, M_200m, b_to_a, c_to_a
 
         my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.0469, 'sigma8': 0.82, 'ns': 0.95}
@@ -37,7 +37,7 @@ class HostHalo:
         self.density_function = density.density_dict[self.potential]
         self.mass_function = mass.mass_dict[self.potential]
         
-        self.initiate_host()
+        self.initiate_host(scale_density=scale_density)
         if subs: self.initiate_subhalos()
         
         self.rho = 0
@@ -114,7 +114,7 @@ class HostHalo:
     # def scale_radius(self):
     #     return self.R/self.c # R_vir / c_vir
 
-    def initiate_host(self):
+    def initiate_host(self,scale_density):
         print 'Importing host %i parameters from merger tree...' %self.host_idx
         hs = cluster.HostHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
         aa = hs[self.host_idx].a 
@@ -131,20 +131,26 @@ class HostHalo:
         self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
         self.az_sp = interp1d(tt,hs[self.host_idx].az)
 
-        rho = []
-        self.rho_s = 1
-        for t in tt:
-            self.z = self.cosmo.age(t,inverse=True)
-            self.M = self.M_sp(t)
-            self.R_s = self.R_s_sp(t)
-            self.R = self.virial_radius(self.M, self.z)
-            self.q = self.q_sp(t)
-            self.s = self.s_sp(t)
-            rho.append(self.scale_density())
+        if scale_density:
+            rho = []
+            self.rho_s = 1
+            for t in tt:
+                self.z = self.cosmo.age(t,inverse=True)
+                self.M = self.M_sp(t)
+                self.R_s = self.R_s_sp(t)
+                self.R = self.virial_radius(self.M, self.z)
+                self.q = self.q_sp(t)
+                self.s = self.s_sp(t)
+                rho.append(self.scale_density())
 
-        rho = np.asarray(rho)
-        lrho = np.log(rho)
+            rho = np.asarray(rho)
+            lrho = np.log(rho)
+        else:
+            print 'skipping scale density calculation'
+            lrho = np.ones_like(tt)
+
         self.lrho_s_sp = interp1d(tt,lrho)
+
 
     def initiate_subhalos(self):
         subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
@@ -175,35 +181,39 @@ class HostHalo:
 
             hostM = self.M_sp(tt)
             hostR = self.virial_radius(hostM, zz)
-            dd = np.sqrt(sub.rel_x**2 + sub.rel_y**2 + sub.rel_z**2) # Mpc
+            dd = np.sqrt(sub.rel_x*sub.rel_x + sub.rel_y*sub.rel_y + sub.rel_z*sub.rel_z) # Mpc
             ratio_to_tt = interp1d(dd/hostR,tt)            
             
             # t0 = tt[0]
             # t0 = tt[-10]
             try:
-                t0 = ratio_to_tt(1) # determine when subhalo is at a distance of 2 * host.R
+                t0 = ratio_to_tt(1) # determine when subhalo is at a distance of n * host.R
             except:
                 self.subhalos.append(None)
                 skip+=1
                 continue
             
-            t_to_x = interp1d(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)))
-            t_to_y = interp1d(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)))
-            t_to_z = interp1d(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)))
-            t_to_vx = interp1d(tt,sub.rel_vx*1000*m_to_Mpc/s_to_Gyr)
-            t_to_vy = interp1d(tt,sub.rel_vy*1000*m_to_Mpc/s_to_Gyr)
-            t_to_vz = interp1d(tt,sub.rel_vz*1000*m_to_Mpc/s_to_Gyr)
+            x = sub.rel_x/(self.cosmo.h*(1/sub.a))
+            y = sub.rel_y/(self.cosmo.h*(1/sub.a))
+            z = sub.rel_z/(self.cosmo.h*(1/sub.a))
+
+            t_to_x = interp1d(tt,x)
+            t_to_y = interp1d(tt,y)
+            t_to_z = interp1d(tt,z)
+            # t_to_vx = interp1d(tt,sub.rel_vx*1000*m_to_Mpc/s_to_Gyr)
+            # t_to_vy = interp1d(tt,sub.rel_vy*1000*m_to_Mpc/s_to_Gyr)
+            # t_to_vz = interp1d(tt,sub.rel_vz*1000*m_to_Mpc/s_to_Gyr)
             t_to_m = interp1d(tt,sub.m_200m/self.cosmo.h)
 
             x0, y0, z0 = t_to_x(t0), t_to_y(t0), t_to_z(t0)
-            vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
+            # vx0, vy0, vz0 = t_to_vx(t0), t_to_vy(t0), t_to_vz(t0)
             m0 = t_to_m(t0)
 
             # print 'checking lengths: ', len(tt), len(sub.rel_x/(self.cosmo.h*(1/sub.a)))
             s = 0.05
-            xsp = UnivariateSpline(tt,sub.rel_x/(self.cosmo.h*(1/sub.a)),s=s)
-            ysp = UnivariateSpline(tt,sub.rel_y/(self.cosmo.h*(1/sub.a)),s=s)
-            zsp = UnivariateSpline(tt,sub.rel_z/(self.cosmo.h*(1/sub.a)),s=s)
+            xsp = UnivariateSpline(tt,x,s=s)
+            ysp = UnivariateSpline(tt,y,s=s)
+            zsp = UnivariateSpline(tt,z,s=s)
 
             vxsp = xsp.derivative()
             vysp = ysp.derivative()
