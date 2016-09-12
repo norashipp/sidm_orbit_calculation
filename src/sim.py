@@ -140,20 +140,20 @@ t0 = my_sim.host.cosmo.age(0)
 
 # for i in [32,101,467,1000]:
 for i in range(len(my_sim.host.subhalos)):
-	subhalo = my_sim.host.subhalos[i]
-	sub_idx = i
-	if subhalo:
-		print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
-		# outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		outfile = HOMEDIR + 'scratch-midway/sidm_output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-		# if sub_idx == 467:
-		# writing = 1 
-		# else:
-		writing = 0
-		my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
-		# cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
-	else:
-		print 'Skipping subhalo %i' %i
+    subhalo = my_sim.host.subhalos[i]
+    sub_idx = i
+    if subhalo:
+        print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
+        # outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
+        outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
+        # if sub_idx == 467:
+        # writing = 1 
+        # else:
+        writing = 0
+        my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
+        # cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
+    else:
+        print 'Skipping subhalo %i' %i
 
 # F.close()
 # example: python sim.py 1e14 1e12 1e4 1e10 leapfrog spherical_NFW 0
