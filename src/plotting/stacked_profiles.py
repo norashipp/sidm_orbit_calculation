@@ -73,8 +73,7 @@ for j in range(nhosts):
 		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/sigma%i/final_positions_%i_dissipative_%s_%.0e.txt' %(sig,host_idx,potential,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
 		rd = np.sqrt(x**2 + y**2 + z**2)
-		print len(r),len(rd)
-
+		
 	if triaxial:
 		infile = HOMEDIR+'Dropbox/SIDMdata/final_positions/final_positions_%i_leapfrog_triaxial_NFW_BT_%.0e.txt' %(host_idx,dt)
 		x,y,z = np.loadtxt(infile,unpack=True)
