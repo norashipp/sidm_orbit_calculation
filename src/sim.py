@@ -139,8 +139,8 @@ my_sim = Sim(host_idx, dt, integrator, potential)
 t0 = my_sim.host.cosmo.age(0)
 
 # for i in [32,101,467,1000]:
-for i in range(len(my_sim.host.subhalos)):
-# for i in [14]:
+# for i in range(len(my_sim.host.subhalos)):
+for i in [14]:
     subhalo = my_sim.host.subhalos[i]
     sub_idx = i
     if subhalo:

@@ -30,8 +30,8 @@ plt.rc('ytick.minor', pad=5)
 
 host_idx = int(sys.argv[1])
 # sub_idx = int(sys.argv[2])
-# sub_idx_array = np.array(sys.argv[2:],dtype=int)
-sub_idx_array = np.arange(41)
+sub_idx_array = np.array(sys.argv[2:],dtype=int)
+# sub_idx_array = np.arange(41)
 integrator = 'leapfrog'
 dt = 4e-3
 potential = 'spherical_NFW'
@@ -293,7 +293,7 @@ for sub_idx in sub_idx_array:
 	####### ORBITS #######
 
 	# rmax = 1
-	'''
+	
 	ax[0][0].plot(x_mt, y_mt, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 	ax[0][0].plot(x, y, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 	if triaxial: ax[0][0].plot(x_tri, y_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
@@ -430,7 +430,7 @@ for sub_idx in sub_idx_array:
 	ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
 	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
-	'''
+	
 
 	dmt_sp = UnivariateSpline(t_mt,dist_mt,s=0)
 	plt.figure()

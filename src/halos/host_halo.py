@@ -23,7 +23,7 @@ from sidm_orbit_calculation.src.utils.geometry import *
 class HostHalo:
 
     # def __init__(self, M, potential, idx=None, tmax=None, R_s=None, s=0.99, q=0.999, a=1):
-    def __init__(self, idx, potential, subs=True):
+    def __init__(self, idx, potential, subs=True, scale_density=True):
         # input from merger tree: R_s, a, M_200m, b_to_a, c_to_a
 
         my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.0469, 'sigma8': 0.82, 'ns': 0.95}
@@ -37,7 +37,7 @@ class HostHalo:
         self.density_function = density.density_dict[self.potential]
         self.mass_function = mass.mass_dict[self.potential]
         
-        self.initiate_host()
+        self.initiate_host(scale_density=scale_density)
         if subs: self.initiate_subhalos()
         
         self.rho = 0
@@ -114,7 +114,7 @@ class HostHalo:
     # def scale_radius(self):
     #     return self.R/self.c # R_vir / c_vir
 
-    def initiate_host(self):
+    def initiate_host(self,scale_density):
         print 'Importing host %i parameters from merger tree...' %self.host_idx
         hs = cluster.HostHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
         aa = hs[self.host_idx].a 
@@ -131,20 +131,26 @@ class HostHalo:
         self.ay_sp = interp1d(tt,hs[self.host_idx].ay)
         self.az_sp = interp1d(tt,hs[self.host_idx].az)
 
-        rho = []
-        self.rho_s = 1
-        for t in tt:
-            self.z = self.cosmo.age(t,inverse=True)
-            self.M = self.M_sp(t)
-            self.R_s = self.R_s_sp(t)
-            self.R = self.virial_radius(self.M, self.z)
-            self.q = self.q_sp(t)
-            self.s = self.s_sp(t)
-            rho.append(self.scale_density())
+        if scale_density:
+            rho = []
+            self.rho_s = 1
+            for t in tt:
+                self.z = self.cosmo.age(t,inverse=True)
+                self.M = self.M_sp(t)
+                self.R_s = self.R_s_sp(t)
+                self.R = self.virial_radius(self.M, self.z)
+                self.q = self.q_sp(t)
+                self.s = self.s_sp(t)
+                rho.append(self.scale_density())
 
-        rho = np.asarray(rho)
-        lrho = np.log(rho)
+            rho = np.asarray(rho)
+            lrho = np.log(rho)
+        else:
+            print 'skipping scale density calculation'
+            lrho = np.ones_like(tt)
+
         self.lrho_s_sp = interp1d(tt,lrho)
+
 
     def initiate_subhalos(self):
         subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
