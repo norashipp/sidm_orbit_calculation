@@ -31,13 +31,12 @@ plt.rc('ytick.minor', pad=5)
 host_idx = int(sys.argv[1])
 # sub_idx = int(sys.argv[2])
 # sub_idx_array = np.array(sys.argv[2:],dtype=int)
-sub_idx_array = np.arange(16)
+sub_idx_array = np.arange(41)
 integrator = 'leapfrog'
 dt = 4e-3
 potential = 'spherical_NFW'
 host = HostHalo(host_idx,potential)
 host.update(host.cosmo.age(0))
-
 
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
@@ -51,34 +50,57 @@ for sub_idx in sub_idx_array:
 	data = cPickle.load(f)
 	f.close()
 	t, positions, velocities = data
+	
+	x = positions[:,0]
+	y = positions[:,1]
+	z = positions[:,2]
 
-	x = positions[:,0]/host.R
-	y = positions[:,1]/host.R
-	z = positions[:,2]/host.R
+	vx = velocities[:,0]
+	vy = velocities[:,1]
+	vz = velocities[:,2]
 
-	vx = velocities[:,0]/(1000*m_to_Mpc/s_to_Gyr)
-	vy = velocities[:,1]/(1000*m_to_Mpc/s_to_Gyr)
-	vz = velocities[:,2]/(1000*m_to_Mpc/s_to_Gyr)
+	print 'initial velocities = ', vx[0], vy[0], vz[0]
+
+	vx/=(1000*m_to_Mpc/s_to_Gyr)
+	vy/=(1000*m_to_Mpc/s_to_Gyr)
+	vz/=(1000*m_to_Mpc/s_to_Gyr)
+
+	radii = []
+	for time in t:
+		if time < host.cosmo.age(0):
+			# print time
+			host.update(time)
+		radii.append(host.R)
+
+	radii = np.asarray(radii)
 
 	dist = np.sqrt(x**2 + y**2 + z**2)
+	dist/=radii
 	vt = np.sqrt(vx**2 + vy**2 + vz**2)
+
+	host.update(host.cosmo.age(0))
+	x/=host.R
+	y/=host.R
+	z/=host.R
 
 	### merger tree ###
 
 	t_mt = cosmo.age(1/sub.a-1)
-	idx = t_mt >= host.subhalos[sub_idx].t0
-	# idx = np.insert(idx,0,idx[0]-1)
+	# idx = t_mt >= host.subhalos[sub_idx].t0
+	# if idx[0] > 0: idx = np.insert(idx,0,idx[0]-1)
+	idx = np.arange(len(t_mt))
 	t_mt = t_mt[idx]
 
 	h = 0.7
-	x_mt = sub.rel_x/(h*(1/sub.a))/host.R
-	y_mt = sub.rel_y/(h*(1/sub.a))/host.R
-	z_mt = sub.rel_z/(h*(1/sub.a))/host.R
+	x_mt = sub.rel_x/(h*(1/sub.a))
+	y_mt = sub.rel_y/(h*(1/sub.a))
+	z_mt = sub.rel_z/(h*(1/sub.a))
 
 	vx_mt = sub.rel_vx # *1000*m_to_Mpc/s_to_Gyr
 	vy_mt = sub.rel_vy # *1000*m_to_Mpc/s_to_Gyr
 	vz_mt = sub.rel_vz # *1000*m_to_Mpc/s_to_Gyr
 
+	
 	x_mt = x_mt[idx]
 	y_mt = y_mt[idx]
 	z_mt = z_mt[idx]
@@ -86,11 +108,52 @@ for sub_idx in sub_idx_array:
 	vx_mt = vx_mt[idx]
 	vy_mt = vy_mt[idx]
 	vz_mt = vz_mt[idx]
-
+	
 	dist_mt = np.sqrt(x_mt**2 + y_mt**2 + z_mt**2)
 	vt_mt = np.sqrt(vx_mt**2 + vy_mt**2 + vz_mt**2)
 
-	drag = 1
+	radii = []
+	for time in t_mt:
+		if time < host.cosmo.age(0):
+			# print time
+			host.update(time)
+		radii.append(host.R)
+
+	radii = np.asarray(radii)
+	dist_mt/=radii
+	host.update(host.cosmo.age(0))
+
+	x_mt/=host.R
+	y_mt/=host.R
+	z_mt/=host.R
+
+	'''
+	cvx = x_mt[0]
+	cvy = y_mt[0]
+	cvz = z_mt[0]
+	cumvx = [cvx]
+	cumvy = [cvy]
+	cumvz = [cvz]
+	print cvx
+	for i in range(len(t_mt)-1):
+		dt = t_mt[i+1]-t_mt[i]
+		cvx += vx_mt[i]*dt*1000*m_to_Mpc/s_to_Gyr
+		cvy += vy_mt[i]*dt*1000*m_to_Mpc/s_to_Gyr
+		cvz += vz_mt[i]*dt*1000*m_to_Mpc/s_to_Gyr
+		print dt, cvx, vx_mt[i]
+		
+		cumvx.append(cvx)
+		cumvy.append(cvy)
+		cumvz.append(cvz)
+
+	print 'merger tree initial conditions'
+	print 'x0 = ', x_mt[0], y_mt[0], z_mt[0]
+	print 'vz = ', vx_mt[:5]
+	print 'vy = ', vy_mt[:5]
+	print 'vz = ', vz_mt[:5]
+	'''
+
+	drag = 0
 	if drag:
 		sigma = 3
 		infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/sigma%i/%i_dissipative_%s_%.0e_%i.dat' %(sigma,host_idx,potential,dt,sub_idx)
@@ -230,7 +293,7 @@ for sub_idx in sub_idx_array:
 	####### ORBITS #######
 
 	# rmax = 1
-
+	'''
 	ax[0][0].plot(x_mt, y_mt, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 	ax[0][0].plot(x, y, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
 	if triaxial: ax[0][0].plot(x_tri, y_tri, color=c_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
@@ -346,6 +409,7 @@ for sub_idx in sub_idx_array:
 	ax[2][1].set_ylabel(r'$\mathrm{r\ (R_{200m})}$')
 	# ax[2][1].set_xlim(t.min()-1,t.max()+1)
 	# ax[2][1].set_ylim(0,rmax)
+	ax[2][1].set_yscale('log')
 
 	ax[2][2].plot(0,0, color=c_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 	ax[2][2].plot(0,0, color=c, ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
@@ -365,6 +429,12 @@ for sub_idx in sub_idx_array:
 	
 	ax[0][1].set_title(r'$\mathrm{Host\ %i,\ Subhalo\ %i}$' %(host_idx,sub_idx),fontsize=30)
 
-	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/plots/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
+	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/%i_%s_%.0e_%i.png'%(host_idx,integrator,dt,sub_idx))
+	'''
+
+	dmt_sp = UnivariateSpline(t_mt,dist_mt,s=0)
+	plt.figure()
+	plt.plot(dist/dmt_sp(t),lw=3)
+	plt.savefig(HOMEDIR + '/sidm_orbit_calculation/src/%i_%s_%.0e_%i_ratio.png'%(host_idx,integrator,dt,sub_idx))
 
 # plt.show()
