@@ -115,15 +115,15 @@ for sub_idx in sub_idx_array:
 	vt = np.sqrt(vx**2 + vy**2 + vz**2)
 	
 	sigma = 0.
-	ax[0][0].plot(x, y, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[0][1].plot(y, z, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[0][2].plot(z, x, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[1][0].plot(t, vx, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[1][1].plot(t, vy, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[1][2].plot(t, vz, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[2][0].plot(t,vt, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[2][1].plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-	ax[2][2].plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+	ax[0][0].plot(x, y, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[0][1].plot(y, z, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[0][2].plot(z, x, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[1][0].plot(t, vx, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[1][1].plot(t, vy, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[1][2].plot(t, vz, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[2][0].plot(t,vt, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[2][1].plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
+	ax[2][2].plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$' %sigma)
 	
 	# sigs = [3,6,9,12,15,18]
 	sigs = [3,20]

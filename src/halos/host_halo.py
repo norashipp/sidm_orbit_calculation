@@ -146,7 +146,7 @@ class HostHalo:
             rho = np.asarray(rho)
             lrho = np.log(rho)
         else:
-            print 'skipping scale density calculation'
+            print 'Skipping scale density calculation'
             lrho = np.ones_like(tt)
 
         self.lrho_s_sp = interp1d(tt,lrho)
