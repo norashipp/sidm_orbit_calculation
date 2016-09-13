@@ -18,12 +18,13 @@ from sidm_orbit_calculation.src.utils.setup import *
 
 class Sim:
 	# def __init__(self, host_halo_mass, host_idx, subhalo_mass, dt, tmax, integration_method, potential, initial_position, intiial_momentum):
-	def __init__(self, host_idx, dt, integration_method, potential):
+	def __init__(self, host_idx, dt, integration_method, potential, sigma):
 		self.dt = dt
+                self.sigma = sigma
 		# self.tmax = tmax
 
 		# self.host = HostHalo(M=host_halo_mass, potential=potential, idx=host_idx, tmax=tmax)
-		self.host = HostHalo(idx=host_idx, potential=potential)
+		self.host = HostHalo(idx=host_idx, potential=potential,sigma=sigma)
 		
 		self.integrator = integration_method
 		self.integrate = integrator_dict[integration_method]
@@ -42,7 +43,7 @@ class Sim:
 		while self.time < self.host.cosmo.age(0): # assuming all subhalos survive to z=0
 			self.host.update(self.time)
 			subhalo.update(self.time)
-			self.integrate(subhalo=subhalo,dt=self.dt)
+			self.integrate(subhalo=subhalo,dt=self.dt,sigma=self.sigma)
 			self.time+=self.dt
 			
 			# for now, just assume always using merger tree output - can add in class inheritance later
@@ -86,7 +87,7 @@ class Sim:
 		
 		write_pos = 1
 		if write_pos:
-			F = open(HOMEDIR+'scratch-midway/final_positions_%i_%s_%s_%.0e.txt' %(self.host.host_idx, self.integrator, self.host.potential, self.dt),'a')
+			F = open(HOMEDIR+'scratch-midway/final_positions_%i_%s_%.0e_%.2f.txt' %(self.host.host_idx, self.host.potential, self.dt, self.host.sigma),'a')
 			F.write('%s %s %s\n' %(subhalo.position[0],subhalo.position[1],subhalo.position[2]))
 			F.close()
 
@@ -111,8 +112,13 @@ class Sim:
 
 host_idx = int(sys.argv[1])
 dt = float(sys.argv[2])# /1e9 # input in Gyr now!
-integrator = sys.argv[3]
-potential = sys.argv[4]
+# integrator = sys.argv[3]
+potential = sys.argv[3]
+sigma = float(sys.argv[4])
+if sigma == 0:
+    integrator = 'leapfrog'
+else:
+    integrator = 'dissipative'
 
 '''
 host_idx = int(sys.argv[1])
@@ -133,7 +139,7 @@ except:
     initial_momentum = np.array([0,0,0])
 '''
 
-my_sim = Sim(host_idx, dt, integrator, potential)
+my_sim = Sim(host_idx, dt, integrator, potential, sigma)
 # my_sim = Sim(1e14, 1e12, 1e4/seconds_to_years, 1e10/seconds_to_years, 'leapfrog', 'point_mass', np.array([1e22,0,0]), np.array([0,0,0]))
 
 t0 = my_sim.host.cosmo.age(0)
@@ -146,11 +152,12 @@ for i in range(len(my_sim.host.subhalos)):
     if subhalo:
         print 'Integrating subhalo %i/%i' %(sub_idx, len(my_sim.host.subhalos))
         # outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
-        outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
+        outfile = HOMEDIR + 'scratch-midway/%i_%s_%.0e_%.2f_%i.dat' %(host_idx, potential, dt, sigma, sub_idx)
+        # outfile = HOMEDIR + 'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i.dat' %(host_idx, integrator, potential, dt, sub_idx)
         # if sub_idx == 467:
         # writing = 1 
         # else:
-        writing = 0
+        writing = 1
         my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)
         # cProfile.run('my_sim.sim(subhalo=subhalo, printing=0, writing=writing, outfile=outfile)')
     else:

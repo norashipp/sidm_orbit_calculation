@@ -4,7 +4,7 @@ import time
 
 from sidm_orbit_calculation.src.potentials.test_spherical_potentials import *
 
-def euler(subhalo,dt):
+def euler(subhalo,dt,sigma):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
 	f0 = update_gravity(gravity=subhalo.gravity,position=x0)
@@ -21,7 +21,7 @@ def euler(subhalo,dt):
 	
 	update_arrays(subhalo=subhalo)
         
-def leapfrog(subhalo,dt):
+def leapfrog(subhalo,dt,sigma):
 	x0 = subhalo.position[:]
 	p0 = subhalo.momentum[:]
 
@@ -54,7 +54,7 @@ def leapfrog(subhalo,dt):
 
 	update_arrays(subhalo=subhalo)
 
-def dissipative(subhalo,dt):
+def dissipative(subhalo,dt,sigma):
 	lmbda = 0.5
 
 	x0 = subhalo.position[:]
