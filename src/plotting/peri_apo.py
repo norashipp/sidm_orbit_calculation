@@ -121,16 +121,16 @@ for k, sig in enumerate(sigs):
 
 		for sub_idx, sub in enumerate(subhalos):
 			if sub:
-                                infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
-                                f = open(infile,'rb')
-                                data = cPickle.load(f)
-                                f.close()
-                                _, positions, _ = data
-                                d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
-                                rp,ra = get_radii(d)
-                                if not rp: continue
+                infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+                f = open(infile,'rb')
+                data = cPickle.load(f)
+                f.close()
+                _, positions, _ = data
+                d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                rp,ra = get_radii(d)
+                if not rp: continue
 				
-                                infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
+                infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
 				f = open(infile,'rb')
 				data = cPickle.load(f)
 				f.close()
@@ -138,7 +138,8 @@ for k, sig in enumerate(sigs):
 				dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 
 				rpd,rad = get_radii(dd)
-                                if not rpd: continue
+                if not rpd: continue
+                if rpd > 0.2: continue
 				dp = rp-rpd
 				da = ra-rad
 
@@ -150,14 +151,14 @@ for k, sig in enumerate(sigs):
 		np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
 		np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
 	
-        print rbins
+    print rbins
 	print min(dperi), max(dperi)
         plt.hist(dperi,bins=rbins,histtype='step',lw=3,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
 
 	plt.xlabel(r'$\mathrm{\Delta r_{p}/R_{200m}}$')
 	plt.ylabel(r'$\mathrm{subhalos}$')
 	plt.yscale('log')
-        plt.xscale('log')
+    plt.xscale('log')
 	plt.legend()
 	plt.grid()
 	plt.savefig('plots/pericenter_%s_%.0e_%i.png'  %(potential,dt,nhosts))
