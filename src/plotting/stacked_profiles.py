@@ -34,9 +34,9 @@ drag = 1
 triaxial = 0
 triaxial_drag = 0
 
-v_thresh = 80 # km/s
+v_thresh = 70 # km/s
 
-nbins = 10
+nbins = 12
 # rbins = np.linspace(0,3,nbins+1)
 rbins = np.logspace(np.log10(0.1),np.log10(3),nbins+1)
 # rbins = np.log()
