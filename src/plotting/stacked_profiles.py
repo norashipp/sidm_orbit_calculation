@@ -34,15 +34,19 @@ drag = 1
 triaxial = 0
 triaxial_drag = 0
 
-v_thresh = 100 # km/s
+v_thresh = 80 # km/s
 
-nbins = 12
+nbins = 10
 # rbins = np.linspace(0,3,nbins+1)
-rbins = np.logspace(np.log10(0.05),np.log10(3),nbins+1)
+rbins = np.logspace(np.log10(0.1),np.log10(3),nbins+1)
 # rbins = np.log()
 print rbins
 dr = rbins[1:]-rbins[:-1]
 rbc = rbins[1:]-dr/2
+
+lrbins = np.log(rbins)
+lrmin = np.min(lrbins)
+ldr = lrbins[1]-lrbins[0]
 
 # sigma = np.ones_like(nbins)
 # sigma_mt = np.ones_like(nbins)
@@ -131,14 +135,17 @@ for j in range(nhosts):
 			n[rbin] += 1
 			# drag force
 			if drag:
+				# rbin = int((np.log(rd[ri]/host.R)-lrmin)/ldr)
 				diff = np.abs(rd[ri] - rbc*host.R)
 				rbin = diff.argmin()
 				nd[rbin] += 1
 			if triaxial:
+				# rbin = int((np.log(rd[ri]/host.R)-lrmin)/ldr)
 				diff = np.abs(rt[ri] - rbc*host.R)
 				rbin = diff.argmin()
 				nt[rbin] += 1	
 			if triaxial_drag:
+				# rbin = int((np.log(rd[ri]/host.R)-lrmin)/ldr)
 				diff = np.abs(rt[ri] - rbc*host.R)
 				rbin = diff.argmin()
 				ntd[rbin] += 1
