@@ -148,7 +148,7 @@ for k, sig in enumerate(sigs):
 	writing = 1
 	if writing:
 		np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
-		# np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
+		np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
 	
         print rbins
 	print min(dperi), max(dperi)

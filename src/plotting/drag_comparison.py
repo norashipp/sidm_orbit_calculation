@@ -36,22 +36,7 @@ dt = 4e-3
 
 host = HostHalo(host_idx,potential)
 
-radii_mt = []
-for time in t_mt:
-    if time < host.cosmo.age(0):
-        # print time
-        host.update(time)
-		radii_mt.append(host.R)
-radii_mt = np.asarray(radii_mt)
 
-radii = []
-for time in t:
-    if time < host.cosmo.age(0):
-        # print time
-        host.update(time)
-        radii.append(host.R)
-radii = np.asarray(radii)
-host.update(host.cosmo.age(0))
 
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
@@ -98,12 +83,20 @@ for sub_idx in sub_idx_array:
                     vy_mt = vy_mt[idx]
                     vz_mt = vz_mt[idx]
 
+                    radii_mt = []
+                    for time in t_mt:
+                        if time <= host.cosmo.age(0):
+                            # print time
+                            host.update(time)
+                            radii_mt.append(host.R)
+                    radii_mt = np.asarray(radii_mt)
+                    
                     dist_mt = np.sqrt(x_mt**2 + y_mt**2 + z_mt**2)/radii_mt
                     vt_mt = np.sqrt(vx_mt**2 + vy_mt**2 + vz_mt**2)
 
                     x_mt/=host.R
-            		y_mt/=host.R
-            		z_mt/=host.R
+                    y_mt/=host.R
+                    z_mt/=host.R
 
                     ax[0][0].plot(x_mt, y_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
                     ax[0][1].plot(y_mt, z_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
@@ -134,6 +127,17 @@ for sub_idx in sub_idx_array:
             vy = velocities[:,1]/(1000*m_to_Mpc/s_to_Gyr)
             vz = velocities[:,2]/(1000*m_to_Mpc/s_to_Gyr)
 
+            print len(t), len(x)
+
+            radii = []
+            for time in t:
+                if time > host.cosmo.age(0): time = host.cosmo.age(0)
+                # print time
+                host.update(time)
+                radii.append(host.R)
+            radii = np.asarray(radii)
+            host.update(host.cosmo.age(0))
+            
             dist = np.sqrt(x**2 + y**2 + z**2)/radii
             vt = np.sqrt(vx**2 + vy**2 + vz**2)
 
