@@ -23,14 +23,14 @@ from sidm_orbit_calculation.src.utils.geometry import *
 class HostHalo:
 
     # def __init__(self, M, potential, idx=None, tmax=None, R_s=None, s=0.99, q=0.999, a=1):
-    def __init__(self, idx, potential, subs=True, scale_density=True):
+    def __init__(self, idx, potential, sigma=0, subs=True, scale_density=True):
         # input from merger tree: R_s, a, M_200m, b_to_a, c_to_a
 
         my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27, 'Ob0': 0.0469, 'sigma8': 0.82, 'ns': 0.95}
         self.cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
         self.host_idx = idx
-
+        self.sigma = sigma
         self.potential = potential
 
         self.potential_function = potentials.potential_dict[potential]
@@ -163,13 +163,11 @@ class HostHalo:
             sub = subs[i]
             sub_count+=1
 
-            '''
-            vthresh = 100 # km/s
+            vthresh = 70 # km/s
             if sub.v_max[-1] < vthresh:
                 self.subhalos.append(None)
                 skip+=1
                 continue
-            '''
 
             aa = sub.a
             zz = self.redshift(aa)
