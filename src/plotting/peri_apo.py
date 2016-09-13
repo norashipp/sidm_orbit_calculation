@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from __future__ import division
 import numpy as np
 import sys
@@ -56,7 +58,7 @@ def get_radii(r):
 		return rp, ra
 
 
-
+sub_dict = {}
 hosts = np.array(sys.argv[1:],dtype=int)
 if len(hosts) == 0: hosts = np.arange(51)
 nhosts = len(hosts)
@@ -68,7 +70,8 @@ drag = 1
 v_thresh = 100 # km/s
 
 nbins = 12
-rbins = np.linspace(0,3,nbins+1)
+# rbins = np.linspace(0,3,nbins+1)
+rbins = np.logspace(-4,-1,nbins+1)
 # dr = rbins[1]-rbins[0]
 # rbc = rbins[1:]-dr/2
 
@@ -77,9 +80,11 @@ plt.figure()
 sigs = [3,9,15,21]
 colors = ['b','g','r','c','m','y','k','w']
 
+'''
 for j in range(nhosts):
 	host_idx = hosts[j]
 	host = HostHalo(host_idx,potential,subs=True,scale_density=False)
+        host.update(host.cosmo.age(0))
 	subhalos = np.copy(host.subhalos)
 	sub_dict[j] = subhalos
 
@@ -94,6 +99,7 @@ for j in range(nhosts):
 	d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 	rp,ra = get_radii(d)
 	if not rp: continue
+'''
 
 for k, sig in enumerate(sigs):
 	dperi = []
@@ -107,23 +113,24 @@ for k, sig in enumerate(sigs):
 		else:
 			host = HostHalo(host_idx,potential,subs=False,scale_density=False)
 			subhalos = sub_dict[j]
-			host.update(host.cosmo.age(0))
-
+                
+                host.update(host.cosmo.age(0))
 		print 'Host %i' %host_idx
 		print 'M = %.2e' %host.M
 
-		infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
-		f = open(infile,'rb')
-		data = cPickle.load(f)
-		f.close()
-		_, positions, _ = data
-		d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
-		rp,ra = get_radii(d)
-		if not rp: continue
 
-		for sub in subhalos:
+		for sub_idx, sub in enumerate(subhalos):
 			if sub:
-				infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(potential,sig,host_idx,potential,dt,sub_idx)
+                                infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+                                f = open(infile,'rb')
+                                data = cPickle.load(f)
+                                f.close()
+                                _, positions, _ = data
+                                d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                                rp,ra = get_radii(d)
+                                if not rp: continue
+				
+                                infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
 				f = open(infile,'rb')
 				data = cPickle.load(f)
 				f.close()
@@ -131,6 +138,7 @@ for k, sig in enumerate(sigs):
 				dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 
 				rpd,rad = get_radii(dd)
+                                if not rpd: continue
 				dp = rp-rpd
 				da = ra-rad
 
@@ -141,12 +149,15 @@ for k, sig in enumerate(sigs):
 	if writing:
 		np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
 		# np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
-		
-	plt.hist(dperi,bins=10,histtype='step',lw=3,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
+	
+        print rbins
+	print min(dperi), max(dperi)
+        plt.hist(dperi,bins=rbins,histtype='step',lw=3,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
 
 	plt.xlabel(r'$\mathrm{\Delta r_{p}/R_{200m}}$')
 	plt.ylabel(r'$\mathrm{subhalos}$')
 	plt.yscale('log')
+        plt.xscale('log')
 	plt.legend()
 	plt.grid()
 	plt.savefig('plots/pericenter_%s_%.0e_%i.png'  %(potential,dt,nhosts))
