@@ -107,8 +107,8 @@ for sub_idx in sub_idx_array:
 
             ### no drag ###
 
-            # infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
-            infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+            infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+            # iinfile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
             
             f = open(infile,'rb')
             data = cPickle.load(f)
@@ -176,7 +176,7 @@ for sub_idx in sub_idx_array:
                     ax2.plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     ax3.plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     
-            triaxial = 1
+            triaxial = 0
             if triaxial:
                     integrator = 'leapfrog'
                     potential = 'triaxial_NFW_BT'
