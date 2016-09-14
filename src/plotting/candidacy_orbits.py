@@ -36,8 +36,6 @@ dt = 4e-3
 
 host = HostHalo(host_idx,potential)
 
-
-
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 c_mt = 'g'
@@ -67,7 +65,9 @@ for sub_idx in sub_idx_array:
                     h = 0.7
                     
                     t_mt = cosmo.age(1/sub.a-1)
-                    idx = t_mt > host.subhalos[sub_idx].t0
+                    # idx = t_mt >= host.subhalos[sub_idx].t0
+                    idx = t_mt <= host.subhalos[sub_idx].t0
+                    idx[np.where(idx==True)[0][0]-1] = True
                     t_mt = t_mt[idx]
 
                     x_mt = sub.rel_x/(h*(1/sub.a))
