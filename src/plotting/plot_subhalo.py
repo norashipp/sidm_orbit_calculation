@@ -90,6 +90,7 @@ for sub_idx in sub_idx_array:
             # idx = t_mt >= host.subhalos[sub_idx].t0
             # if idx[0] > 0: idx = np.insert(idx,0,idx[0]-1)
             idx = np.arange(len(t_mt))
+            idx[np.where(idx==True)[0][0]-1] = True
             t_mt = t_mt[idx]
 
             h = 0.7

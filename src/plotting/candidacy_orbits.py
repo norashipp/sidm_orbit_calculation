@@ -36,8 +36,6 @@ dt = 4e-3
 
 host = HostHalo(host_idx,potential)
 
-
-
 subs = SubHalos(HOMEDIR + "sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat" % host_idx)
 
 c_mt = 'g'
@@ -47,6 +45,7 @@ c_d = 'b'
 ls_mt = '--'
 ls = '-'
 ls_d = '-'
+ls_tri = '-.'
 
 for sub_idx in sub_idx_array:
     if host.subhalos[sub_idx]:
@@ -66,7 +65,9 @@ for sub_idx in sub_idx_array:
                     h = 0.7
                     
                     t_mt = cosmo.age(1/sub.a-1)
-                    idx = t_mt > host.subhalos[sub_idx].t0
+                    # idx = t_mt >= host.subhalos[sub_idx].t0
+                    idx = t_mt <= host.subhalos[sub_idx].t0
+                    idx[np.where(idx==True)[0][0]-1] = True
                     t_mt = t_mt[idx]
 
                     x_mt = sub.rel_x/(h*(1/sub.a))
@@ -106,8 +107,8 @@ for sub_idx in sub_idx_array:
 
             ### no drag ###
 
-            infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
-            # infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_leapfrog_%s_%.0e_%i.dat' %(host_idx,potential,dt,sub_idx)
+            # infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+            infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
             
             f = open(infile,'rb')
             data = cPickle.load(f)
@@ -146,7 +147,8 @@ for sub_idx in sub_idx_array:
             ax3.plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
             
             # sigs = [3,6,9,12,15,18]
-            sigs = [3,9,15,21]
+            # sigs = [3,9,15,21]
+            sigs = []
             for sigma in sigs:
                     infile_drag = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sigma,host_idx,potential,dt,sigma,sub_idx)
                     # infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/sigma%i/%i_dissipative_%s_%.0e_%i.dat' %(sigma,host_idx,potential,dt,sub_idx)
@@ -174,11 +176,11 @@ for sub_idx in sub_idx_array:
                     ax2.plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     ax3.plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     
-            triaxial = 0
+            triaxial = 1
             if triaxial:
                     integrator = 'leapfrog'
                     potential = 'triaxial_NFW_BT'
-                    infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%s_%.0e_%i_major_axis.dat' %(host_idx,integrator,potential,dt,sub_idx)
+                    infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
                     # infile_triaxial = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_spherical_NFW_%.0e_%i_major_axis.dat' %(host_idx,integrator,dt,sub_idx)
                     f = open(infile_triaxial,'rb')
                     data = cPickle.load(f)

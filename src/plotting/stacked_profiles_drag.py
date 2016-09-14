@@ -42,6 +42,8 @@ rbins = np.logspace(np.log10(0.1),np.log10(3),nbins+1)
 dr = rbins[1:]-rbins[:-1]
 rbc = rbins[1:]-dr/2
 
+rbc_plt = np.logspace(np.log10(0.1),np.log10(3),nbins*3)
+
 sub_dict = {}
 
 sigs = [0,3,9,15,21]
@@ -107,33 +109,37 @@ for i, sig in enumerate(sigs):
 		if mt: sigma_mt[j] = sd_mt
 
 	sigma = np.median(sigma,axis=0)
-	if mt: sigma_mt = np.median(sigma_mt,axis=0)
-	if sig == 0: sigma0 = np.copy(sigma)
+
+	sig_sp = UnivariateSpline(rbc,sigma,s=0.1)
+	sigma_plt = sig_sp(rbc_plt)
+
+	if mt: sigma_mt = np.median(sigma_mt,axis=0) # add spline if using this
+	if sig == 0: sigma0_plt = np.copy(sigma_plt)
 
 	# PLOTTING
-	ax[0].plot(rbc,sigma,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)		
+	ax[0].plot(rbc_plt,sigma_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)		
 	if sig > 0:
-		ax[1].plot(rbc,sigma/sigma0,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)
+		ax[1].plot(rbc_plt,sigma_plt/sigma0_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)
 
 
 if mt: ax[0].plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
 
-ax[0].grid()
 ax[0].set_xlabel(r'$r/R_{\rm 200m}$')
 ax[0].set_ylabel(r'$\Sigma /R_{\rm 200m}\ \mathrm{(subhalos/Mpc^3)}$')
 ax[0].set_title(r'$\mathrm{%i\ Hosts\ Stacked,\ v_{thresh}\ =\ %.2f\ km/s}$' %(nhosts,v_thresh))
-ax[0].legend(fontsize=18)
+# ax[0].legend(fontsize=18)
 ax[0].set_yscale('log')
 ax[0].set_xscale('log')
-# ax[0].set_xlim(0,3*host.R)
+ax[0].set_xlim(0,3)
+ax[0].grid()
 
-ax[1].grid()
 ax[1].set_xlabel(r'$r/R_{\rm 200m}$')
 ax[1].set_ylabel(r'$\Sigma_{\rm drag} / \Sigma$')
-ax[1].legend(fontsize=18)
+# ax[1].legend(fontsize=18)
 # ax[1].set_yscale('log')
 ax[1].set_xscale('log')
-# ax[1].set_xlim(0,3*host.R)
+ax[1].set_xlim(0,3)
+ax[1].grid()
 
 plt.savefig('plots/subhalo_distribution_%.0e_%i_%i.png'  %(dt,v_thresh,nhosts))
 
