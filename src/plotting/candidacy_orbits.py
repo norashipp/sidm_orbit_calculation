@@ -66,9 +66,10 @@ for sub_idx in sub_idx_array:
                     
                     t_mt = cosmo.age(1/sub.a-1)
                     # idx = t_mt >= host.subhalos[sub_idx].t0
-                    idx = t_mt <= host.subhalos[sub_idx].t0
+                    idx = t_mt >= host.subhalos[sub_idx].t0
                     idx[np.where(idx==True)[0][0]-1] = True
                     t_mt = t_mt[idx]
+                    print t_mt[0]
 
                     x_mt = sub.rel_x/(h*(1/sub.a))
                     y_mt = sub.rel_y/(h*(1/sub.a))
@@ -114,6 +115,7 @@ for sub_idx in sub_idx_array:
             data = cPickle.load(f)
             f.close()
             t, positions, velocities = data
+            print t[0]
 
             x = positions[:,0]
             y = positions[:,1]
@@ -176,7 +178,7 @@ for sub_idx in sub_idx_array:
                     ax2.plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     ax3.plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     
-            triaxial = 1
+            triaxial = 0
             if triaxial:
                     integrator = 'leapfrog'
                     potential = 'triaxial_NFW_BT'
