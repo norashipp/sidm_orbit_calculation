@@ -66,9 +66,10 @@ for sub_idx in sub_idx_array:
                     
                     t_mt = cosmo.age(1/sub.a-1)
                     # idx = t_mt >= host.subhalos[sub_idx].t0
-                    idx = t_mt <= host.subhalos[sub_idx].t0
+                    idx = t_mt >= host.subhalos[sub_idx].t0
                     idx[np.where(idx==True)[0][0]-1] = True
                     t_mt = t_mt[idx]
+                    print t_mt[0]
 
                     x_mt = sub.rel_x/(h*(1/sub.a))
                     y_mt = sub.rel_y/(h*(1/sub.a))
@@ -114,6 +115,7 @@ for sub_idx in sub_idx_array:
             data = cPickle.load(f)
             f.close()
             t, positions, velocities = data
+            print t[0]
 
             x = positions[:,0]
             y = positions[:,1]
