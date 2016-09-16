@@ -60,7 +60,7 @@ for sub_idx in sub_idx_array:
             sub = subs[sub_idx]
 
             ### merger tree ###
-            merger = 1
+            merger = 0
             if merger:
                     h = 0.7
                     
@@ -104,7 +104,7 @@ for sub_idx in sub_idx_array:
 
                     ax1.plot(x_mt, y_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
                     ax2.plot(t_mt, dist_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
-                    ax3.plot(0,0, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
+                    ax3.plot(0,0, 'b', ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 
             ### no drag ###
 
@@ -147,13 +147,14 @@ for sub_idx in sub_idx_array:
             ax1.plot(x, y, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
             ax2.plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
             ax3.plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+            # ax3.plot(0,0, 'g', ls=ls, lw=3, label=r'$\mathrm{Spherical\ NFW}$')
             
             # sigs = [3,6,9,12,15,18]
-            # sigs = [3,9,15,21]
-            sigs = []
+            sigs = [3,9,15,21]
+            # sigs = []
             for sigma in sigs:
-                    infile_drag = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sigma,host_idx,potential,dt,sigma,sub_idx)
-                    # infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/sigma%i/%i_dissipative_%s_%.0e_%i.dat' %(sigma,host_idx,potential,dt,sub_idx)
+                    # infile_drag = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sigma,host_idx,potential,dt,sigma,sub_idx)
+                    infile_drag = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_%.2f_%i.dat' %(host_idx,potential,dt,sigma,sub_idx)
                     f = open(infile_drag,'rb')
                     data = cPickle.load(f)
                     f.close()
@@ -202,7 +203,7 @@ for sub_idx in sub_idx_array:
 
                     ax1.plot(x_tri, y_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
                     ax2.plot(t, dist_tri, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
-                    ax3.plot(0,0, ls=ls_tri, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
+                    ax3.plot(0,0, 'r', ls=ls, lw=3, label=r'$\mathrm{Triaxial\ NFW}$')
 
             ####### PLOTTING #######
 

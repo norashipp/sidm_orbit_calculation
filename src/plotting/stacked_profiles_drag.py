@@ -6,7 +6,7 @@ import sys
 import glob
 from scipy.interpolate import interp1d
 import time
-
+from scipy.signal import savgol_filter
 import matplotlib.pyplot as plt
 
 from sidm_orbit_calculation.src.plotting.make_plots import *
@@ -37,7 +37,7 @@ mt = 0
 
 v_thresh = 70 # km/s
 
-nbins = 12
+nbins = 18
 rbins = np.logspace(np.log10(0.1),np.log10(3),nbins+1)
 dr = rbins[1:]-rbins[:-1]
 rbc = rbins[1:]-dr/2
@@ -110,16 +110,20 @@ for i, sig in enumerate(sigs):
 
 	sigma = np.median(sigma,axis=0)
 
-	sig_sp = UnivariateSpline(rbc,sigma,s=0.1)
-	sigma_plt = sig_sp(rbc_plt)
+	F = open('stacked_profile_nbins_18_%.2f.txt' %sig, 'wb')
+	cPickle.dump(sigma,F)
+	# np.savetxt(fname,sigma)
+
+	sigma_plt = savgol_filter(sigma,3,2)
 
 	if mt: sigma_mt = np.median(sigma_mt,axis=0) # add spline if using this
 	if sig == 0: sigma0_plt = np.copy(sigma_plt)
 
+'''
 	# PLOTTING
-	ax[0].plot(rbc_plt,sigma_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)		
+	ax[0].plot(rbc,sigma_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)		
 	if sig > 0:
-		ax[1].plot(rbc_plt,sigma_plt/sigma0_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)
+		ax[1].plot(rbc,sigma_plt/sigma0_plt,'-',lw=3,color=c,label=r'$\sigma/m_{\chi} = %i\ \mathrm{cm^2/g}$' %sig)
 
 
 if mt: ax[0].plot(rbc,sigma_mt,'-',color='g',label=r'$\mathrm{Merger\ Tree}$',lw=3,markersize='10')
@@ -147,3 +151,4 @@ end_time = time.time()
 print 'Time passed = %.2f' %(end_time-start_time)
 
 # plt.show()
+'''

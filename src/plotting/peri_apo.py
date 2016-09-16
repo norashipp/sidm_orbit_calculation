@@ -102,7 +102,8 @@ for j in range(nhosts):
 
 for k, sig in enumerate(sigs):
 	dperi = []
-	dapo = []
+	dapo_frac = []
+	# dapo = []
 	
 	for j, host_idx in enumerate(hosts):
 		if sig == sigs[0]:
@@ -125,7 +126,8 @@ for k, sig in enumerate(sigs):
                             data = cPickle.load(f)
                             f.close()
                             _, positions, _ = data
-                            d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                            d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
+                            # d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
                             rp,ra = get_radii(d)
                             if not rp: continue
 				
@@ -134,13 +136,15 @@ for k, sig in enumerate(sigs):
                             data = cPickle.load(f)
                             f.close()
                             td, positions, _ = data
-                            dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                            dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
+                            # dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 
                             rpd,rad = get_radii(dd)
                             if not rpd: continue
                             # if rpd > 0.1: continue
                             dp = rp-rpd
-                            da = ra-rad
+                            da = (ra-rad)/ra
+                            # da = ra-rad
                             if da > 0.2:
                                 print 'large change!'
                                 print '%i, %i, da = %.2f' %(host_idx,sub_idx,da)
@@ -149,13 +153,15 @@ for k, sig in enumerate(sigs):
                                 print '%i, %i, dp = %.2f' %(host_idx,sub_idx,dp)
 
                             dperi.append(dp)
-                            dapo.append(da)
+                            dapo_frac.append(da)
+							# dapo.append(da)
 	
 	writing = 1
 	if writing:
-		np.savetxt('output/first_pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
-		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
-        '''	
+		# np.savetxt('output/first_pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
+		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo_frac)
+		# np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
+		'''	
         print rbins
         print min(dperi), max(dperi)
         plt.hist(dperi,bins=rbins,histtype='step',lw=3,label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sig)
