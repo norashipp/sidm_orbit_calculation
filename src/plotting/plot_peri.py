@@ -26,7 +26,7 @@ potential = 'spherical_NFW'
 nhosts = 51
 
 # bmin = -0.05
-bmax = 1.1
+bmax = 1.5
 # bins = np.linspace(0.0,0.8,20)
 bins = np.logspace(np.log10(0.0001),np.log10(bmax),20)
 # bins = 10
@@ -35,7 +35,7 @@ colors = np.array(['b','g','r','c','y','m','k','orange'],dtype=str)
 
 for i,sig in enumerate([3,9,15,21]):
 	c = colors[i]
-	dperi = loadtxt('output/first_%s_%s_%.0e_sigma_%.2f.txt' %(opt,potential,dt,sig))
+	dperi = loadtxt('output/apofrac/first_%s_%s_%.0e_sigma_%.2f.txt' %(opt,potential,dt,sig))
 	dperi = dperi[dperi>0]
 	large = dperi[dperi>=0.1]
 	small = dperi[dperi<0.1]
@@ -52,7 +52,7 @@ for i,sig in enumerate([3,9,15,21]):
 	plt.plot([np.median(dperi),np.median(dperi)],[0,1.4],'-',color=c,lw=3)
 	# plt.plot(np.median(dperi),0,'+',color=c,lw=3,ms=20)
 
-plt.xlabel(r'$\Delta r_{\rm %s} / R_{\rm 200m}$' %opti)
+plt.xlabel(r'$\Delta r_{\rm %s} / r_{\rm %s}$' %(opti,opti))
 plt.ylabel(r'$N_{\rm subhalos}$')
 plt.title(r'$\mathrm{Change\ in\ First\ Apocenter\ of\ Subhalo\ Orbits}$')
 plt.yscale('log')
@@ -60,5 +60,5 @@ plt.xscale('log')
 # plt.ylim(0,1e2)
 # plt.legend()
 plt.grid()
-plt.savefig('plots/first_%s_%s_%.0e_%i.png'  %(opt,potential,dt,nhosts))
+plt.savefig('plots/first_%s_fraction_%s_%.0e_%i.png'  %(opt,potential,dt,nhosts))
 plt.show()
