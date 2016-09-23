@@ -247,10 +247,10 @@ for sub_idx in sub_idx_array:
             # ax[0][0].set_xlim(-rmax,rmax)
             # ax[0][0].set_ylim(-rmax,rmax)
 
-            ax1[0].plot(0,0,'k*',markersize=12) # , label=r'$\mathrm{Host\ Center}$')
-            ax1[0].plot(x[0],y[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # , label=r'$\mathrm{Orbit\ Start}$')
-            ax1[0].set_xlabel(r'$x\ (R_{\rm 200m})$')
-            ax1[0].set_ylabel(r'$y\ (R_{\rm 200m})$')
+            # ax1[0].plot(0,0,'k*',markersize=12) # , label=r'$\mathrm{Host\ Center}$')
+            # ax1[0].plot(x[0],y[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # , label=r'$\mathrm{Orbit\ Start}$')
+            # ax1[0].set_xlabel(r'$x\ (R_{\rm 200m})$')
+            # ax1[0].set_ylabel(r'$y\ (R_{\rm 200m})$')
             
 
             ax[0][1].plot(0, 0, 'k*', markersize=12) # , label=r'$\mathrm{Host\ Center}$')
@@ -326,7 +326,7 @@ for sub_idx in sub_idx_array:
             ax1[2].spines['right'].set_color('white')
             ax1[2].spines['left'].set_color('white')
             '''
-            
+
             # fig.delaxes(ax[2][2])
             # plt.draw()
             # handles, labels = ax[0][0].get_legend_handles_labels()
