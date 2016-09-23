@@ -51,7 +51,7 @@ ls_d = '-'
 for sub_idx in sub_idx_array:
     if host.subhalos[sub_idx]:
             fig, ax = plt.subplots(3,3,figsize=(20,20))
-            fig1, ax1 = plt.subplots(1,3,figsize=(40,15))
+            # fig1, ax1 = plt.subplots(1,3,figsize=(40,15))
             fig.tight_layout(pad=5.0, w_pad=2.0, h_pad=2.0)
             # fig.set_tight_layout(True)
             rmax = 1
@@ -65,7 +65,8 @@ for sub_idx in sub_idx_array:
                     h = 0.7
                     
                     t_mt = cosmo.age(1/sub.a-1)
-                    idx = t_mt > host.subhalos[sub_idx].t0
+                    idx = t_mt >= host.subhalos[sub_idx].t0
+                    idx[np.where(idx==True)[0][0]-1] = True
                     t_mt = t_mt[idx]
 
                     x_mt = sub.rel_x/(h*(1/sub.a))
@@ -109,9 +110,9 @@ for sub_idx in sub_idx_array:
                     ax[2][1].plot(t_mt, dist_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
                     ax[2][2].plot(0,0, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
                     
-                    ax1[0].plot(x_mt, y_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
-                    ax1[1].plot(t_mt, dist_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
-                    ax1[2].plot(0,0, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
+                    # ax1[0].plot(x_mt, y_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
+                    # ax1[1].plot(t_mt, dist_mt, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
+                    # ax1[2].plot(0,0, ls=ls_mt, lw=3, label=r'$\mathrm{Merger\ Tree}$')
 
             ### no drag ###
 
@@ -160,9 +161,9 @@ for sub_idx in sub_idx_array:
             ax[2][1].plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
             ax[2][2].plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
             
-            ax1[0].plot(x, y, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-            ax1[1].plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-            ax1[2].plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+            # ax1[0].plot(x, y, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+            # ax1[1].plot(t,dist, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+            # ax1[2].plot(0,0, ls=ls, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
 
             # sigs = [3,6,9,12,15,18]
             sigs = [3,9,15,21]
@@ -199,9 +200,9 @@ for sub_idx in sub_idx_array:
                     ax[2][1].plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     ax[2][2].plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     
-                    ax1[0].plot(x_d, y_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-                    ax1[1].plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
-                    ax1[2].plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+                    # ax1[0].plot(x_d, y_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+                    # ax1[1].plot(t, dist_d, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
+                    # ax1[2].plot(0, 0, ls=ls_d, lw=3, label=r'$\mathrm{\sigma/m_{\chi} = %i\ cm^2/g}$'%sigma)
                     
             triaxial = 0
             if triaxial:
@@ -247,10 +248,10 @@ for sub_idx in sub_idx_array:
             # ax[0][0].set_xlim(-rmax,rmax)
             # ax[0][0].set_ylim(-rmax,rmax)
 
-            ax1[0].plot(0,0,'k*',markersize=12) # , label=r'$\mathrm{Host\ Center}$')
-            ax1[0].plot(x[0],y[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # , label=r'$\mathrm{Orbit\ Start}$')
-            ax1[0].set_xlabel(r'$x\ (R_{\rm 200m})$')
-            ax1[0].set_ylabel(r'$y\ (R_{\rm 200m})$')
+            # ax1[0].plot(0,0,'k*',markersize=12) # , label=r'$\mathrm{Host\ Center}$')
+            # ax1[0].plot(x[0],y[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # , label=r'$\mathrm{Orbit\ Start}$')
+            # ax1[0].set_xlabel(r'$x\ (R_{\rm 200m})$')
+            # ax1[0].set_ylabel(r'$y\ (R_{\rm 200m})$')
             
 
             ax[0][1].plot(0, 0, 'k*', markersize=12) # , label=r'$\mathrm{Host\ Center}$')
@@ -305,9 +306,9 @@ for sub_idx in sub_idx_array:
             # ax[2][1].set_xlim(t.min()-1,t.max()+1)
             # ax[2][1].set_ylim(0,rmax)
             
-            ax1[1].plot(t[0],dist[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # ,label=r'$\mathrm{Orbit\ Start}$')
-            ax1[1].set_xlabel(r'$t\ {\rm ( Gyr)}$')
-            ax1[1].set_ylabel(r'$r\ (R_{\rm 200m})$')
+            # ax1[1].plot(t[0],dist[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # ,label=r'$\mathrm{Orbit\ Start}$')
+            # ax1[1].set_xlabel(r'$t\ {\rm ( Gyr)}$')
+            # ax1[1].set_ylabel(r'$r\ (R_{\rm 200m})$')
 
             ax[2][2].legend(loc='center',fontsize=30)
             ax[2][2].get_xaxis().set_visible(False)
@@ -317,6 +318,7 @@ for sub_idx in sub_idx_array:
             ax[2][2].spines['right'].set_color('white')
             ax[2][2].spines['left'].set_color('white')
             
+            '''
             ax1[2].legend(loc='center',fontsize=30)
             ax1[2].get_xaxis().set_visible(False)
             ax1[2].get_yaxis().set_visible(False)
@@ -324,7 +326,8 @@ for sub_idx in sub_idx_array:
             ax1[2].spines['top'].set_color('white') 
             ax1[2].spines['right'].set_color('white')
             ax1[2].spines['left'].set_color('white')
-            
+            '''
+
             # fig.delaxes(ax[2][2])
             # plt.draw()
             # handles, labels = ax[0][0].get_legend_handles_labels()

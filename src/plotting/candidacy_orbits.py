@@ -108,8 +108,8 @@ for sub_idx in sub_idx_array:
 
             ### no drag ###
 
-            # infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
-            infile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+            infile = HOMEDIR+'data/candidacy/sigma0/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
+            # iinfile = HOMEDIR+'sidm_orbit_calculation/src/output/%i_%s_%.0e_0.00_%i.dat' %(host_idx,potential,dt,sub_idx)
             
             f = open(infile,'rb')
             data = cPickle.load(f)
