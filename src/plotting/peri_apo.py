@@ -152,6 +152,10 @@ for k, sig in enumerate(sigs):
                                 print 'large change!'
                                 print '%i, %i, dp = %.2f' %(host_idx,sub_idx,dp)
 
+                            # peri0.append(rp)
+                            # peri.append(rpd)
+
+
                             dperi.append(dp)
                             dapo_frac.append(da)
 							# dapo.append(da)
