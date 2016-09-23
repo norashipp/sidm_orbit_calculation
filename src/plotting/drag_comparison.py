@@ -305,9 +305,9 @@ for sub_idx in sub_idx_array:
             # ax[2][1].set_xlim(t.min()-1,t.max()+1)
             # ax[2][1].set_ylim(0,rmax)
             
-            ax1[1].plot(t[0],dist[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # ,label=r'$\mathrm{Orbit\ Start}$')
-            ax1[1].set_xlabel(r'$t\ {\rm ( Gyr)}$')
-            ax1[1].set_ylabel(r'$r\ (R_{\rm 200m})$')
+            # ax1[1].plot(t[0],dist[0],'*', color=c, ls=ls, markeredgecolor=None, markersize=15) # ,label=r'$\mathrm{Orbit\ Start}$')
+            # ax1[1].set_xlabel(r'$t\ {\rm ( Gyr)}$')
+            # ax1[1].set_ylabel(r'$r\ (R_{\rm 200m})$')
 
             ax[2][2].legend(loc='center',fontsize=30)
             ax[2][2].get_xaxis().set_visible(False)
