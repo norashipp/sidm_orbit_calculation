@@ -96,7 +96,7 @@ for k, sig in enumerate(sigs):
 				f.close()
 				_, positions, _ = data
 				d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
-				rp,ra = get_radii(dd)
+				rp,ra = get_radii(d)
 				# if not rp: continue
 				apo.append(ra)
 				peri.append(rp)
