@@ -84,14 +84,18 @@ for j, host_idx in enumerate(hosts):
 			d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
 			rp,ra = get_radii(d)
 			if rp == None or ra == None:
+				subs.append(0)
 				continue
 			else:
-				subs.append(sub_idx)
+				subs.append(1)
 				apo.append(ra)
 				peri.append(rp)
+		else:
+			subs.append(0)
 np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),apo)
 np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),peri)
 
+sub_count = 0
 sigs = [3,9,15,21]
 for sig in sigs:
 	apo = []
@@ -103,17 +107,18 @@ for sig in sigs:
 		print 'Host %i' %host_idx
 		print 'M = %.2e' %host.M
 		
-		for sub_idx in subs:
-			sub = subhalos[sub_idx]
-			infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
-			f = open(infile,'rb')
-			data = cPickle.load(f)
-			f.close()
-			_, positions, _ = data
-			d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
-			rp,ra = get_radii(d)
-			apo.append(ra)
-			peri.append(rp)
+		for sub_idx, sub in enumerate(subhalos):
+			if subs[sub_count]:
+				infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
+				f = open(infile,'rb')
+				data = cPickle.load(f)
+				f.close()
+				_, positions, _ = data
+				d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
+				rp,ra = get_radii(d)
+				apo.append(ra)
+				peri.append(rp)
+			sub_count += 1
 
 	np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),apo)
 	np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),peri)
