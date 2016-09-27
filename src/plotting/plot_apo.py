@@ -28,24 +28,23 @@ nhosts = 51
 # bmin = -0.05
 bmax = 1.5
 # bins = np.linspace(0.0,0.8,20)
-# bins = np.logspace(np.log10(0.0001),np.log10(bmax),20)
+bins = np.logspace(np.log10(0.0001),np.log10(bmax),20)
 # bins = 10
-bins = np.logspace(np.log10(0.05),np.log10(1.1),20)
 
 colors = np.array(['b','g','r','c','y','m','k','orange'],dtype=str)
-'''
-apo0 = loadtxt('output/%s_a95_%s_%.0e_sigma_0.00.txt' %(opt,potential,dt))
+
+apo0 = loadtxt('output/first_%s_%s_%.0e_sigma_0.00.txt' %(opt,potential,dt))
 p95 = np.percentile(apo0,95)
 idx = (apo0 >= p95)
 print len(apo0), len(idx)
 apo95 = apo0[idx]
-'''
+
 for i,sig in enumerate([3,9,15,21]):
 	c = colors[i]
-	dapo = loadtxt('output/%s_a95_%s_%.0e_sigma_%.2f.txt' %(opt,potential,dt,sig))
-	# print len(apo), len(idx)
-	# apo = apo[idx]
-	# dapo = apo-apo95
+	apo = loadtxt('output/first_%s_%s_%.0e_sigma_%.2f.txt' %(opt,potential,dt,sig))
+	print len(apo), len(idx)
+	apo = apo[idx]
+	dapo = apo-apo95
 	dapo = dapo[dapo>0]
 	# large = dperi[dperi>=0.1]
 	# small = dperi[dperi<0.1]
@@ -62,13 +61,13 @@ for i,sig in enumerate([3,9,15,21]):
 	plt.plot([np.median(dapo),np.median(dapo)],[0,1.4],'-',color=c,lw=3)
 	# plt.plot(np.median(dperi),0,'+',color=c,lw=3,ms=20)
 
-plt.xlabel(r'$\Delta r_{\rm %s} / R_{\rm 200_m}$' %(opti))
+plt.xlabel(r'$\Delta r_{\rm %s} / r_{\rm %s}$' %(opti,opti))
 plt.ylabel(r'$N_{\rm subhalos}$')
 plt.title(r'$\mathrm{Change\ in\ First\ Apocenter\ of\ Subhalo\ Orbits}$')
 plt.yscale('log')
 plt.xscale('log')
 # plt.ylim(0,1e2)
-plt.legend()
+# plt.legend()
 plt.grid()
 plt.savefig('plots/first_%s_fraction_%s_%.0e_%i.png'  %(opt,potential,dt,nhosts))
 plt.show()
