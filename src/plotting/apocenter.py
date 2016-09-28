@@ -99,6 +99,30 @@ for j in range(nhosts):
 	rp,ra = get_radii(d)
 	if not rp: continue
 '''
+apo0 = []
+peri0 = []
+for j, host_idx in enumerate(hosts):
+	host = HostHalo(host_idx,potential,subs=True,scale_density=False)
+        host.update(host.cosmo.age(0))
+	subhalos = np.copy(host.subhalos)
+	sub_dict[j] = subhalos
+	print 'Host %i' %host_idx
+	print 'M = %.2e' %host.M
+        
+    for sub_idx, sub in enumerate(subhalos):
+        if sub:
+            infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(0,host_idx,potential,dt,0.,sub_idx)
+            f = open(infile,'rb')
+            data = cPickle.load(f)
+            f.close()
+            _, positions, _ = data
+            d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+            rp0,ra0 = get_radii(d)
+			if not ra0: continue
+	        apo0.append(ra0)
+            peri0.append(rp0)
+
+a95 = np.percentile(apo0,95)
 
 for k, sig in enumerate(sigs):
 	dperi = []
@@ -129,8 +153,9 @@ for k, sig in enumerate(sigs):
                 d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
                 # d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
                 rp,ra = get_radii(d)
-                if not rp: continue
-	
+                if not ra: continue
+				if ra < a95: continue
+
                 infile = HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_%i.dat' %(sig,host_idx,potential,dt,sig,sub_idx)
                 f = open(infile,'rb')
                 data = cPickle.load(f)
@@ -140,17 +165,17 @@ for k, sig in enumerate(sigs):
                 # dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 
                 rpd,rad = get_radii(dd)
-                if not rpd: continue
+                if not rad: continue
                 # if rpd > 0.1: continue
                 dp = rp-rpd
                 da = (ra-rad)/ra
                 # da = ra-rad
-                if da > 0.2:
-                    print 'large change!'
-                    print '%i, %i, da = %.2f' %(host_idx,sub_idx,da)
-                if dp > 0.2:
-                    print 'large change!'
-                    print '%i, %i, dp = %.2f' %(host_idx,sub_idx,dp)
+                # if da > 0.2:
+                #     print 'large change!'
+                #     print '%i, %i, da = %.2f' %(host_idx,sub_idx,da)
+                # if dp > 0.2:
+                #     print 'large change!'
+                #     print '%i, %i, dp = %.2f' %(host_idx,sub_idx,dp)
 
                 # peri0.append(rp)
                 # peri.append(rpd)
@@ -163,7 +188,7 @@ for k, sig in enumerate(sigs):
 	writing = 1
 	if writing:
 		# np.savetxt('output/first_pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
-		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo_frac)
+		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f_95.txt' %(potential, dt, sig),dapo_frac)
 		# np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
 		'''	
         print rbins
