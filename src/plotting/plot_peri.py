@@ -35,7 +35,8 @@ colors = np.array(['b','g','r','c','y','m','k','orange'],dtype=str)
 
 for i,sig in enumerate([3,9,15,21]):
 	c = colors[i]
-	dperi = loadtxt('output/apofrac/first_%s_%s_%.0e_sigma_%.2f.txt' %(opt,potential,dt,sig))
+	dperi = loadtxt('output/first_%s_%s_%.0e_sigma_%.2f_nonorm.txt' %(opt,potential,dt,sig))
+	# dperi = loadtxt('output/first_%s_%s_%.0e_sigma_%.2f_norm.txt' %(opt,potential,dt,sig))
 	dperi = dperi[dperi>0]
 	large = dperi[dperi>=0.1]
 	small = dperi[dperi<0.1]
@@ -52,7 +53,7 @@ for i,sig in enumerate([3,9,15,21]):
 	plt.plot([np.median(dperi),np.median(dperi)],[0,1.4],'-',color=c,lw=3)
 	# plt.plot(np.median(dperi),0,'+',color=c,lw=3,ms=20)
 
-plt.xlabel(r'$\Delta r_{\rm %s} / r_{\rm %s}$' %(opti,opti))
+plt.xlabel(r'$\Delta r_{\rm %s} / R_{\rm 200 m}$' %(opti))
 plt.ylabel(r'$N_{\rm subhalos}$')
 plt.title(r'$\mathrm{Change\ in\ First\ Apocenter\ of\ Subhalo\ Orbits}$')
 plt.yscale('log')
