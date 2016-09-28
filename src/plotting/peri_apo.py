@@ -126,8 +126,8 @@ for k, sig in enumerate(sigs):
                             data = cPickle.load(f)
                             f.close()
                             _, positions, _ = data
-                            d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
-                            # d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                            # d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
+                            d = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
                             rp,ra = get_radii(d)
                             if not rp: continue
 				
@@ -136,8 +136,8 @@ for k, sig in enumerate(sigs):
                             data = cPickle.load(f)
                             f.close()
                             td, positions, _ = data
-                            dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
-                            # dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
+                            # dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)
+                            dd = np.sqrt(positions[:,0]**2 + positions[:,1]**2 + positions[:,2]**2)/host.R
 
                             rpd,rad = get_radii(dd)
                             if not rpd: continue
@@ -162,9 +162,9 @@ for k, sig in enumerate(sigs):
 	
 	writing = 1
 	if writing:
-		# np.savetxt('output/first_pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dperi)
-		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo_frac)
-		# np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),dapo)
+		# np.savetxt('output/first_pericenter_%s_%.0e_sigma_%.2f_norm.txt' %(potential, dt, sig),dperi)
+		np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f_norm.txt' %(potential, dt, sig),dapo_frac)
+		# np.savetxt('output/first_apocenter_%s_%.0e_sigma_%.2f_norm.txt' %(potential, dt, sig),dapo)
 		'''	
         print rbins
         print min(dperi), max(dperi)
