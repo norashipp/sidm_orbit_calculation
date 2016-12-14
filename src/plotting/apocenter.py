@@ -103,7 +103,7 @@ apo0 = []
 peri0 = []
 for j, host_idx in enumerate(hosts):
 	host = HostHalo(host_idx,potential,subs=True,scale_density=False)
-        host.update(host.cosmo.age(0))
+	host.update(host.cosmo.age(0))
 	subhalos = np.copy(host.subhalos)
 	sub_dict[j] = subhalos
 	print 'Host %i' %host_idx
