@@ -4,6 +4,7 @@ from __future__ import division
 import numpy as np
 import sys
 import glob
+import cPickle
 
 from sidm_orbit_calculation.src.utils.setup import *
 from sidm_orbit_calculation.src.halos.host_halo import *
@@ -53,8 +54,9 @@ for sig in sigs:
 	apo = []
 	peri = []
 	for host_idx in hosts:
+                print 'Host %i' %host_idx
 		R = host_R[host_idx]
-		infiles = glob.glob(HOMEIDR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_*.dat' %(sig,host_idx,potential,dt,sig))	
+		infiles = glob.glob(HOMEDIR+'data/candidacy/sigma%i/%i_%s_%.0e_%.2f_*.dat' %(sig,host_idx,potential,dt,sig))	
 		for infile in infiles:
 			f = open(infile,'rb')
 			data = cPickle.load(f)
@@ -65,5 +67,5 @@ for sig in sigs:
 			apo.append(ra)
 			peri.append(rp)
 			
-	np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),apo)
-	np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f.txt' %(potential, dt, sig),peri)
+	np.savetxt('output/apocenter_%s_%.0e_sigma_%.2f_nonorm.txt' %(potential, dt, sig),apo)
+	np.savetxt('output/pericenter_%s_%.0e_sigma_%.2f_nonorm.txt' %(potential, dt, sig),peri)

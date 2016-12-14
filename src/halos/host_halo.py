@@ -15,7 +15,7 @@ from sidm_orbit_calculation.src.utils.constants import *
 import sidm_orbit_calculation.src.potentials.density as density
 import sidm_orbit_calculation.src.calculation.mass as mass
 from sidm_orbit_calculation.src.utils.setup import *
-import sidm_orbit_calculation.src.merger_tree.cluster as cluster
+import sidm_orbit_calculation.src.halos.cluster as cluster
 import sidm_orbit_calculation.src.potentials.test_spherical_potentials as potentials
 from sidm_orbit_calculation.src.halos.subhalo import *
 from sidm_orbit_calculation.src.utils.geometry import *
