@@ -37,18 +37,18 @@ for particle_idx in particle_idx_array:
     py = pi[1::3]
     pz = pi[2::3]
 
-    fig, ax = plt.subplots(1, 3)
+    fig, ax = plt.subplots(1, 3, figsize={10,3})
     ax[0].plot(px, py, lw=3, color='slateblue')
     ax[1].plot(py, pz, lw=3, color='slateblue')
     ax[2].plot(pz, px, lw=3, color='slateblue')
 
-    ax[0].set_xlabel(r'$/mathrm{x}$')
-    ax[1].set_xlabel(r'$/mathrm{y}$')
-    ax[2].set_xlabel(r'$/mathrm{z}$')
+    ax[0].set_xlabel(r'$\mathrm{x}$')
+    ax[1].set_xlabel(r'$\mathrm{y}$')
+    ax[2].set_xlabel(r'$\mathrm{z}$')
 
-    ax[0].set_ylabel(r'$/mathrm{y}$')
-    ax[1].set_ylabel(r'$/mathrm{z}$')
-    ax[2].set_ylabel(r'$/mathrm{x}$')
+    ax[0].set_ylabel(r'$\mathrm{y}$')
+    ax[1].set_ylabel(r'$\mathrm{z}$')
+    ax[2].set_ylabel(r'$\mathrm{x}$')
 
     plt.savefig('plots/particle_%i_%i.png' %(host_idx, particle_idx))
     # plt.show()
