@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 # from colossus.cosmology import cosmology
 
 from sidm_orbit_calculation.src.utils.setup import *
+# from sidm_orbit_calculation.src.halos.host_halo import *
 
 # my_cosmo = {'flat': True, 'H0': 70.0, 'Om0': 0.27,
 #             'Ob0': 0.045714, 'sigma8': 0.82, 'ns': 0.96}
@@ -25,9 +26,9 @@ host_idx = int(sys.argv[1])
 particle_idx_array = [0]
 
 potential = 'spherical_NFW'
-host = HostHalo(host_idx, potential)
+# host = HostHalo(host_idx, potential)
 
-particle_file = DATADIR + 'paritcle_%i.dat' % host_idx
+particle_file = DATADIR + 'subs/particle_%i.dat' % host_idx
 particles = np.loadtxt(particle_file, unpack=True)
 
 for particle_idx in particle_idx_array:
@@ -49,4 +50,5 @@ for particle_idx in particle_idx_array:
     ax[1].set_ylabel(r'$/mathrm{z}$')
     ax[2].set_ylabel(r'$/mathrm{x}$')
 
-    plt.show()
+    plt.savefig('plots/particle_%i_%i.png' %(host_idx, particle_idx))
+    # plt.show()

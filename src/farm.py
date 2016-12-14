@@ -24,12 +24,13 @@ dt = 4e-3
 
 # integrators = ['leapfrog','dissipative']
 # potentials = ['spherical_NFW','triaxial_NFW_BT']
-integrators = ['leapfrog']
-potentials = ['triaxial_NFW_BT']
-sigma = 0.
+# integrators = ['leapfrog']
+potentials = ['spherical_NFW']
+# potentials = ['triaxial_NFW_BT']
+sigmas = [0.]
 
-for integrator in integrators:
-    for potential in potentials:
+for potential in potentials:
+    for sigma in sigmas:
         batch = 'sbatch --account=kicp --partition=kicp --job-name=%s --output=log.out --error=log.err --mem-per-cpu=5000 ' %(jobname)
         command = 'sim.py %i %.2e %s %i' %(host_idx, dt, potential, sigma)
         command_queue = batch + command
