@@ -116,7 +116,7 @@ class HostHalo:
 
     def initiate_host(self,scale_density):
         print 'Importing host %i parameters from merger tree...' %self.host_idx
-        hs = cluster.HostHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/clusters.dat')
+        hs = cluster.HostHalos(DATADIR + 'clusters.dat')
         aa = hs[self.host_idx].a 
         zz = self.redshift(aa)
         tt = self.cosmo.age(zz) # Gyr
@@ -153,7 +153,7 @@ class HostHalo:
 
 
     def initiate_subhalos(self):
-        subs = cluster.SubHalos(HOMEDIR + 'sidm_orbit_calculation/src/merger_tree/subs/sub_%d.dat' % self.host_idx)
+        subs = cluster.SubHalos(DATADIR + 'subs/sub_%d.dat' % self.host_idx)
         print "Initiating subhahlos..."
         self.subhalos = []
         skip = 0
