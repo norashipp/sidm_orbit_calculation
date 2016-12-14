@@ -11,7 +11,7 @@ from sidm_orbit_calculation.src.utils.setup import *
 # cosmo = cosmology.setCosmology('my_cosmo', my_cosmo)
 
 dpi = 175
-fontsize = 20
+fontsize = 15
 plt.rc('savefig', dpi=dpi)
 plt.rc('text', usetex=True)
 plt.rc('font', size=fontsize)
@@ -37,7 +37,7 @@ for particle_idx in particle_idx_array:
     py = pi[1::3]
     pz = pi[2::3]
 
-    fig, ax = plt.subplots(1, 3, figsize={10,3})
+    fig, ax = plt.subplots(1, 3, figsize={12,3})
     ax[0].plot(px, py, lw=3, color='slateblue')
     ax[1].plot(py, pz, lw=3, color='slateblue')
     ax[2].plot(pz, px, lw=3, color='slateblue')

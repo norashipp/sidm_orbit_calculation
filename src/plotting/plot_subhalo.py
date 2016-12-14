@@ -155,7 +155,7 @@ for sub_idx in sub_idx_array:
             print 'vz = ', vz_mt[:5]
             '''
 
-            drag = 1
+            drag = 0
             if drag:
                     sigma = 20
                     infile_drag = HOMEDIR+'scratch-midway/%i_%s_%.0e_%.2f_%i.dat' %(host_idx,potential,dt,sigma,sub_idx)
