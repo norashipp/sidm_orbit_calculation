@@ -6,6 +6,7 @@ import cPickle
 import sys
 import matplotlib.pyplot as plt
 from colossus.cosmology import cosmology
+from colossus.halo.mass_so import M_to_R
 
 from sidm_orbit_calculation.src.utils.setup import *
 from sidm_orbit_calculation.src.halos.host_halo import *
@@ -34,11 +35,21 @@ tmin = 12
 tmax = 14
 
 sub = subs[sub_idx_array[0]]
+
+print 'primary subhalo mass = %.2e' %sub.m_200m[-1]
+R0 = M_to_R(sub.m_200m,0,'200m')
+print 'primary subhalo R200 = ', R0[-6:]
+print 
+
 # t0 = cosmo.age(1/sub.a-1)
 a0 = sub.a
 x0 = sub.rel_x/(h*(1/sub.a))
 y0 = sub.rel_y/(h*(1/sub.a))
 z0 = sub.rel_z/(h*(1/sub.a))
+
+vx0 = sub.rel_vx
+vy0 = sub.rel_vy
+vz0 = sub.rel_vz
 
 a1 = a0[-6:]
 # idx0 = np.where(np.all([t0>tmin,t0<tmax],axis=0))
@@ -85,7 +96,25 @@ for sub_idx in range(len(subs)-1):
     z1 = zi(a1)
     d1 = np.sqrt((x1-x0[-6])**2 + (y1-y0[-6])**2 + (z1-z0[-6])**2)
 
+    vxi = interp1d(a,sub.rel_vx)
+    vyi = interp1d(a,sub.rel_vy)
+    vzi = interp1d(a,sub.rel_vz)
+    vx1 = vxi(a1)
+    vy1 = vyi(a1)
+    vz1 = vzi(a1)
+    dv1 = np.sqrt((vx1-vx0[-6])**2 + (vy1-vy0[-6])**2 + (vz1-vz0[-6])**2)
+
     if np.any(d1 < dthresh):
+        R = M_to_R(sub.m_200m,0,'200m')
+
+        print 'subhalo mass = %.2e' %sub.m_200m[-1]
+        print 'subhalo R200 = ', R[-6:]
+        print 'relative velocities = ', dv1
+        print 'relative distances = ', d1
+        print 'relative distances/R0 = ', d1/(R0[-6:]/1000)
+        
+        print 
+
         c = colors[count]
         # c = k
         count += 1
@@ -98,6 +127,14 @@ for sub_idx in range(len(subs)-1):
         ax[0].plot(xi(a1[-4]),yi(a1[-4]),'^',lw=3,ms=10,c=c)
         ax[1].plot(yi(a1[-4]),zi(a1[-4]),'^',lw=3,ms=10,c=c)
         ax[2].plot(zi(a1[-4]),xi(a1[-4]),'^',lw=3,ms=10,c=c)
+
+        fig1, ax1 =  plt.subplots(1,2,figsize=(12,5))
+        ax1[0].plot(a1,d1/(R0[-6:]/1000),lw=3)
+        ax1[1].plot(a1,dv1,lw=3)
+        ax1[0].set_xlabel('a')
+        ax1[1].set_xlabel('a')
+        ax1[0].set_ylabel('relative distance (R200 of larger subhalo)')
+        ax1[1].set_ylabel('relative velocity (km/s)')
 
 print '%i subhalos within %.2f Mpc' %(count,dthresh)    
 ax[1].set_title('%i subhalos within %.2f Mpc' %(count,dthresh))
