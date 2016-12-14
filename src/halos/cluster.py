@@ -125,7 +125,7 @@ class HostHalos(AbstractReader):
     
 if __name__ == "__main__":
     print time.time()
-    hs = HostHalos("clusters.dat")
+    hs = HostHalos("/scratch/midway/mansfield/data/merger_tree/clusters.dat")
     print time.time()
     print "%d hosts in clusters.dat" % len(hs)
 
